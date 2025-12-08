@@ -19,17 +19,19 @@ public class LireFichier
 			while (scanner.hasNextLine()) 
 			{
 				String ligne = scanner.nextLine();
-				if (ligne.replace("\t", " ").trim().startsWith("//") || ligne.replace("\t", " ").trim().startsWith("/*")) 
-					estCommentaire = true;
-				
-				if (!estCommentaire)
+				ligne = ligne.replace("\t", "").trim();
+
+				if (ligne.startsWith("//") || ligne.startsWith("/*") || ligne.endsWith("*/") || ligne.startsWith("*"))
+				{
+					estCommentaire = ligne.startsWith("/*") && !ligne.endsWith("*/") ;
+				}
+				else
+				{
 					analyseFichier.analyserLigne(ligne);
+					if (ligne.contains("/*")) estCommentaire = true;
+				}
+				
 
-				if (ligne.replace("\t", " ").trim().startsWith("//")) 
-					estCommentaire = false;
-
-				if (ligne.trim().endsWith("*/")) 
-					estCommentaire = false;
 
 			}
 			scanner.close();
