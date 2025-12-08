@@ -3,13 +3,10 @@ package metier;
 
 // Import package extern
 import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.BufferedReader;
-import java.io.FileReader;
+
 import java.util.ArrayList;
 import java.util.List;
 
-import metier.*;
 
 // Import package itern
 //import metier.classe.*;
@@ -30,11 +27,9 @@ public class AnalyseFichier
 
 			AnalyseFichier.listeRepertoire(f, allFiles);
 
-			FileReader fr;
-			BufferedReader br;
 			for (String file : allFiles)
 			{
-				LireFichier.LireFichier(file, this);
+				LireFichier.lireFichier(file, this);
 			}
 		}
 		catch (Exception e)

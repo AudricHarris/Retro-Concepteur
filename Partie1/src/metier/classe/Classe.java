@@ -1,8 +1,5 @@
 package metier.classe;
 
-import metier.classe.Methode;
-
-
 import java.util.ArrayList;
 
 public class Classe 

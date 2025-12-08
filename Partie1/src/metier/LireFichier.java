@@ -3,11 +3,10 @@ package metier;
 import java.io.File;
 import java.util.Scanner;
 
-import metier.*;
 
 public class LireFichier 
 {
-	public static void LireFichier(String chemin, AnalyseFichier analyseFichier)
+	public static void lireFichier(String chemin, AnalyseFichier analyseFichier)
 	{
 		if (chemin == null || chemin.isEmpty()) 
 		{
@@ -21,6 +20,7 @@ public class LireFichier
 				String ligne = scanner.nextLine();
 				analyseFichier.analyserLigne(ligne);
 			}
+			scanner.close();
 		}
 		catch (Exception e)
 		{
