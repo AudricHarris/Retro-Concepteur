@@ -1,14 +1,14 @@
-package src.metier;
+package metier;
 
 import java.io.File;
 import java.util.Scanner;
 
+import metier.*;
+
 public class LireFichier 
 {
-	private AnalyseFichier analyseFichier;
-	public LireFichier(String chemin, AnalyseFichier analyseFichier)
+	public static void LireFichier(String chemin, AnalyseFichier analyseFichier)
 	{
-		this.analyseFichier = analyseFichier;
 		if (chemin == null || chemin.isEmpty()) 
 		{
 			throw new IllegalArgumentException("Le chemin ne peut pas être null");
@@ -19,7 +19,7 @@ public class LireFichier
 			while (scanner.hasNextLine()) 
 			{
 				String ligne = scanner.nextLine();
-				this.analyseFichier.analyserLigne(ligne);
+				analyseFichier.analyserLigne(ligne);
 			}
 		}
 		catch (Exception e)
