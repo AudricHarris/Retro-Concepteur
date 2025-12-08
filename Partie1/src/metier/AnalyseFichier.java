@@ -63,15 +63,20 @@ public class AnalyseFichier
 		}
 	}
 
+
 	public void analyserLigne(String ligne)
 	{
 		String[] tabString = ligne.split(" ");
+		if(tabString.length>4)
+			if(tabString[3].contains("main"))
+				return;
 		
 		if (this.niveau == 1) this.determinerPropriete(ligne);
 
 		if (tabString[tabString.length-1].trim().equals("{")) this.niveau++;
 		if (tabString[tabString.length-1].trim().equals("}")) this.niveau--;
 	}
+
 	
 	public void determinerPropriete(String ligne)
 	{
@@ -93,6 +98,7 @@ public class AnalyseFichier
 			System.out.println("Attribut : " + ligne);
 		}
 	}
+	
 
 	public ArrayList<Classe> getLstClasses()
 	{
