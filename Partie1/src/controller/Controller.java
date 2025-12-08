@@ -15,7 +15,7 @@ public class Controller
 		this.affichageCUI = affichageCUI;
 	}
 
-	public String get
+
 
 	
 }
