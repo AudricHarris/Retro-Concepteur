@@ -73,8 +73,10 @@ public class AnalyseFichier
 		
 		if (this.niveau == 1) this.determinerPropriete(ligne);
 
-		if (tabString[tabString.length-1].trim().equals("{")) this.niveau++;
-		if (tabString[tabString.length-1].trim().equals("}")) this.niveau--;
+		if (tabString[tabString.length-1].contains("{")) this.niveau++;
+		if (tabString[tabString.length-1].contains("}")) this.niveau--;
+		if (tabString[tabString.length-1].contains("/*")) this.niveau++;
+		if (tabString[tabString.length-1].contains("*/")) this.niveau--;
 	}
 
 	
