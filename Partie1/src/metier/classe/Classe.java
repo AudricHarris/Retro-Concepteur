@@ -25,6 +25,20 @@ public class Classe
 		if ( meth != null)
 			this.lstMethode.add(meth);
 	}
+
+	public String toString()
+	{
+		String sRet = "";
+
+		for (Attribut attribut : this.lstAttribut) 
+			sRet += attribut.toString() + "\n";
+		
+		for (Methode methode : this.lstMethode) 
+			sRet+= methode.toString();
+
+		return sRet;
+		
+	}
 	
 
 }

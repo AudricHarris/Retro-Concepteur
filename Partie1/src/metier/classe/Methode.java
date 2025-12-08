@@ -2,18 +2,21 @@ package metier.classe;
 
 import java.util.ArrayList;
 
-public record Methode(String methode, String visibilite, String type, ArrayList<Parametre> lstParam) 
+public record Methode(String visibilite,String methode, String type, ArrayList<Parametre> lstParam) 
 {
-
 
 	@Override
 	public String toString()
 	{
 		String sRet ="";
+		String nomMeth;
 
-		sRet += "methode : " + this.methode + "  visibilité: "  ;
+
+		sRet += "methode : " + String.format("%20s",this.methode) + "  visibilité: " ;
 		sRet += String.format("%10s", this.visibilite ) +  "    type de retour: ";
-		sRet += String.format("%10s", this.type) + "\nparamètres : ";
+
+		if (this.type.isEmpty()) 
+			sRet += String.format("%10s", this.type) + "\nparamètres : ";
 
 		int cpt=0;
 		if ( this.lstParam.isEmpty() )
