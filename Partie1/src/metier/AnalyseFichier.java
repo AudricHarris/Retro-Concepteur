@@ -30,6 +30,7 @@ public class AnalyseFichier
 
 			for (String file : allFiles)
 			{
+				System.out.println(file);
 				LireFichier.lireFichier(file, this);
 				this.niveau = 0;
 			}
@@ -52,7 +53,6 @@ public class AnalyseFichier
 			{
 				String currentFilePath = list[i].getAbsolutePath();
 				int lastDotIndex = currentFilePath.lastIndexOf('.');
-				System.out.println(currentFilePath);
 				if (currentFilePath.substring(lastDotIndex + 1).toLowerCase().equals("java"))
 					allFiles.add(currentFilePath);
 			}
@@ -66,25 +66,21 @@ public class AnalyseFichier
 
 	public void analyserLigne(String ligne)
 	{
-		String[] tabString = ligne.split(" ");
-		if(tabString.length>4)
-			if(tabString[3].contains("main"))
-				return;
-		
 		if (this.niveau == 1) this.determinerPropriete(ligne);
+		if (ligne.length() < 1) return;
 
-		if (tabString[tabString.length-1].contains("{")) this.niveau++;
-		if (tabString[tabString.length-1].contains("}")) this.niveau--;
-		if (tabString[tabString.length-1].contains("/*")) this.niveau++;
-		if (tabString[tabString.length-1].contains("*/")) this.niveau--;
+		if (ligne.contains("{")) this.niveau++;
+		if (ligne.contains("}")) this.niveau--;
 	}
 
 	
 	public void determinerPropriete(String ligne)
 	{
 		ligne = ligne.replace("\t", "");
+
 		if (ligne.length() <= 1 ) return;
 		if (ligne.substring(0, 1).equals("//")) return;
+		if (ligne.contains("main")) return;
 
 		String  visibilite = "public";
 		boolean isStatic   =    false;

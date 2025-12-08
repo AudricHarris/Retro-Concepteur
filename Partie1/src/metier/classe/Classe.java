@@ -4,11 +4,13 @@ import java.util.ArrayList;
 
 public class Classe 
 {
+	private String nom;
 	private ArrayList<Attribut> lstAttribut;
 	private ArrayList<Methode> lstMethode;
 
-	public Classe() 
+	public Classe(String nom) 
 	{
+		this.nom = nom;
 		this.lstAttribut = new ArrayList<Attribut>();
 		this.lstMethode = new ArrayList<Methode>();
 	}
