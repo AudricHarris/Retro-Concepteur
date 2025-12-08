@@ -14,7 +14,7 @@ import metier.classe.*;
 public class AnalyseFichier 
 {
 	private ArrayList<Classe> lstClass;
-	//private Classe classCourante;
+	private Classe classCourante;
 	private int niveau;
 
 	public AnalyseFichier(String repo)
@@ -31,6 +31,7 @@ public class AnalyseFichier
 			for (String file : allFiles)
 			{
 				LireFichier.lireFichier(file, this);
+				this.niveau = 0;
 			}
 		}
 		catch (Exception e)
@@ -38,6 +39,8 @@ public class AnalyseFichier
 			System.out.println("fichier non trouvé");
 		}
 	}
+
+
 
 	public static void listeRepertoire(File path, List<String> allFiles)
 	{
@@ -63,15 +66,32 @@ public class AnalyseFichier
 	public void analyserLigne(String ligne)
 	{
 		String[] tabString = ligne.split(" ");
-		System.out.println();
-		for (String s : tabString)
-		{
-			if (this.niveau == 1)
-				System.out.print(s.trim() + " ");
-		}
+		
+		if (this.niveau == 1) this.determinerPropriete(ligne);
 
 		if (tabString[tabString.length-1].trim().equals("{")) this.niveau++;
 		if (tabString[tabString.length-1].trim().equals("}")) this.niveau--;
+	}
+	
+	public void determinerPropriete(String ligne)
+	{
+		ligne = ligne.replace("\t", "");
+		if (ligne.length() <= 1 ) return;
+		if (ligne.substring(0, 1).equals("//")) return;
+
+		String  visibilite = "public";
+		boolean isStatic   =    false;
+		String  type       =   "void";
+		String  nom        =       "";
+
+		if (ligne.contains("(") || ligne.contains(")"))
+		{
+			System.out.println("Methode : "+ ligne );
+		}
+		else
+		{
+			System.out.println("Attribut : " + ligne);
+		}
 	}
 
 	public ArrayList<Classe> getLstClasses()
