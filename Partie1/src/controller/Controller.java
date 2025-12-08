@@ -12,7 +12,7 @@ public class Controller
 
 	public Controller() 
 	{
-		this.analyseFichier = new AnalyseFichier("/home/etudiant/dl240416/TP/s3/s3.01_dev_application/Retro-Concepteur/Partie1/src/metier/classe");
+		this.analyseFichier = new AnalyseFichier("/home/etudiant/ha241570/TP/s3/s3.01_dev_application/Retro-Concepteur/Partie1/src/controller");
 		this.affichageCUI = new AffichageCUI();
 
 	}

@@ -3,23 +3,24 @@ package metier;
 
 // Import package extern
 import java.io.File;
-
+import java.time.format.TextStyle;
 import java.util.ArrayList;
 import java.util.List;
 
 
 // Import package itern
-//import metier.classe.*;
+import metier.classe.*;
 
 public class AnalyseFichier 
 {
-	//private ArrayList<Classe> lstClass;
+	private ArrayList<Classe> lstClass;
 	//private Classe classCourante;
+	private int niveau;
 
 	public AnalyseFichier(String repo)
 	{
-		//this.lstClass = new ArrayList<Classe>();
-
+		this.lstClass = new ArrayList<Classe>();
+		this.niveau = 0;
 		ArrayList<String> allFiles = new ArrayList<String>();
 		try
 		{
@@ -47,7 +48,10 @@ public class AnalyseFichier
 			for (int i = 0; i < list.length; i++)
 			{
 				String currentFilePath = list[i].getAbsolutePath();
-				allFiles.add(currentFilePath);
+				int lastDotIndex = currentFilePath.lastIndexOf('.');
+				System.out.println(currentFilePath);
+				if (currentFilePath.substring(lastDotIndex + 1).toLowerCase().equals("java"))
+					allFiles.add(currentFilePath);
 			}
 		}
 		else
@@ -58,7 +62,21 @@ public class AnalyseFichier
 
 	public void analyserLigne(String ligne)
 	{
-		System.out.println(ligne);
+		String[] tabString = ligne.split(" ");
+		System.out.println();
+		for (String s : tabString)
+		{
+			if (this.niveau == 1)
+				System.out.print(s.trim() + " ");
+		}
+
+		if (tabString[tabString.length-1].trim().equals("{")) this.niveau++;
+		if (tabString[tabString.length-1].trim().equals("}")) this.niveau--;
+	}
+
+	public ArrayList<Classe> getLstClasses()
+	{
+		return this.lstClass;
 	}
 
 
