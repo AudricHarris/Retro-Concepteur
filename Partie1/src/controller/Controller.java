@@ -12,7 +12,7 @@ public class Controller
 
 	public Controller() 
 	{
-		this.analyseFichier = new AnalyseFichier("/home/etudiant/ha241570/TP/s2/s2.02_exploration_algo/SAE");
+		this.analyseFichier = new AnalyseFichier("C:/Users/audri/Documents/School/sae3.01/Retro-Concepteur/Partie1/src/metier/classe");
 		this.affichageCUI = new AffichageCUI();
 
 	}
