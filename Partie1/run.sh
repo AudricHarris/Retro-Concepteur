@@ -5,7 +5,7 @@ javac "@Compile.list" -d ./bin
 if [ $? -eq 0 ]; then
     echo "Exécution du programme..."
     echo
-    java -cp ./bin controller.Controler
+    java -cp ./bin controller.Controller
 else
     echo "Erreur de compilation!"
     exit 1

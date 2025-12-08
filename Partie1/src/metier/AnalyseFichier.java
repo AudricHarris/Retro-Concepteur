@@ -28,7 +28,7 @@ public class AnalyseFichier
 		{
 			File f = new File(repo);
 
-			listeRepertoire(f, allFiles);
+			AnalyseFichier.listeRepertoire(f, allFiles);
 
 			FileReader fr;
 			BufferedReader br;
