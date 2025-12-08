@@ -1,9 +1,9 @@
-metier/AnalyseFichier.java
-metier/LireFichier.java
+src/metier/AnalyseFichier.java
+src/metier/LireFichier.java
 
-metier/classes/Attribut.java
-metier/classes/Classe.java
+src/metier/classe/Attribut.java
+src/metier/classe/Classe.java
 
-vue/AffichageCUI.java
+src/vue/AffichageCUI.java
 
-controller/Controler.java
+src/controller/Controller.java
