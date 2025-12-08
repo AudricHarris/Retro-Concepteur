@@ -66,9 +66,5 @@ public class AnalyseFichier
 		System.out.println(ligne);
 	}
 
-	public static void main(String[] args)
-	{
-		System.out.println("Test");
-		new AnalyseFichier("/home/etudiant/ha241570/TP/Backup_dossier_exam/G1_Harris_Audric-ha241570-20251128-2351/exercice4");
-	}
+
 }
