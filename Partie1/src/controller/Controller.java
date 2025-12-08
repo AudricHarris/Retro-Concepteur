@@ -12,7 +12,7 @@ public class Controller
 
 	public Controller() 
 	{
-		this.analyseFichier = new AnalyseFichier("/home/etudiant/ll240582/TP/s1/r1.01_init_dev/tp10/exercice1");
+		this.analyseFichier = new AnalyseFichier("/home/etudiant/bp233262/TP/s1/r1.01_init_dev/tp10/exo2");
 		this.affichageCUI = new AffichageCUI();
 
 	}

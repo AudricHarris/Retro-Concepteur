@@ -8,6 +8,7 @@ public class LireFichier
 {
 	public static void lireFichier(String chemin, AnalyseFichier analyseFichier)
 	{
+		boolean estCommentaire = false;
 		if (chemin == null || chemin.isEmpty()) 
 		{
 			throw new IllegalArgumentException("Le chemin ne peut pas être null");
@@ -18,7 +19,18 @@ public class LireFichier
 			while (scanner.hasNextLine()) 
 			{
 				String ligne = scanner.nextLine();
-				analyseFichier.analyserLigne(ligne);
+				if (ligne.replace("\t", " ").trim().startsWith("//") || ligne.replace("\t", " ").trim().startsWith("/*")) 
+					estCommentaire = true;
+				
+				if (!estCommentaire)
+					analyseFichier.analyserLigne(ligne);
+
+				if (ligne.replace("\t", " ").trim().startsWith("//")) 
+					estCommentaire = false;
+
+				if (ligne.trim().endsWith("*/")) 
+					estCommentaire = false;
+
 			}
 			scanner.close();
 		}
