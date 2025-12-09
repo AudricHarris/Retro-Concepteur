@@ -147,7 +147,7 @@ public class AnalyseFichier
 			nom = type;
 		}
 
-		if (ligne.contains("("))
+		if (ligne.contains("(") && !ligne.contains("="))
 		{
 			int start = ligne.indexOf('(') + 1;
 			int end = ligne.indexOf(')');
