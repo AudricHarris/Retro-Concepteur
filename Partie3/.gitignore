@@ -1,0 +1,22 @@
+# Fichiers compilés Java
+*.class
+
+# Fichiers de configuration d'IDE
+.idea/
+*.iml
+*.iws
+*.ipr
+.settings/
+.project
+.classpath
+
+# Fichiers système
+.DS_Store
+Thumbs.db
+
+# Fichiers de sortie de build/
+target/
+bin/
+
+# Fichiers de logs
+*.log
