@@ -86,6 +86,9 @@ public class AnalyseFichier
 
 		String trimmed = ligne.trim();
 		if (trimmed.isEmpty() || trimmed.startsWith("//")) return;
+		
+		if (trimmed.contains("{")) this.niveau++;
+		if (trimmed.contains("}")) this.niveau--;
 
 		if (this.niveau == 0 && trimmed.contains("class ") && trimmed.contains("{"))
 		{
@@ -104,10 +107,8 @@ public class AnalyseFichier
 				}
 			}
 		}
-		if (this.niveau == 1) this.extraireMethodeAttribut(trimmed);
 
-		if (trimmed.contains("{")) this.niveau++;
-		if (trimmed.contains("}")) this.niveau--;
+		if (this.niveau == 1) this.extraireMethodeAttribut(trimmed);
 	}
 
 	// traite la ligne et determine si çela est une methode ou non
@@ -138,6 +139,8 @@ public class AnalyseFichier
 			nom = type;
 		else
 			nom = parts[i++];
+
+		if (nom.length()<=2) return;
 
 		if (type == this.classCourante.getNom()) 
 		{
