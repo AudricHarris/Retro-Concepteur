@@ -102,7 +102,8 @@ public class AnalyseFichier
 	// names.
 	// Constructors now correctly identified and parsed even with parameters.
 	//TODO: Rendre propre le code;
-	public void extraireMethodeAttribut(String ligne) {
+	public void extraireMethodeAttribut(String ligne)
+	{
 
 		String trimmed = ligne.trim();
 		if (trimmed.isEmpty())
@@ -166,6 +167,7 @@ public class AnalyseFichier
 					if (tp.length >= 2) {
 						String pnom = tp[tp.length - 1].trim();
 						StringBuilder ptype = new StringBuilder();
+						// TODO : Le coluege à fait de la merde
 						for (int k = 0; k < tp.length - 1; k++) {
 							if (k > 0)
 								ptype.append(" ");
