@@ -1,16 +1,12 @@
 package metier;
-
 // Import package extern
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 // Import package itern
 import metier.classe.*;
-
-// TODO : Remplacer Le nom de determinerPropriete pour un nom plus representatif
-
 /*
- * Le corps du metier : 
+ * Le corps du metier :
  * - Permet la lecture d'un dossier et la creation de classe
  * Elle comporte une methode traitement de ligne et determinerPropriete
  * qui créer les methodes et attribut d'une classe
@@ -20,7 +16,6 @@ public class AnalyseFichier
 	private ArrayList<Classe> lstClass;
 	private Classe classCourante;
 	private int niveau;
-
 	// Instancier les variables + lire le repo et tout les fichier du repo en .java
 	// TODO : Remplacer classCourante par this.lstClass.getLast()
 	public AnalyseFichier(String repo)
@@ -44,13 +39,11 @@ public class AnalyseFichier
 		{
 			System.out.println("fichier non trouvé");
 		}
-
 		for (Classe c : this.lstClass)
 		{
 			System.out.println(c);
 		}
 	}
-
 	// methode permettant la lecture d'un repertoire pour avoir tout ces enfants du repertoire
 	// TODO: Re-organiser les static pour qu'il soit dans le bon ordre de lecture en java
 	public static void listeRepertoire(File path, List<String> allFiles)
@@ -78,18 +71,14 @@ public class AnalyseFichier
 			System.err.println(path + " : Erreur de lecture.");
 		}
 	}
-
 	// Analyse la ligne et mets a jour le positionement du niveau
 	public void analyserLigne(String ligne)
 	{
 		if (ligne.length() < 1) return;
-
 		String trimmed = ligne.trim();
 		if (trimmed.isEmpty() || trimmed.startsWith("//")) return;
-		
 		if (trimmed.contains("{")) this.niveau++;
 		if (trimmed.contains("}")) this.niveau--;
-
 		if (this.niveau == 0 && trimmed.contains("class ") && trimmed.contains("{"))
 		{
 			int classIdx = trimmed.indexOf("class ");
@@ -100,22 +89,21 @@ public class AnalyseFichier
 				{
 					String afterClass = trimmed.substring(classIdx + 6, end).trim();
 					String[] words = afterClass.split("\\s+");
-					if (words.length > 0)
-					{
-						String nom = words[0];
-					}
 				}
 			}
 		}
-
 		if (this.niveau == 1) this.extraireMethodeAttribut(trimmed);
 	}
-
 	// traite la ligne et determine si çela est une methode ou non
+	// Fixed: Improved parsing to handle method/constructor names with attached parentheses,
+	// parameter types with spaces/generics/arrays, and trims semicolons from field names.
+	// Constructors now correctly identified and parsed even with parameters.
 	public void extraireMethodeAttribut(String ligne)
 	{
 		if (this.classCourante == null) return;
-		String[] parts = ligne.split("\\s+");
+		String trimmed = ligne.trim();
+		if (trimmed.isEmpty()) return;
+		String[] parts = trimmed.split("\\s+");
 		int i = 0;
 		String visibilite = "";
 		boolean isStatic = false;
@@ -130,30 +118,42 @@ public class AnalyseFichier
 			else if (parts[i].equals("final")) constante = true;
 			i++;
 		}
-		
 		if (i >= parts.length) return;
-		String type = parts[i++];
-		
-		String nom;
-		if (i >= parts.length)
-			nom = type;
-		else
-			nom = parts[i++];
-
-		if (nom.length()<=2) return;
-
-		if (type == this.classCourante.getNom()) 
+		String typePart = parts[i++];
+		String nom = "";
+		if (typePart.contains("("))
 		{
-			nom = type;
+			// Likely constructor: typePart contains the name followed by (
+			int parenIdx = typePart.indexOf('(');
+			nom = typePart.substring(0, parenIdx);
+			typePart = "";
 		}
-
+		else
+		{
+			// Normal case
+			if (i >= parts.length)
+			{
+				nom = typePart;
+			}
+			else
+			{
+				nom = parts[i++];
+				int parenIdx = nom.indexOf('(');
+				if (parenIdx > 0)
+				{
+					nom = nom.substring(0, parenIdx);
+				}
+			}
+		}
+		if (nom.length() <= 2) return;
 		if (ligne.contains("(") && !ligne.contains("="))
 		{
 			int start = ligne.indexOf('(') + 1;
 			int end = ligne.indexOf(')');
-			String paramsStr = ligne.substring(start, end);
+			if (end < 0) end = ligne.length();
+			String paramsStr = ligne.substring(start, end).trim();
 			ArrayList<Parametre> lstParam = new ArrayList<Parametre>();
-			if (!paramsStr.trim().isEmpty())
+			if (!paramsStr.isEmpty())
 			{
 				String[] paramParts = paramsStr.split(",");
 				for (String pp : paramParts)
@@ -163,32 +163,44 @@ public class AnalyseFichier
 					String[] tp = pp.split("\\s+");
 					if (tp.length >= 2)
 					{
-						String ptype = tp[0];
-						String pnom = tp[1];
-						lstParam.add(new Parametre(pnom, ptype));
+						String pnom = tp[tp.length - 1].trim();
+						StringBuilder ptype = new StringBuilder();
+						for (int k = 0; k < tp.length - 1; k++)
+						{
+							if (k > 0) ptype.append(" ");
+							ptype.append(tp[k]);
+						}
+						lstParam.add(new Parametre(pnom, ptype.toString()));
 					}
 				}
 			}
-			System.out.println(nom);
-			this.classCourante.ajouterMethode(visibilite, nom, type, lstParam);
+			String returnType = typePart;
+			if (nom.equals(this.classCourante.getNom()))
+			{
+				returnType = nom; // Constructor
+			}
+			this.classCourante.ajouterMethode(visibilite, nom, returnType, lstParam);
 		}
 		else
 		{
-			this.classCourante.ajouterAttribut(nom, constante, type, visibilite, isStatic);
+			// Attribute
+			int semi = nom.indexOf(';');
+			if (semi >= 0 && semi < nom.length())
+			{
+				nom = nom.substring(0, semi);
+			}
+			this.classCourante.ajouterAttribut(nom, constante, typePart, visibilite, isStatic);
 		}
 	}
-
 	//TODO: deplacer les getters et faire des getters pour tout les variables (ça nous aidera si besoin)
 	public ArrayList<Classe> getLstClasses()
 	{
 		return new ArrayList<Classe>(this.lstClass);
 	}
-	
 	public Classe getClassCourante()
 	{
 		return this.classCourante;
 	}
-
 	public int getNiveau()
 	{
 		return this.niveau;
