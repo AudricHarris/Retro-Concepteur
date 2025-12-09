@@ -127,7 +127,6 @@ public class AnalyseFichier
 		
 		int cpt = 0;
 		// Passer les Modificateur
-		// TODO: optimiser la verification
 		while (cpt < parts.length && this.getModificateur(parts, cpt))
 			cpt++;
 
