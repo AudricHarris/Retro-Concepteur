@@ -7,21 +7,34 @@ import java.util.ArrayList;
  * Record methode stock le nom, visibilite, type, lstParam d'une classe
  * Elle aura aussi un toString custom
  */
-public record Methode(String visibilite,String methode, String type, ArrayList<Parametre> lstParam)
+public class Methode
 {
+	private String               visibilite;
+	private String               nom;
+	private String               type;
+	private ArrayList<Parametre> lstParam;
+
+	public Methode(String visibilite,String nom, String type, ArrayList<Parametre> lstParam)
+	{
+		this.visibilite = visibilite;
+		this.nom        = nom;
+		this.type       = type;
+		this.lstParam   = lstParam;
+	}
+
 	@Override
 	public String toString()
 	{
 
 		String sRet ="\n";
-		if (this.methode == this.type)
+		if (this.nom == this.type)
 		{
 			sRet += "methode : " + String.format("%-12s","Constructeur") + "	visibilité: " ;
 			sRet += String.format("%-10s", this.visibilite ) + "\nparamètres : \n";
 		}
 		else
 		{
-			sRet += "methode : " + String.format("%-12s",this.methode) + "	visibilité: " ;
+			sRet += "methode : " + String.format("%-12s",this.nom) + "	visibilité: " ;
 			sRet += String.format("%-10s", this.visibilite ) + " type de retour: ";
 			sRet += String.format("%-10s", this.type) + "\nparamètres : \n";
 		}	
@@ -32,7 +45,7 @@ public record Methode(String visibilite,String methode, String type, ArrayList<P
 			sRet += "aucun\n\n";
 		else
 			for ( Parametre param : this.lstParam )
-				sRet += "	p" + (++cpt) + ": " + String.format("%-10s", param.nom()) + " type:" + param.type() + "\n\n";
+				sRet += "	p" + (++cpt) + ": " + String.format("%-10s", param.getNom()) + " type:" + param.getType() + "\n\n";
 	
 		return sRet;
 	}

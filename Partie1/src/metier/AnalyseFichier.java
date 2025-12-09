@@ -5,24 +5,27 @@ package metier;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Scanner;
 
 // Import package itern
 import metier.classe.*;
 
-/*
- * Le corps du metier :
- * - Permet la lecture d'un dossier et la creation de classe
- * Elle comporte une methode traitement de ligne et determinerPropriete
- * qui créer les methodes et attribut d'une classe
- *
- * Niveau determine la profondeur dans la classe
+/**
+ * - Permet la lecture d'un dossier et la creation de classe.
+ *   Une fois crée nous ajoutons les methode et attribut à cette classe
  */
 public class AnalyseFichier
 {
+	/**Stocke les classes sous format d'array list */
 	private ArrayList<Classe> lstClass;
-	private int				 niveau;
 
-	//Constructeur qui initialize la lecture
+	/**Montre le niveau courant dans la lecture d'un fichier*/
+	private int               niveau;
+
+	/**
+	 * Construit l'instance AnalyseFichier et parcours le repo
+	 * @param repo chemin du repositoire avec programme java
+	 */
 	public AnalyseFichier(String repo)
 	{
 		this.lstClass = new ArrayList<Classe>();
@@ -47,79 +50,109 @@ public class AnalyseFichier
 		}
 		catch (Exception e) { System.out.println("fichier non trouvé"); }
 
+		// Affichage Temporaire pour Partie 1
 		for (Classe c : this.lstClass) System.out.println(c);
 	}
 
-	// Getters
+	//---------------------------------------//
+	//              Getters                  //
+	//---------------------------------------//
+
+	/**
+	 * Renvoie la list des classes
+	 * @return ArrayList ArrayList de tout les classe qu'on a parcourus
+	 */
 	public ArrayList<Classe> getLstClasses() {return new ArrayList<Classe>(this.lstClass);}
-	public int			   getNiveau	() {return this.niveau;}
-	
-	public boolean getModificateur(String[] parts, int cpt)
+
+	/**
+	 * Renvoie le niveau actuelle (profondeur de lecture)
+	 * @return nbNiveau le niveau actuelle
+	 */
+	public int getNiveau    () {return this.niveau;}
+
+	/**
+	 * Determine si le string est un Modificateur
+	 * @param text fraction d'une ligne
+	 * @return boolean si le text contient un Modificateur
+	 */
+	public boolean getModificateur(String text)
 	{
-		return (parts[cpt].equals("public")    || parts[cpt].equals("private") || 
-		        parts[cpt].equals("protected") || parts[cpt].equals("static")  || 
-		        parts[cpt].equals("final"));
+		return (text.equals("public")    || text.equals("private") || 
+				text.equals("protected") || text.equals("static")  || 
+				text.equals("final"));
 	}
 
-	// Methode Instance
+	//---------------------------------------//
+	//         methode instance              //
+	//---------------------------------------//
 	
-	// Analyse la ligne et mets a jour le positionement du niveau
+	/**
+	 * Mets à jour le niveau si des accolades sont present
+	 * Determine si la ligne pourait posseder des methodes ou attributs
+	 * @param ligne une ligne de code
+	 */
 	public void analyserLigne(String ligne)
 	{
 		String trimmed = ligne.trim();
 		
-		// Determiner si commentaire ou si nécessaire de traiter
+		// Determiner si commentaire ou si nÃ©cessaire de traiter
 		if (ligne.length() < 1) return;
 		if (trimmed.isEmpty() || trimmed.startsWith("//")) return;
 		
-		// Metre à jour le niveau
+		// Metre Ã  jour le niveau
 		if (trimmed.contains("{")) this.niveau++;
 		if (trimmed.contains("}")) this.niveau--;
 
 		if (this.niveau == 1) this.extraireMethodeAttribut(trimmed);
 	}
 
-	// traite la ligne et determine si çela est une methode ou non
+	/**
+	 * Traite la ligne et Instancie les méthode ou attribut de cette ligne
+	 * @param ligne une ligne de codei à information utile
+	 */
 	public void extraireMethodeAttribut(String ligne)
 	{
 		String trimmed = ligne.trim();
 		if (trimmed.isEmpty()) return;
 
-		String[] parts = trimmed.split("\\s+");
-
 		String visibility = "";
 		boolean isStatic = false;
 		boolean isFinal = false;
 
-		// Modificateur de l'attribut || methode
-		for (int cpt = 0; cpt < parts.length; cpt++)
+		Scanner sc = new Scanner(ligne);
+		sc.useDelimiter("\\s+"); // tout espace qui ce rÃ©pÃ¨te une ou plusieur fois
+
+		while (sc.hasNext())
 		{
-			switch (parts[cpt])
+			String token = sc.next();
+			switch (token)
 			{
-				case "public": 
-				case "private": 
+				case "public":
+				case "private":
 				case "protected":
-					if (visibility.isEmpty()) visibility = parts[cpt];
+					if (visibility.isEmpty()) visibility = token;
 					break;
 				case "static": isStatic = true; break;
 				case "final":  isFinal  = true; break;
-				default: 
-					cpt = parts.length; 
-					continue;
+				default:
+					break;
 			}
 		}
 
-		parts = trimmed.split("\\s+"); // petit reset
-		
-		int cpt = 0;
-		// Passer les Modificateur
-		while (cpt < parts.length && this.getModificateur(parts, cpt))
-			cpt++;
+		sc = new Scanner(ligne);
+		sc.useDelimiter("\\s+"); // tout espace qui ce rÃ©pÃ¨te une ou plusieur fois
 
-		if (cpt >= parts.length) return;
+		String text = "";
+		while (sc.hasNext())
+		{
+			text = sc.next();
+			if (!this.getModificateur(text)) break;
+		}
 
-		String type = parts[cpt++];
-		String name;
+		if (!sc.hasNext() && this.getModificateur(text)) return;
+
+		String type = text;
+		String name = sc.hasNext() ? sc.next() : type;
 
 		if (type.contains("("))
 		{
@@ -128,20 +161,16 @@ public class AnalyseFichier
 			type = "";
 		}
 		else
-		{
-			if (cpt < parts.length) name = parts[cpt].split("\\(")[0];
-			else				  name = type;
-		}
+			name = name.split("\\(")[0];
 
 		if (name.length() <= 2) return;
 
 		Classe c = lstClass.getLast();
 
-		// Detect method || attribut
 		if (trimmed.contains("(") && !trimmed.contains("="))
 		{
 			int start = trimmed.indexOf('(') + 1;
-			int end = trimmed.indexOf(')');
+			int end   = trimmed.indexOf(')');
 			if (end < 0) end = trimmed.length();
 
 			String paramStr = trimmed.substring(start, end).trim();
@@ -149,35 +178,49 @@ public class AnalyseFichier
 
 			if (!paramStr.isEmpty())
 			{
-				for (String p : paramStr.split(","))
+				Scanner param = new Scanner(paramStr);
+				param.useDelimiter(",");
+				while (param.hasNext())
 				{
-					String[] tp = p.trim().split("\\s+");
-					if (tp.length >= 2)
+					String p = param.next().trim();
+					Scanner sp = new Scanner(p);
+					sp.useDelimiter("\\s+");
+	
+					ArrayList<String> parts = new ArrayList<>();
+					while (sp.hasNext()) parts.add(sp.next());
+
+					if (parts.size() >= 2)
 					{
-						String pName = tp[tp.length - 1];
-						String pType = String.join(" ", java.util.Arrays.copyOf(tp, tp.length - 1));
+						String pName = parts.get(parts.size() - 1);
+						String pType = String.join(" ", parts.subList(0, parts.size() - 1));
 						params.add(new Parametre(pName, pType));
 					}
 				}
 			}
 
 			String returnType = type;
-			if (name.equals(c.getNom())) returnType = name; // constructeur
+			if (name.equals(c.getNom())) returnType = name;
 
 			c.ajouterMethode(visibility, name, returnType, params);
 		}
 		else
 		{
+			if (name.equals(type)) return;
+
 			name = name.replace(";", "");
 			c.ajouterAttribut(name, isFinal, type, visibility, isStatic);
 		}
 	}
 
 
-	// Methode objet
+	//---------------------------------------//
+	//          methode static               //
+	//---------------------------------------//
 
-	/* 
+	/** 
 	 * Ajoute tout les fichier java dans l'array list fournit
+	 * @param path chemin du repertoire
+	 * @param allFiles arrayListe vide qu'on va remplir avec les chemins des .java
 	 * */
 	public static void listeRepertoire(File path, List<String> allFiles)
 	{
@@ -200,5 +243,8 @@ public class AnalyseFichier
 				}
 			}
 		}
+
 	}
+
 }
+

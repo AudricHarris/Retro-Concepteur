@@ -5,9 +5,24 @@ package metier.classe;
  * Record Attribut est une instance qui permet de stocker les attribut d'un classe
  * Elle contient plus paramètres comme type, visibilite, isStatic, son nom et un num
  */
-public record Attribut(int num, String nom, boolean constante, String type, String visibilite, boolean isStatic) 
+public class Attribut
 {
+	private int     num;
+	private String  nom;
+	private boolean constante;
+	private String  type;
+	private String  visibilite;
+	private boolean isStatic;
 
+	public Attribut(int num, String nom, boolean constante, String type, String visibilite, boolean isStatic)
+	{
+		this.num        = num;
+		this.nom        = nom;
+		this.constante  = constante;
+		this.type       = type;
+		this.visibilite = visibilite;
+		this.isStatic   = isStatic;
+	}
 
 	@Override
 	public String toString()
