@@ -16,12 +16,12 @@ public record Methode(String visibilite,String methode, String type, ArrayList<P
 		String sRet ="\n";
 		if (this.methode == this.type)
 		{
-			sRet += "methode : " + String.format("%-12s","Constructeur") + "	visibilité: " ;
+			sRet += "methode : " + String.format("%-20s","Constructor") + "	visibilité: " ;
 			sRet += String.format("%-10s", this.visibilite ) + "\nparamètres : \n";
 		}
 		else
 		{
-			sRet += "methode : " + String.format("%-12s",this.methode) + "	visibilité: " ;
+			sRet += "methode : " + String.format("%-20s",this.methode) + "	visibilité: " ;
 			sRet += String.format("%-10s", this.visibilite ) + " type de retour: ";
 			sRet += String.format("%-10s", this.type) + "\nparamètres : \n";
 		}	
