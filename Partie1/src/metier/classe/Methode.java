@@ -13,7 +13,7 @@ public record Methode(String visibilite,String methode, String type, ArrayList<P
 	public String toString()
 	{
 
-		String sRet ="";
+		String sRet ="\n";
 		if (this.methode == this.type)
 		{
 			sRet += "methode : " + String.format("%-20s","Constructor") + "	visibilité: " ;
