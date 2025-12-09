@@ -11,7 +11,8 @@ public record Methode(String visibilite,String methode, String type, ArrayList<P
 	@Override
 	public String toString()
 	{
-		String sRet ="";
+		String sRet ="\n";
+
 		sRet += "methode : " + String.format("%-20s",this.methode) + "	visibilité: " ;
 		sRet += String.format("%-10s", this.visibilite ) + " type de retour: ";
 		sRet += String.format("%-10s", this.type) + "\nparamètres : \n";

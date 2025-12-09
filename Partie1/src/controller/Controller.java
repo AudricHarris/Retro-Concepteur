@@ -16,7 +16,7 @@ public class Controller
 
 	public Controller() 
 	{
-		this.analyseFichier = new AnalyseFichier("/home/etudiant/ha241570/TP/s2/r2.02_ihm/tp6/Exercice/Exercice4");
+		this.analyseFichier = new AnalyseFichier("/home/etudiant/ll240582/TP/s2/s2.01_dev_application/repo/sae2125/Groupe8-SAE125/source/ihm/");
 		this.affichageCUI = new AffichageCUI();
 
 	}
