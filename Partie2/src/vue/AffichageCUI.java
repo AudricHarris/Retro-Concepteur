@@ -25,24 +25,28 @@ public class AffichageCUI
 			{
 				if ( att.constante() )
 				{
-					sRet += att.visibilite() + " " + att.nom() + " :" + att.type()+ "\n";
+					sRet += AffichageCUI.getSigneVisibilite(att.visibilite()) + " " + att.nom() + " :" + att.type()+ "\n";
 				}
 			}
 			if ( classe.getNbConstante() > 0 )
+			{
 				sRet += LIGNE + "\n";
+				System.out.println(classe.getNbConstante());
+			}	
+				
 
 			for ( Attribut att : classe.getLstAttribut() )
 			{
 				if ( !att.constante() )
 				{
-					sRet += att.visibilite() + " " + att.nom() + " :" + att.type() + "\n";
+					sRet += AffichageCUI.getSigneVisibilite(att.visibilite()) + " " + att.nom() + " :" + att.type() + "\n";
 				}
 			}
 			sRet += LIGNE + "\n";
 
 			for ( Methode meth : classe.getLstMethode() )
 			{
-				sRet += meth.visibilite() + " " + meth.methode() + "(";
+				sRet += AffichageCUI.getSigneVisibilite(meth.visibilite()) + " " + meth.methode() + "(";
 				for ( Parametre p : meth.lstParam() )
 				{
 					sRet += p.nom() + ":" + p.type() + ",";
@@ -50,12 +54,26 @@ public class AffichageCUI
 				if ( meth.lstParam().size() > 0 )
 					sRet = sRet.substring(0, sRet.length()-1);
 				sRet += ")" + "\t" + ":" + meth.type() + "\n";				
-			}	
-			
+			}
+			sRet += LIGNE + "\n";
 		}
-		sRet += LIGNE;
+		
 
 		return sRet;
 		
+	}
+
+	private static char getSigneVisibilite(String visibilite)
+	{
+		switch (visibilite) 
+		{
+			case "public": return '+';
+
+			case "private" : return '-';
+
+			case "protected" : return '#'; 
+		
+			default: return '~';
+		}
 	}
 }	
