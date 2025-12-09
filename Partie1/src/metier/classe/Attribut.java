@@ -17,7 +17,7 @@ public record Attribut(int num, String nom, boolean constante, String type, Stri
 		sRet += "attribut : " + this.num + "	nom: "  ;
 		sRet += String.format("%-14s", this.nom ) +  "  type : ";
 		sRet += String.format("%-14s", this.type) + "  visibilité : ";
-		sRet += String.format("%10s", this.visibilite) + "  portée : ";
+		sRet += String.format("%-10s", this.visibilite) + "  portée : ";
 
 		if (!this.isStatic ) 
 			sRet += String.format("%9s", "instance");
