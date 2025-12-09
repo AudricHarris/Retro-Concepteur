@@ -166,6 +166,6 @@ public class AnalyseFichier
 	//TODO: deplacer les getters et faire des getters pour tout les variables (ça nous aidera si besoin)
     public ArrayList<Classe> getLstClasses()
     {
-        return this.lstClass;
+        return new ArrayList<Classe>(this.lstClass);
     }
 }
