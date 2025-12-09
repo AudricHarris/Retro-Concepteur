@@ -77,15 +77,20 @@ public class AnalyseFichier
 		String trimmed = ligne.trim();
 		if (trimmed.isEmpty() || trimmed.startsWith("//"))
 			return;
+		
 		if (trimmed.contains("{"))
 			this.niveau++;
 		if (trimmed.contains("}"))
 			this.niveau--;
-		if (this.niveau == 0 && trimmed.contains("class ") && trimmed.contains("{")) {
+
+		if (this.niveau == 0 && trimmed.contains("class ") && trimmed.contains("{")) 
+		{
 			int classIdx = trimmed.indexOf("class ");
-			if (classIdx >= 0) {
+			if (classIdx >= 0) 
+			{
 				int end = trimmed.indexOf("{", classIdx);
-				if (end > 0) {
+				if (end > 0) 
+				{
 					String afterClass = trimmed.substring(classIdx + 6, end).trim();
 					String[] words = afterClass.split("\\s+");
 				}
@@ -117,58 +122,70 @@ public class AnalyseFichier
 		Classe classCourante = this.lstClass.getLast();
 
 		while (i < parts.length && (parts[i].equals("public") || parts[i].equals("private")
-				|| parts[i].equals("protected") || parts[i].equals("static") || parts[i].equals("final"))) {
-			if (parts[i].equals("public") || parts[i].equals("private") || parts[i].equals("protected")) {
-				if (visibilite.isEmpty())
-					visibilite = parts[i];
-			} else if (parts[i].equals("static"))
-				isStatic = true;
+				|| parts[i].equals("protected") || parts[i].equals("static") || parts[i].equals("final"))) 
+		{
+			if (parts[i].equals("public") || parts[i].equals("private") || parts[i].equals("protected")) 
+			{
+					if (visibilite.isEmpty())
+						visibilite = parts[i];
+			} 
+			else if (parts[i].equals("static"))
+					isStatic = true;
 			else if (parts[i].equals("final"))
-				constante = true;
+					constante = true;
 			i++;
 		}
 		if (i >= parts.length)
 			return;
 		String typePart = parts[i++];
 		String nom = "";
-		if (typePart.contains("(")) {
-			// Likely constructor: typePart contains the name followed by (
+		if (typePart.contains("(")) 
+		{
 			int parenIdx = typePart.indexOf('(');
 			nom = typePart.substring(0, parenIdx);
 			typePart = "";
-		} else {
+		} 
+		else 
+		{
 			// Normal case
-			if (i >= parts.length) {
+			if (i >= parts.length) 
+			{
 				nom = typePart;
-			} else {
+			} else 
+			{
 				nom = parts[i++];
 				int parenIdx = nom.indexOf('(');
-				if (parenIdx > 0) {
+				if (parenIdx > 0) 
 					nom = nom.substring(0, parenIdx);
-				}
+				
 			}
 		}
 		if (nom.length() <= 2)
 			return;
-		if (ligne.contains("(") && !ligne.contains("=")) {
+		if (ligne.contains("(") && !ligne.contains("=")) 
+		{
 			int start = ligne.indexOf('(') + 1;
 			int end = ligne.indexOf(')');
 			if (end < 0)
 				end = ligne.length();
 			String paramsStr = ligne.substring(start, end).trim();
 			ArrayList<Parametre> lstParam = new ArrayList<Parametre>();
-			if (!paramsStr.isEmpty()) {
+			if (!paramsStr.isEmpty()) 
+			{
 				String[] paramParts = paramsStr.split(",");
-				for (String pp : paramParts) {
+				for (String pp : paramParts) 
+				{
 					pp = pp.trim();
 					if (pp.isEmpty())
 						continue;
 					String[] tp = pp.split("\\s+");
-					if (tp.length >= 2) {
+					if (tp.length >= 2) 
+					{
 						String pnom = tp[tp.length - 1].trim();
 						StringBuilder ptype = new StringBuilder();
 						// TODO : Le coluege à fait de la merde
-						for (int k = 0; k < tp.length - 1; k++) {
+						for (int k = 0; k < tp.length - 1; k++) 
+						{
 							if (k > 0)
 								ptype.append(" ");
 							ptype.append(tp[k]);
@@ -178,27 +195,24 @@ public class AnalyseFichier
 				}
 			}
 			String returnType = typePart;
-			if (nom.equals(classCourante.getNom())) {
+			if (nom.equals(classCourante.getNom())) 
 				returnType = nom; // Constructor
-			}
+			
 			classCourante.ajouterMethode(visibilite, nom, returnType, lstParam);
-		} else {
-			// Attribute
+		} 
+		else 
+		{
 			int semi = nom.indexOf(';');
-			if (semi >= 0 && semi < nom.length()) {
+			if (semi >= 0 && semi < nom.length()) 
 				nom = nom.substring(0, semi);
-			}
+			
 			classCourante.ajouterAttribut(nom, constante, typePart, visibilite, isStatic);
 		}
 	}
 
 	// TODO: deplacer les getters et faire des getters pour tout les variables (ça
 	// nous aidera si besoin)
-	public ArrayList<Classe> getLstClasses() {
-		return new ArrayList<Classe>(this.lstClass);
-	}
+	public ArrayList<Classe> getLstClasses() {return new ArrayList<Classe>(this.lstClass);}
 
-	public int getNiveau() {
-		return this.niveau;
-	}
+	public int getNiveau() {return this.niveau;}
 }
