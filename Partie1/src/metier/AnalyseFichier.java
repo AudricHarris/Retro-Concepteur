@@ -76,20 +76,6 @@ public class AnalyseFichier
 		if (trimmed.contains("{")) this.niveau++;
 		if (trimmed.contains("}")) this.niveau--;
 
-		if (this.niveau == 0 && trimmed.contains("class ") && trimmed.contains("{")) 
-		{
-			int classIdx = trimmed.indexOf("class ");
-			if (classIdx >= 0) 
-			{
-				int end = trimmed.indexOf("{", classIdx);
-				if (end > 0) 
-				{
-					String afterClass = trimmed.substring(classIdx + 6, end).trim();
-					String[] words = afterClass.split("\\s+");
-				}
-			}
-		}
-		
 		if (this.niveau == 1) this.extraireMethodeAttribut(trimmed);
 	}
 
