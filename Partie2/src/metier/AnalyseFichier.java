@@ -38,10 +38,6 @@ public class AnalyseFichier
 		{
 			System.out.println("fichier non trouvé");
 		}
-		for (Classe c : this.lstClass)
-		{
-			System.out.println(c);
-		}
 	}
 	// methode permettant la lecture d'un repertoire pour avoir tout ces enfants du repertoire
 	// TODO: Re-organiser les static pour qu'il soit dans le bon ordre de lecture en java

@@ -23,22 +23,13 @@ public class Controller
 
 	public void afficher ()
 	{
-		this.affichageCUI.afficherClasse(this.analyseFichier.getLstClasses());
+		System.out.println(this.affichageCUI.afficherClasse(this.analyseFichier.getLstClasses()));
 	}
 
 
 	public static void main(String[] args) 
 	{
-		new Controller();
-	}
-
-	private String nettoieNom(String nom)
-	{
-		int indexFin = nom.indexOf("(");
-		if ( indexFin > 0 )
-			nom = nom.substring(0, indexFin);
-			
-		return nom;
+		new Controller().afficher();
 	}
 
 }
