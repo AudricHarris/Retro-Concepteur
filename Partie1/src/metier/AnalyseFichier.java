@@ -84,11 +84,13 @@ public class AnalyseFichier
     public void analyserLigne(String ligne)
     {
         if (ligne.length() < 1) return;
+
         String trimmed = ligne.trim();
-        if (trimmed.isEmpty()) return;
-        if (trimmed.startsWith("//")) return;
+        if (trimmed.isEmpty() || trimmed.startsWith("//")) return;
+
         if (trimmed.contains("{")) this.niveau++;
         if (trimmed.contains("}")) this.niveau--;
+		
         if (this.niveau == 0 && trimmed.contains("class ") && trimmed.contains("{"))
         {
             int classIdx = trimmed.indexOf("class ");
