@@ -168,4 +168,14 @@ public class AnalyseFichier
     {
         return new ArrayList<Classe>(this.lstClass);
     }
+	
+	public Classe getClassCourante()
+	{
+		return this.classCourante;
+	}
+
+    public int getNiveau()
+	{
+		return this.niveau;
+	}
 }
