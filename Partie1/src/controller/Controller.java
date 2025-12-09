@@ -16,7 +16,7 @@ public class Controller
 
 	public Controller() 
 	{
-		this.analyseFichier = new AnalyseFichier("C:/Users/audri/Documents/School/Dev/SAE/s1.01_implementation_besoin_client-main/s1.01_implementation_besoin_client-main/s1.01_implementation/exercice3");
+		this.analyseFichier = new AnalyseFichier("/home/etudiant/ha241570/TP/s2/r2.02_ihm/tp6/Exercice/Exercice4");
 		this.affichageCUI = new AffichageCUI();
 
 	}
