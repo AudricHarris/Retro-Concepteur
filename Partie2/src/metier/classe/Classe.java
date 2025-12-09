@@ -55,6 +55,32 @@ public class Classe
 		return grand;
 	}
 
+	public int getPlusGrandeMethode()
+	{
+		int grand = 0;
+		
+		for (Methode meth : this.lstMethode) 
+		{
+			if (meth.methode().equals("main")) continue;
+
+			int tailleActuelle = meth.methode().length() + 2;
+
+			if (!meth.lstParam().isEmpty())
+			{
+				for (Parametre p : meth.lstParam())
+				{
+					tailleActuelle += p.nom().length() + 1 + p.type().length() + 1;
+				}
+				tailleActuelle--;
+			}
+
+			if(tailleActuelle > grand)
+				grand = tailleActuelle;
+		}
+
+		return grand;
+	}
+
 	public int getNbConstante()
 	{
 		int cpt=0;

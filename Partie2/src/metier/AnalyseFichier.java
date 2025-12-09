@@ -122,6 +122,7 @@ public class AnalyseFichier
 			} 
 			else if (parts[i].equals("static"))
 				isStatic = true;
+				
 			else if (parts[i].equals("final"))
 				constante = true;
 			i++;
