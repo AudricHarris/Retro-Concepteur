@@ -7,7 +7,7 @@ import java.util.ArrayList;
  * Record methode stock le nom, visibilite, type, lstParam d'une classe
  * Elle aura aussi un toString custom
  */
-public record Methode(String visibilite,String methode, String type, ArrayList<Parametre> lstParam)
+public record Methode(String visibilite,String methode, String type, ArrayList<Parametre> lstParam, boolean isStatic )
 {
 	@Override
 	public String toString()
@@ -17,7 +17,9 @@ public record Methode(String visibilite,String methode, String type, ArrayList<P
 		if (this.methode == this.type)
 		{
 			sRet += "methode : " + String.format("%-20s","Constructor") + "	visibilité: " ;
-			sRet += String.format("%-10s", this.visibilite ) + "\nparamètres : \n";
+			sRet += String.format("%-10s", this.visibilite ) + (this.isStatic ? " Statique" : "");			
+			sRet += "\nparamètres : \n";
+
 		}
 		else
 		{

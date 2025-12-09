@@ -9,6 +9,7 @@ public record Attribut(int num, String nom, boolean constante, String type, Stri
 {
 
 
+
 	@Override
 	public String toString()
 	{

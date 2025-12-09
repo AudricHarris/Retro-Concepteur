@@ -36,11 +36,23 @@ public class Classe
 	}
 
 	// Cette methode permet L'ajout de méthodes pour une classe
-	public void ajouterMethode(String visibilite, String nomMeth, String type, ArrayList<Parametre> lstParam)
+	public void ajouterMethode(String visibilite, String nomMeth, String type, ArrayList<Parametre> lstParam, boolean isStatic)
 	{
-		Methode meth = new Methode(visibilite, nomMeth, type, lstParam);
+		Methode meth = new Methode(visibilite, nomMeth, type, lstParam, isStatic);
 		if ( meth != null)
 			this.lstMethode.add(meth);
+	}
+
+	public int getPlusGrandAttribut()
+	{
+		int grand = 0;
+		
+		for (Attribut att : this.lstAttribut) 
+			if(att.nom().length() > grand)
+				grand = att.nom().length();
+		
+
+		return grand;
 	}
 
 	public int getNbConstante()
