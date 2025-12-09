@@ -22,6 +22,7 @@ public record Methode(String visibilite,String methode, String type, ArrayList<P
 		else
 			for ( Parametre param : this.lstParam )
 				sRet += "	p" + (++cpt) + ": " + String.format("%-10s", param.nom()) + " type:" + param.type() + "\n ";
-		
+
+		return sRet;
 	}
 }
