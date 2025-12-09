@@ -4,6 +4,10 @@ package controller;
 import metier.AnalyseFichier;
 import vue.AffichageCUI;
 
+/*
+ * Controller est la pont entre notre logique et l'IHM
+ * TODO : Ammeliorer le système de chemin de fichier pour eviter de le changer à chaque fois
+ */
 public class Controller 
 {
 	private AnalyseFichier analyseFichier;
@@ -12,7 +16,7 @@ public class Controller
 
 	public Controller() 
 	{
-		this.analyseFichier = new AnalyseFichier("C:/Users/audri/Documents/School/sae3.01/Retro-Concepteur/Partie1/src/metier/classe");
+		this.analyseFichier = new AnalyseFichier("C:/Users/audri/Documents/School/Dev/SAE/s1.01_implementation_besoin_client-main/s1.01_implementation_besoin_client-main/s1.01_implementation/exercice3");
 		this.affichageCUI = new AffichageCUI();
 
 	}

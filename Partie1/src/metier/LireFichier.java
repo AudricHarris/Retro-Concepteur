@@ -3,7 +3,11 @@ package metier;
 import java.io.File;
 import java.util.Scanner;
 
-
+/*
+ * Permet la lecture d'un fichier .java
+ * ensuite pour chaque ligne si non commentaire traiter la ligne avec la methode dans analyseFichier
+ * Risque d'être merge avec analyseFichier
+ */
 public class LireFichier 
 {
 	public static void lireFichier(String chemin, AnalyseFichier analyseFichier)

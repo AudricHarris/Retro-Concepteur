@@ -1,5 +1,10 @@
 package metier.classe;
 
+
+/*
+ * Record Attribut est une instance qui permet de stocker les attribut d'un classe
+ * Elle contient plus paramètres comme type, visibilite, isStatic, son nom et un num
+ */
 public record Attribut(int num, String nom, boolean constante, String type, String visibilite, boolean isStatic) 
 {
 
@@ -9,9 +14,9 @@ public record Attribut(int num, String nom, boolean constante, String type, Stri
 	{
 		String sRet ="";
 
-		sRet += "attribut : " + this.num + "  nom: "  ;
-		sRet += String.format("%10s", this.nom ) +  "  type : ";
-		sRet += String.format("%20s", this.type) + "  visibilité : ";
+		sRet += "attribut : " + this.num + "	nom: "  ;
+		sRet += String.format("%-14s", this.nom ) +  "  type : ";
+		sRet += String.format("%-14s", this.type) + "  visibilité : ";
 		sRet += String.format("%10s", this.visibilite) + "  portée : ";
 
 		if (!this.isStatic ) 
@@ -21,12 +26,7 @@ public record Attribut(int num, String nom, boolean constante, String type, Stri
 
 		sRet += this.constante ? "  constante" : "";
 
-		
-
-
-
 		return sRet;
-
 	}
 }
 
