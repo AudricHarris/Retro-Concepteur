@@ -34,9 +34,9 @@ public class AnalyseFichier
 			AnalyseFichier.listeRepertoire(f, allFiles);
 			for (String file : allFiles)
 			{
-				LireFichier.lireFichier(file, this);
-				this.classCourante = new Classe(file);
+				this.classCourante = new Classe(file.substring(file.lastIndexOf("/") + 1,file.lastIndexOf(".")));
 				this.lstClass.add(this.classCourante);
+				LireFichier.lireFichier(file, this);
 				this.niveau = 0;
 			}
 		}
@@ -87,9 +87,6 @@ public class AnalyseFichier
 		String trimmed = ligne.trim();
 		if (trimmed.isEmpty() || trimmed.startsWith("//")) return;
 
-		if (trimmed.contains("{")) this.niveau++;
-		if (trimmed.contains("}")) this.niveau--;
-		
 		if (this.niveau == 0 && trimmed.contains("class ") && trimmed.contains("{"))
 		{
 			int classIdx = trimmed.indexOf("class ");
@@ -103,12 +100,14 @@ public class AnalyseFichier
 					if (words.length > 0)
 					{
 						String nom = words[0];
-						this.classCourante = new Classe(nom);
 					}
 				}
 			}
 		}
 		if (this.niveau == 1) this.extraireMethodeAttribut(trimmed);
+
+		if (trimmed.contains("{")) this.niveau++;
+		if (trimmed.contains("}")) this.niveau--;
 	}
 
 	// traite la ligne et determine si çela est une methode ou non
@@ -130,10 +129,21 @@ public class AnalyseFichier
 			else if (parts[i].equals("final")) constante = true;
 			i++;
 		}
+		
 		if (i >= parts.length) return;
 		String type = parts[i++];
-		if (i >= parts.length) return;
-		String nom = parts[i++];
+		
+		String nom;
+		if (i >= parts.length)
+			nom = type;
+		else
+			nom = parts[i++];
+
+		if (type == this.classCourante.getNom()) 
+		{
+			nom = type;
+		}
+
 		if (ligne.contains("("))
 		{
 			int start = ligne.indexOf('(') + 1;
@@ -156,6 +166,7 @@ public class AnalyseFichier
 					}
 				}
 			}
+			System.out.println(nom);
 			this.classCourante.ajouterMethode(visibilite, nom, type, lstParam);
 		}
 		else
