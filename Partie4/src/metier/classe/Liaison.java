@@ -42,22 +42,24 @@ public class Liaison
 		this.fromClass =  classe1.getNom();
 		this.toClass = classe2.getNom();
 		this.nomVar = attribut1.getNom();
+		
+		this.toMultiplicity = new Multiplicite("0","temp");
+
+		if (classe1.getLstMethode().size()>0) 
+		{
+		
 
 		Methode constructeur =  classe1.getLstMethode().get(0);
-		List<Parametre> params = constructeur.getLstParam();
-		
-		for (Parametre parametre : params) 
-		{
-			if (parametre.getType().contains(classe2.getNom()))
+			List<Parametre> params = constructeur.getLstParam();
+			for (Parametre parametre : params) 
 			{
-				this.toMultiplicity = new Multiplicite("1","temp");
-				break;
+				if (parametre.getType().contains(classe2.getNom()))
+				{
+					this.toMultiplicity = new Multiplicite("1","temp");
+					break;
+				}
+				
 			}
-			else
-			{
-				this.toMultiplicity = new Multiplicite("0","temp");
-			}
-			
 		}
 
 		if (Liaison.estCollection(attribut1.getType()))
