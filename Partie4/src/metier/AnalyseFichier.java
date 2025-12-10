@@ -135,6 +135,61 @@ public class AnalyseFichier
 		if (trimmed.contains("}")) this.niveau--;
 
 		if (this.niveau == 1) this.extraireMethodeAttribut(trimmed);
+
+		if (trimmed.contains("abstract")) 
+		{
+			Classe c = lstClass.getLast();
+			c.setIsAbstract(true);
+		}
+		if (trimmed.contains("interface")) 
+		{
+			Classe c = lstClass.getLast();
+			c.setIsInterface(true);
+		}
+
+		if (this.niveau == 0 &&(trimmed.contains("extends")|| trimmed.contains("implements")))
+		{
+			if (trimmed.contains("extends")) 
+			{
+				int indFin;
+				if (trimmed.contains("implements"))
+					indFin = trimmed.indexOf("implements");
+				else
+					indFin = trimmed.length();
+				String heritage = trimmed.substring(trimmed.indexOf("extends") + 7, indFin).trim();
+				Classe c = lstClass.getLast();
+				c.setHeritageClasse(new Classe(heritage.trim()));
+				for (Classe cls : lstClass)
+					if (cls.getNom().equals(heritage.trim()))
+					{
+						c.setHeritageClasse(c);
+						break;
+					}
+			}
+			if (trimmed.contains("implements")) 
+			{
+				int indFin = trimmed.length();
+				String partImplement = 	trimmed.substring(trimmed.indexOf("implements")+10, indFin).trim();
+				try 
+				{
+					Scanner sc = new Scanner(partImplement);
+					sc.useDelimiter(",");
+					Classe c = lstClass.getLast();
+					while (sc.hasNext())
+					{
+						String nomInterface = sc.next().trim();
+						if(nomInterface.contains("<"))
+						{
+							nomInterface = nomInterface.substring(0, nomInterface.indexOf("<")).trim();
+						}
+						c.ajouterInterface(nomInterface);
+					}
+				} catch (Exception e) 
+				{
+					e.printStackTrace();
+				}
+			}
+		}
 	}
 
 	/**

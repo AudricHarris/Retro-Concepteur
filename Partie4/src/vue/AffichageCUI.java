@@ -92,7 +92,9 @@ public class AffichageCUI
 			sRet += separateur + "\n";
 			
 			int decalage = (maxLargeur - classe.getNom().length()) / 2;
+			sRet += (classe.getIsInterface() ? String.format("%" + (decalage-4) + "s", "") + "{ interface }"  + "\n" : "");
 			sRet += String.format("%" + decalage + "s", "") + classe.getNom() + "\n";
+			sRet += (classe.getIsAbstract() ? String.format("%" + (decalage-3) + "s", "") + "{ abstract }"  + "\n" : "");
 			sRet += separateur + "\n";
 
 			sRet += blocAttributs;
