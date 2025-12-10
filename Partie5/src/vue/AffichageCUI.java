@@ -1,6 +1,8 @@
 package vue;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+
 import metier.classe.Classe;
 import metier.classe.Methode;
 import metier.classe.Attribut;
@@ -10,8 +12,20 @@ public class AffichageCUI
 {
 	private final static int TAILLE_MIN = 48;
 
-	public String afficherClasse (ArrayList<Classe> lstClasse)
+	private HashMap<Classe, ArrayList<String>> mapAttMethode;
+	
+	public AffichageCUI ()
 	{
+		this.mapAttMethode = new HashMap<Classe, ArrayList<String>>();
+	}
+
+	public HashMap<Classe,ArrayList<String>> getHashMap()
+	{
+		return this.mapAttMethode;
+	}
+
+	public String afficherClasse (ArrayList<Classe> lstClasse)
+	{   
 		String sRet = "";
 
 		for (Classe classe : lstClasse) 
@@ -99,12 +113,15 @@ public class AffichageCUI
 			sRet += separateur + "\n";
 
 			sRet += blocMethodes;
-			sRet += separateur + "\n".repeat(3);
+			sRet += separateur + "\n\n\n";
+			
+			this.mapAttMethode.putIfAbsent(classe,new ArrayList<String>());
+			this.mapAttMethode.get(classe).add(blocAttributs);
+			this.mapAttMethode.get(classe).add(blocMethodes);
 		}
 		
 		return sRet;
 	}
-
 
 	private static char getSigneVisibilite(String visibilite)
 	{

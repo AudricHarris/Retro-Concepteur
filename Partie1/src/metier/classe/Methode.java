@@ -8,19 +8,10 @@ import java.util.ArrayList;
  */
 public class Methode
 {
-	/**Stock la visibilité d'une méthode*/
 	private String visibilite;
-
-	/**Stock le nom de la methode*/
 	private String nom;
-
-	/**Stock le type de retour de la méthode*/
 	private String type;
-
-	/**Stock la liste des Parametre*/
 	private ArrayList<Parametre> lstParam;
-
-	/**Stock si la methode est static ou non */
 	private boolean isStatic;
 
 	/**
@@ -39,6 +30,20 @@ public class Methode
 		this.lstParam   = lstParam;
 		this.isStatic   = isStatic;
 	}
+
+	//---------------------------------------//
+	//              Getters                  //
+	//---------------------------------------//
+
+	public String               getVisibilite() {return this.visibilite;}
+	public String               getNom       () {return this.nom       ;}
+	public String               getType      () {return this.type      ;}
+	public ArrayList<Parametre> getLstParam  () {return this.lstParam  ;}
+	public boolean              isStatic     () {return this.isStatic  ;}
+
+	//---------------------------------------//
+	//          methode instance             //
+	//---------------------------------------//
 
 	@Override
 	public String toString()

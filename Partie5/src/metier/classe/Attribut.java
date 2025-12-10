@@ -40,8 +40,8 @@ public class Attribut
 	@Override
 	public String toString()
 	{
-		String sRet ="";
-
+		String sRet="";
+		
 		sRet += "attribut : " + this.num + "	nom: "  ;
 		sRet += String.format("%-18s", this.nom ) +  "  type : ";
 		sRet += String.format("%-20s", this.type) + "  visibilité : ";

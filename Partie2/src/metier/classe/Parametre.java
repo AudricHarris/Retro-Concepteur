@@ -1,6 +1,8 @@
 package metier.classe;
 
-// Record paramètres stock les informations des paramètres d'une méthode
+/**
+ * Class paramètres stock les informations des paramètres d'une méthode
+ * */
 public class Parametre
 {
 	private String nom;
@@ -12,6 +14,9 @@ public class Parametre
 		this.type = type;
 	}
 
+	//---------------------------------------//
+	//            Getter               //
+	//---------------------------------------//
 	public String getNom () { return this.nom;  }
 	public String getType() { return this.type; }
 }
