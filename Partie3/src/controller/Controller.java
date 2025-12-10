@@ -16,7 +16,7 @@ public class Controller
 
 	public Controller() 
 	{
-		this.analyseFichier = new AnalyseFichier(this,"/home/etudiant/dl240416/TP/s3/s3.01_dev_application/metier");
+		this.analyseFichier = new AnalyseFichier(this,"/home/etudiant/ha241570/Documents/ds_machine/src/visite");
 		this.affichageCUI = new AffichageCUI();
 
 	}

@@ -11,7 +11,7 @@ public class AffichageCUI
 	private final static int TAILLE_MIN = 48;
 
 	public String afficherClasse (ArrayList<Classe> lstClasse)
-	{   
+	{
 		String sRet = "";
 
 		for (Classe classe : lstClasse) 
@@ -99,7 +99,7 @@ public class AffichageCUI
 			sRet += separateur + "\n";
 
 			sRet += blocMethodes;
-			sRet += separateur + "\n\n\n";
+			sRet += separateur + "\n".repeat(3);
 		}
 		
 		return sRet;

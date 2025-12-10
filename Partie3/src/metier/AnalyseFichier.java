@@ -73,10 +73,7 @@ public class AnalyseFichier
 					for (Liaison liaison : liaisons) 
 					{
 						if (liaison != null) 
-						{
 							this.lstLiaisons.add(liaison);
-							System.out.println(liaison);
-						}
 					}
 				}
 			}

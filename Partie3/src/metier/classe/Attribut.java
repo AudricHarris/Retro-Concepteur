@@ -1,8 +1,7 @@
 package metier.classe;
 
-
-/*
- * Record Attribut est une instance qui permet de stocker les attribut d'un classe
+/**
+ * Class Attribut est une instance qui permet de stocker les attribut d'un classe
  * Elle contient plus paramètres comme type, visibilite, isStatic, son nom et un num
  */
 public class Attribut
@@ -14,6 +13,15 @@ public class Attribut
 	private String  visibilite;
 	private boolean isStatic;
 
+	/**
+	 * Constructeur d'Attribut
+	 * @param num numero de l'attribut
+	 * @param nom nom de l'attribut
+	 * @param constante determine si l'attribut est constante
+	 * @param type type de l'attribut
+	 * @param visibilite Visibilité de l'attribut
+	 * @param isStatic determine si attribut est static
+	 */
 	public Attribut(int num, String nom, boolean constante, String type, String visibilite, boolean isStatic)
 	{
 		this.num        = num;
@@ -23,19 +31,21 @@ public class Attribut
 		this.visibilite = visibilite;
 		this.isStatic   = isStatic;
 	}
-
-
 	
+	//---------------------------------------//
+	//              Getters                  //
+	//---------------------------------------//
 
-	public int getNum() {return num;}
-	public String getNom() {return nom;}
-	public boolean isConstante() {return constante;}
-	public String getType() {return type;}
-	public String getVisibilite() {return visibilite;}
-	public boolean isStatic() {return isStatic;}
+	public int     getNum       () {return num       ;}
+	public String  getNom       () {return nom       ;}
+	public boolean isConstante  () {return constante ;}
+	public String  getType      () {return type      ;}
+	public String  getVisibilite() {return visibilite;}
+	public boolean isStatic     () {return isStatic  ;}
 
-
-
+	//---------------------------------------//
+	//         Methode instance              //
+	//---------------------------------------//
 
 	@Override
 	public String toString()
@@ -47,10 +57,7 @@ public class Attribut
 		sRet += String.format("%-20s", this.type) + "  visibilité : ";
 		sRet += String.format("%-10s", this.visibilite) + "  portée : ";
 
-		if (!this.isStatic ) 
-			sRet += String.format("%9s", "instance");
-		else
-			sRet += String.format("%7s", "classe");
+		sRet += String.format("%-9s", this.isStatic ? "classe" : "instance")
 
 		sRet += this.constante ? "  constante" : "";
 
