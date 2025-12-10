@@ -16,7 +16,6 @@ public class Controller
 	private AnalyseFichier analyseFichier;
 	private FrameUML   frame;
 
-
 	public Controller() 
 	{
 		this.analyseFichier = new AnalyseFichier("/home/etudiant/lk240510/Documents/TESTSAE301");

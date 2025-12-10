@@ -30,6 +30,7 @@ public class Classe
 	public void ajouterAttribut(String nomAtt, boolean constante, String type, String visibilite, boolean isStatic)
 	{
 		int num = this.lstAttribut.size() + 1;
+		
 		Attribut attribut = new Attribut(num, nomAtt, constante, type, visibilite, isStatic);
 		if (attribut != null)
 			this.lstAttribut.add(attribut);
@@ -80,12 +81,6 @@ public class Classe
 		}
 
 		return grand;
-	}
-
-
-	public int getPlusGrandAttributMethode()
-	{
-		return Math.max(this.getPlusGrandAttribut(), this.getPlusGrandeMethode());
 	}
 
 
