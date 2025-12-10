@@ -57,7 +57,7 @@ public class Attribut
 		sRet += String.format("%-20s", this.type) + "  visibilité : ";
 		sRet += String.format("%-10s", this.visibilite) + "  portée : ";
 
-		sRet += String.format("%-9s", this.isStatic ? "classe" : "instance")
+		sRet += String.format("%-9s", this.isStatic ? "classe" : "instance");
 
 		sRet += this.constante ? "  constante" : "";
 

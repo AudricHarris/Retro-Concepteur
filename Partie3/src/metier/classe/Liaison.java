@@ -1,6 +1,7 @@
 package metier.classe;
 import controller.Controller;
 import metier.AnalyseFichier;
+import metier.classe.Parametre;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -39,7 +40,6 @@ public class Liaison
 				lstLiaisons.add(liaison);
 			}
 		}
-		
 		return lstLiaisons;
 	}
 	
@@ -55,10 +55,9 @@ public class Liaison
 
 		this.fromClass =  classe1.getNom();
 		this.toClass = classe2.getNom();
-		this.nomVar = attribut1.getNom();
-		
-		Methode constructeur =  classe1.getLstMethode().get(0);
-		List<Parametre> params = constructeur.getLstParam();
+		this.nomVar = attribut.getNom();
+		Methode constructeur =  classe1.getLstMethode().size() >= 1 ? classe1.getLstMethode().get(0) : null;
+		List<Parametre> params = constructeur != null ? constructeur.getLstParam() : new ArrayList<Parametre>();
 		for (Parametre parametre : params) 
 		{
 			if (parametre.getType().contains(classe2.getNom()))
