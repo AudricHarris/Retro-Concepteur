@@ -13,9 +13,9 @@ public class Liaison
 {
 	public static final String[] LST_COLLECTIONS = {"List<","ArrayList<", "LinkedList<" ,"Set<" ,"HashSet<" ,"Collection" ,"Iterable<"};
 
-    private String fromClass;
-    private String toClass;
-    private Multiplicite toMultiplicity;
+	private String fromClass;
+	private String toClass;
+	private Multiplicite toMultiplicity;
 	private String nomVar;
 
 
@@ -82,7 +82,7 @@ public class Liaison
 	
 
 	//---------------------------------------//
-	//              Methode static           //
+	//			  Methode static		   //
 	//---------------------------------------//
 
 	/**

@@ -105,6 +105,7 @@ public class AffichageCUI
 		return sRet;
 	}
 
+
 	private static char getSigneVisibilite(String visibilite)
 	{
 		switch (visibilite) 
