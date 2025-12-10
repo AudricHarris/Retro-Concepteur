@@ -2,6 +2,7 @@ package vue;
 
 import javax.swing.*;
 
+import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.FontMetrics;
@@ -33,12 +34,16 @@ public class PanelUML extends JPanel
 
 		this.lstClasse = this.ctrl.getLstClasse();
 		this.mapClasseRectangle = new HashMap<Classe, Rectangle>();
-
+		
 		this.setPreferredSize(new Dimension(1000, 700));
 		this.initialiserPositions();
+
+		this.repaint();
 		this.setVisible(true);
 	}
 
+	//TODO: scanner sur mapAttMethode
+	
 	private void initialiserPositions()
 	{
 		int x = 50;
@@ -48,43 +53,21 @@ public class PanelUML extends JPanel
 		{
 			this.mapClasseRectangle.put(c, new Rectangle(x, y, 0, 0));
 			x += 250;
-			if (x > 800) { x = 50; y += 300; }
+			if (x > 800)  
+				x = 50; y += 300; 
 		}
 	}
 
 	public void dessinerRectangle(int x, int y,int tailleX, int tailleY )
 	{
-		this.g2.drawLine(x, y, x, y+tailleY);
-		this.g2.drawLine(x, y, x+tailleX, y);
-		this.g2.drawLine(x+tailleX, y, x+tailleX, y+tailleY);
-		this.g2.drawLine(x,y+tailleY, x+tailleX, y+tailleY);
+
+		this.g2.setColor(new Color(0, 0, 0)); 
+		this.g2.fillRect(x, y, tailleX, tailleY);
+		
+		this.g2.setColor(Color.BLACK);
+		this.g2.drawRect(x, y, tailleX, tailleY);
 	}
 
-	public int getLargeurMax (Classe classe)
-	{
-		HashMap<Classe,ArrayList<String>> map = this.affichageCUI.getHashMap();
-		Scanner sc;
-		String ligne;
-		int i;
-
-		for (String string  : map.get(classe) ) 
-		{
-			try
-			{
-				sc = new Scanner( string );
-				sc.useDelimiter("\\n");
-				while (sc.hasNext()) 
-				{
-					this.tabAttMethLigne[0] = sc.next();
-				}
-				
-
-
-				sc.close();
-			}
-			catch ( Exception e ) { e.printStackTrace(); }
-		}
-	}
 
 	/**
 	 * Méthode héritée de JPanel pour dessiner le composant.
@@ -107,32 +90,14 @@ public class PanelUML extends JPanel
 		FontMetrics metrics = g.getFontMetrics(font);
 
 		// Hauteur d'une ligne de texte en pixels
-		int hauteurLigne = metrics.getHeight(); 
+		int hauteurLigne = metrics.getHeight();
 
 		for (Classe classe : this.lstClasse) 
 		{
 			x = this.mapClasseRectangle.get(classe).getX();
 			y = this.mapClasseRectangle.get(classe).getY();
 
-			int largeurMaxPixels = metrics.stringWidth(classe.getNom()); 
-			
-			largeurMaxPixels = metrics.
-
-			// On ajoute une petite marge de 10px
-			int tailleX = largeurMaxPixels + 10;
-
-
-			// 2. CALCUL DE LA HAUTEUR EN PIXELS
-			// Nombre d'éléments * hauteur d'une ligne
-			int nbLignes = 1 + classe.getLstAttribut().size() + classe.getLstMethode().size(); // +1 pour le titre
-			int tailleY = nbLignes * hauteurLigne + 10; // +10 de marge
-
-
-			// Mise à jour et dessin
-			this.mapClasseRectangle.get(classe).setTailleX(tailleX);
-			this.mapClasseRectangle.get(classe).setTailleY(tailleY);
-			
-			this.dessinerRectangle(x, y, tailleX, tailleY);     
+			int largeurMaxPixels = metrics.stringWidth(classe.getNom());
 		}
 	}
 

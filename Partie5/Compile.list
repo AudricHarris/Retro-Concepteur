@@ -11,5 +11,6 @@ src/metier/forme/Point.java
 
 src/vue/PanelUML.java
 src/vue/FrameUML.java
+src/vue/AffichageCUI.java
 
 src/controller/Controller.java
