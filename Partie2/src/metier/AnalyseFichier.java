@@ -160,8 +160,11 @@ public class AnalyseFichier
 			name = type.substring(0, idx);
 			type = "";
 		}
-		else
+		else if ( ! name.equals("(") )
+		{
 			name = name.split("\\(")[0];
+		}
+			
 
 		if (name.length() <= 2) return;
 
