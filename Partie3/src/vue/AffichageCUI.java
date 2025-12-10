@@ -1,8 +1,6 @@
 package vue;
 
-
 import java.util.ArrayList;
-
 import metier.classe.Classe;
 import metier.classe.Methode;
 import metier.classe.Attribut;
@@ -10,57 +8,101 @@ import metier.classe.Parametre;
 
 public class AffichageCUI 
 {
-	
+	private final static int TAILLE_MIN = 48;
+
 	public String afficherClasse (ArrayList<Classe> lstClasse)
-	{	
-		final String LIGNE = "------------------------------------------------";
-		String sRet="";
+	{   
+		String sRet = "";
+
 		for (Classe classe : lstClasse) 
 		{
-			sRet += LIGNE + "\n";
-			sRet += String.format("%48s", classe.getNom()) + "\n";
-			sRet += LIGNE + "\n";
+			int maxLargeur = TAILLE_MIN;
+			String blocAttributs = "";
+			String blocMethodes  = "";
+			
+			int tailleAttributMax = classe.getPlusGrandAttribut() + 1;
+			int tailleMethodeMax  = classe.getPlusGrandeMethode() + 1;
 
-			for ( Attribut att : classe.getLstAttribut() )
+			for (Attribut att : classe.getLstAttribut())
 			{
-				if ( att.constante() )
-				{
-					sRet += AffichageCUI.getSigneVisibilite(att.visibilite()) + " " + att.nom() + " :" + att.type()+ "\n";
-				}
-			}
-			if ( classe.getNbConstante() > 0 )
-			{
-				sRet += LIGNE + "\n";
-				System.out.println(classe.getNbConstante());
-			}	
+				String ligne = "";
+				int indiceStatique = 0;
+
+				if (att.isStatic())
+					indiceStatique = att.getNom().length();
 				
+				ligne += AffichageCUI.getSigneVisibilite(att.getVisibilite()) + " ";
+				ligne += String.format("%-" + tailleAttributMax + "s", " " + att.getNom()) + " : " + att.getType();
+				
+				if (att.isConstante())
+					ligne += "<<freeze>>";
+				
+				if (ligne.length() > maxLargeur) 
+					maxLargeur = ligne.length();
 
-			for ( Attribut att : classe.getLstAttribut() )
-			{
-				if ( !att.constante() )
-				{
-					sRet += AffichageCUI.getSigneVisibilite(att.visibilite()) + " " + att.nom() + " :" + att.type() + "\n";
-				}
-			}
-			sRet += LIGNE + "\n";
+				blocAttributs += ligne + "\n";
 
-			for ( Methode meth : classe.getLstMethode() )
-			{
-				sRet += AffichageCUI.getSigneVisibilite(meth.visibilite()) + " " + meth.methode() + "(";
-				for ( Parametre p : meth.lstParam() )
-				{
-					sRet += p.nom() + ":" + p.type() + ",";
-				}
-				if ( meth.lstParam().size() > 0 )
-					sRet = sRet.substring(0, sRet.length()-1);
-				sRet += ")" + "\t" + ":" + meth.type() + "\n";				
+				if (indiceStatique > 0)
+					blocAttributs += "   " + "\u203E".repeat(indiceStatique) + "\n";
 			}
-			sRet += LIGNE + "\n";
+
+			for (Methode meth : classe.getLstMethode())
+			{
+				if (meth.getNom().equals("main")) 
+					continue;
+
+				String ligne = "";
+				int indiceStatique = 0;
+
+				if (meth.isStatic())
+					indiceStatique = meth.getNom().length();
+
+				ligne += AffichageCUI.getSigneVisibilite(meth.getVisibilite()) + " " ;
+				
+				String signature = meth.getNom() + "(";
+				String params = "";
+				for (Parametre p : meth.getLstParam())
+					params += p.getNom() + ":" + p.getType() + ",";
+
+				if (params.length() > 0)
+					params = params.substring(0, params.length() - 1);
+
+				signature += params + ")";
+
+				ligne += String.format("%-" + tailleMethodeMax + "s", signature);
+
+				if (!meth.getType().equals("void") && !meth.getNom().equals(classe.getNom())) 
+					ligne += " : " + meth.getType();
+
+
+				if (ligne.length() > maxLargeur) 
+					maxLargeur = ligne.length();
+
+				blocMethodes += ligne + "\n";
+
+				if (indiceStatique > 0)
+					blocMethodes += "   " + "\u203E".repeat(indiceStatique) + "\n";
+			}
+
+			if (classe.getNom().length() + 4 > maxLargeur) 
+				maxLargeur = classe.getNom().length() + 4;
+
+			String separateur = "-".repeat(maxLargeur);
+
+			sRet += separateur + "\n";
+			
+			int decalage = (maxLargeur - classe.getNom().length()) / 2;
+			sRet += String.format("%" + decalage + "s", "") + classe.getNom() + "\n";
+			sRet += separateur + "\n";
+
+			sRet += blocAttributs;
+			sRet += separateur + "\n";
+
+			sRet += blocMethodes;
+			sRet += separateur + "\n\n\n";
 		}
 		
-
 		return sRet;
-		
 	}
 
 	private static char getSigneVisibilite(String visibilite)
@@ -68,12 +110,9 @@ public class AffichageCUI
 		switch (visibilite) 
 		{
 			case "public": return '+';
-
 			case "private" : return '-';
-
 			case "protected" : return '#'; 
-		
 			default: return '~';
 		}
 	}
-}	
+}

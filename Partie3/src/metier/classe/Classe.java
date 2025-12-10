@@ -21,7 +21,7 @@ public class Classe
 
 	// Getter
 	public String getNom() { return this.nom; }
-	public ArrayList<Attribut> getLstAttribut() { return new ArrayList<>(this.lstAttribut); }
+	public ArrayList<Attribut> getLstAttribut() { return this.lstAttribut; }
 	public ArrayList<Methode> getLstMethode() { return this.lstMethode; }
 
 	// Méthode modifcateur
@@ -36,22 +36,63 @@ public class Classe
 	}
 
 	// Cette methode permet L'ajout de méthodes pour une classe
-	public void ajouterMethode(String visibilite, String nomMeth, String type, ArrayList<Parametre> lstParam)
+	public void ajouterMethode(String visibilite, String nomMeth, String type, ArrayList<Parametre> lstParam, boolean isStatic)
 	{
-		Methode meth = new Methode(visibilite, nomMeth, type, lstParam);
+		Methode meth = new Methode(visibilite, nomMeth, type, lstParam, isStatic);
 		if ( meth != null)
 			this.lstMethode.add(meth);
 	}
+
+
+	public int getPlusGrandAttribut()
+	{
+		int grand = 0;
+		
+		for (Attribut att : this.lstAttribut) 
+			if(att.getNom().length() > grand)
+				grand = att.getNom().length();
+		
+
+		return grand;
+	}
+
+	public int getPlusGrandeMethode()
+	{
+		int grand = 0;
+		
+		for (Methode meth : this.lstMethode) 
+		{
+			if (meth.getNom().equals("main")) continue;
+
+			int tailleActuelle = meth.getNom().length() + 2;
+
+			if (!meth.getLstParam().isEmpty())
+			{
+				for (Parametre p : meth.getLstParam())
+				{
+					tailleActuelle += p.getNom().length() + 1 + p.getType().length() + 1;
+				}
+				tailleActuelle--;
+			}
+
+			if(tailleActuelle > grand)
+				grand = tailleActuelle;
+		}
+
+		return grand;
+	}
+
 
 	public int getNbConstante()
 	{
 		int cpt=0;
 		for ( Attribut att : this.lstAttribut )
 		{
-			if ( att.constante() ) cpt++;
+			if ( att.isConstante() ) cpt++;
 		}
 		return cpt;
 	}
+
 
 	public String toString()
 	{
