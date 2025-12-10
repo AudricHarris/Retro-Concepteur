@@ -41,13 +41,13 @@ public class Liaison
 
 		this.fromClass =  classe1.getNom();
 		this.toClass = classe2.getNom();
+		this.nomVar = attribut1.getNom();
 		
 		this.toMultiplicity = new Multiplicite("0","temp");
 
 		if (classe1.getLstMethode().size()>0) 
 		{
 		
-			this.nomVar = attribut1.getNom();
 
 		Methode constructeur =  classe1.getLstMethode().get(0);
 			List<Parametre> params = constructeur.getLstParam();
