@@ -16,7 +16,11 @@ public class Controller
 
 	public Controller() 
 	{
+<<<<<<< Updated upstream
 		this.analyseFichier = new AnalyseFichier("/home/etudiant/lk240510/Documents/TESTSAE301");
+=======
+		this.analyseFichier = new AnalyseFichier("/home/etudiant/ha241570/Documents/jeu3D/src/renderEngine");
+>>>>>>> Stashed changes
 		this.affichageCUI = new AffichageCUI();
 
 	}
