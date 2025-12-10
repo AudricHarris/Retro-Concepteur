@@ -1,6 +1,6 @@
 package metier;
 import controller.Controller;
-import metier.classe.Liaison;
+
 // Import package extern
 import java.io.File;
 import java.util.ArrayList;
@@ -18,7 +18,7 @@ public class AnalyseFichier
 	Controller ctrl;
 	private ArrayList<Classe> lstClass;
 	private int niveau;
-	private Liaison liaison;
+	private List<Liaison> liaisons;
 	// Instancier les variables + lire le repo et tout les fichier du repo en .java
 	// TODO : Remplacer classCourante par this.lstClass.getLast()
 	public AnalyseFichier(Controller ctrl,String repo)
@@ -27,6 +27,7 @@ public class AnalyseFichier
 		this.lstClass = new ArrayList<Classe>();
 		this.niveau = 0;
 		ArrayList<String> allFiles = new ArrayList<String>();
+		this.liaisons = new ArrayList<Liaison>();
 		try
 		{
 			File f = new File(repo);
@@ -47,8 +48,18 @@ public class AnalyseFichier
 		{
 			for (Classe classe2 : this.lstClass) 
 			{
-				if (classe1 != classe2) {
-					Liaison liaison = new Liaison(classe1, classe2);
+				if (classe1 != classe2) 
+				{
+					List<Liaison> liaisons = Liaison.creerLiaison(classe1, classe2);
+		
+					for (Liaison liaison : liaisons) 
+					{
+						if (liaison != null) 
+						{
+							this.liaisons.add(liaison);
+							System.out.println(liaison);
+						}
+					}
 				}
 			}
 			

@@ -16,4 +16,8 @@ public class Multiplicite
 
 	public void setBorneInf(String borneInf) { this.borneInf = borneInf; }
 	public void setBorneSup(String borneSup) { this.borneSup = borneSup; }
+	public String toString()
+	{
+		return "[" + this.borneInf + ".." + this.borneSup + "]";
+	}
 }
