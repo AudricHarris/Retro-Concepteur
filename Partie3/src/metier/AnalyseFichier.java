@@ -1,4 +1,6 @@
 package metier;
+import controller.Controller;
+import metier.classe.Liaison;
 // Import package extern
 import java.io.File;
 import java.util.ArrayList;
@@ -13,12 +15,15 @@ import metier.classe.*;
  */
 public class AnalyseFichier
 {
+	Controller ctrl;
 	private ArrayList<Classe> lstClass;
 	private int niveau;
+	private Liaison liaison;
 	// Instancier les variables + lire le repo et tout les fichier du repo en .java
 	// TODO : Remplacer classCourante par this.lstClass.getLast()
-	public AnalyseFichier(String repo)
+	public AnalyseFichier(Controller ctrl,String repo)
 	{
+		this.ctrl = ctrl;
 		this.lstClass = new ArrayList<Classe>();
 		this.niveau = 0;
 		ArrayList<String> allFiles = new ArrayList<String>();
@@ -37,6 +42,16 @@ public class AnalyseFichier
 		catch (Exception e)
 		{
 			System.out.println("fichier non trouvé");
+		}
+		for (Classe classe1 : this.lstClass) 
+		{
+			for (Classe classe2 : this.lstClass) 
+			{
+				if (classe1 != classe2) {
+					Liaison liaison = new Liaison(classe1, classe2);
+				}
+			}
+			
 		}
 	}
 	// methode permettant la lecture d'un repertoire pour avoir tout ces enfants du repertoire

@@ -21,7 +21,7 @@ public class Classe
 
 	// Getter
 	public String getNom() { return this.nom; }
-	public ArrayList<Attribut> getLstAttribut() { return this.lstAttribut; }
+	public ArrayList<Attribut> getLstAttribut() { return new ArrayList<>(this.lstAttribut); }
 	public ArrayList<Methode> getLstMethode() { return this.lstMethode; }
 
 	// Méthode modifcateur
