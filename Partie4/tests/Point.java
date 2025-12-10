@@ -1,4 +1,4 @@
-public class Point 
+public class Point implements Comparable<Point>
 {
 
     

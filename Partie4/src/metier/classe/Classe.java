@@ -35,7 +35,7 @@ public class Classe
 	public Classe getHeritageClasse()           { return  this.heritageClasse; }
 	public ArrayList<Attribut> getLstAttribut() { return new ArrayList<Attribut>(this.lstAttribut); }
 	public ArrayList<Methode> getLstMethode()   { return new ArrayList<Methode> (this.lstMethode); }
-	public ArrayList<String> getLstInterfaces() { return new ArrayList<String>  (this.lstInterfaces); }
+	public ArrayList<String> getLstInterfaces() { return new ArrayList<String>  (this.lstInterfaces !=null ? this.lstInterfaces : new ArrayList<String>()); }
 
 	// Méthode modifcateur
 

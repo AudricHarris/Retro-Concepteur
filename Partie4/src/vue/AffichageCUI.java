@@ -1,6 +1,8 @@
 package vue;
 
 import java.util.ArrayList;
+import java.util.List;
+
 import metier.classe.Classe;
 import metier.classe.Methode;
 import metier.classe.Attribut;
@@ -84,6 +86,9 @@ public class AffichageCUI
 					blocMethodes += "   " + "\u203E".repeat(indiceStatique) + "\n";
 			}
 
+			
+			
+
 			if (classe.getNom().length() + 4 > maxLargeur) 
 				maxLargeur = classe.getNom().length() + 4;
 
@@ -102,6 +107,22 @@ public class AffichageCUI
 
 			sRet += blocMethodes;
 			sRet += separateur + "\n\n\n";
+
+			List<String> lstInterfaces = classe.getLstInterfaces();
+			String heritage = classe.getHeritageClasse() != null ? classe.getHeritageClasse().getNom() : null;
+
+			if (heritage != null)
+				sRet += classe.getNom() + " hérite de " + heritage + "\n";
+			if (lstInterfaces != null && !lstInterfaces.isEmpty())
+			{
+				sRet += classe.getNom() + " implémente : ";
+				for (String interfaceNom : lstInterfaces)
+					sRet += interfaceNom + ", ";
+				if (lstInterfaces.size()==1) 
+					sRet = sRet.substring(0, sRet.length() - 2);
+				sRet += "\n";
+			}
+			sRet += "\n\n";
 		}
 		
 		return sRet;

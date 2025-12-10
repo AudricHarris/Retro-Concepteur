@@ -1,4 +1,4 @@
-public class Disque 
+public class Disque extends Figure implements Mesurable, Comparable<Disque>
 {
 
     
