@@ -1,4 +1,3 @@
-package visite;
 
 public class Mois implements Comparable<Mois> {
     private int numeroMois;

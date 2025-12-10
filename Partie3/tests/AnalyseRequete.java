@@ -1,4 +1,3 @@
-package visite;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -15,7 +14,7 @@ public class AnalyseRequete {
     // Etape 2 : Attributs
     public ArrayList<Requete> listeRequete;
     public HashSet<String> listeSite; // Question 3
-    private HashMap<String, ArrayList<Requete>>;
+    private HashMap<String, ArrayList<Requete>> hashRequete; // Question 4
 
     // Etape 2, Question 2 : Constructeur AnalyseRequete(String fichier) - Utilisation exclusive de Scanner
     public AnalyseRequete(String fichier) {
