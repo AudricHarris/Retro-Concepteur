@@ -83,6 +83,12 @@ public class Classe
 	}
 
 
+	public int getPlusGrandAttributMethode()
+	{
+		return Math.max(this.getPlusGrandAttribut(), this.getPlusGrandeMethode());
+	}
+
+
 	public int getNbConstante()
 	{
 		int cpt=0;

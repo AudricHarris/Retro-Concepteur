@@ -6,6 +6,9 @@ src/metier/classe/Methode.java
 src/metier/classe/Attribut.java
 src/metier/classe/Classe.java
 
+src/metier/forme/Rectangle.java
+src/metier/forme/Point.java
+
 src/vue/PanelUML.java
 src/vue/FrameUML.java
 

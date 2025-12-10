@@ -1,7 +1,7 @@
 package vue;
 
+import java.awt.BorderLayout;
 import java.awt.FlowLayout;
-import java.awt.GridLayout;
 import java.awt.event.*;
 import java.io.File;
 
@@ -28,13 +28,11 @@ public class FrameUML extends JFrame implements ActionListener
 
 		this.ctrl = ctrl;
 
-		this.setLayout( new FlowLayout() );
+		this.setLayout( new BorderLayout() );
 
-		this.setLocation(500, 500);
-		this.setSize(500, 500);
+		this.setLocation(100, 100);
+		this.setSize(1000, 700);
 		this.setTitle("Diagramme UML");
-
-		this.setDefaultCloseOperation(EXIT_ON_CLOSE);
 		
 
 		
@@ -60,8 +58,8 @@ public class FrameUML extends JFrame implements ActionListener
 
 		this.barFichier.add(menuFichier);
 
-		this.add(barFichier);
-		this.add(this.panelUml);
+		this.setJMenuBar(barFichier);
+		this.add(this.panelUml, BorderLayout.CENTER);
 
 		/* ----------------------------- */
 		/* Activation des Composants     */
@@ -70,8 +68,9 @@ public class FrameUML extends JFrame implements ActionListener
 		this.menuOuvrir.addActionListener(this);
 		this.menuQuitter.addActionListener(this);
 
-		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		this.setVisible(true);
+		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+
 
 	}
 
@@ -87,7 +86,7 @@ public class FrameUML extends JFrame implements ActionListener
 			if ( returnValue == JFileChooser.APPROVE_OPTION )
 			{
 				this.dossierUML  = fileChooser.getSelectedFile();
-				System.out.println(dossierUML);
+				System.out.println(this.dossierUML);
 			}
 			
 		}
