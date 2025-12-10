@@ -30,7 +30,7 @@ public class Methode
 	 *	@param type type de retour de la methode
 	 *	@param lstParam param de la methode stocker
 	 *	@param isStatic si la methode isStatic
-	 * /
+	 */
 	public Methode(String visibilite,String nom, String type, ArrayList<Parametre> lstParam, boolean isStatic)
 	{
 		this.visibilite = visibilite;
@@ -45,7 +45,7 @@ public class Methode
 	{
 
 		String sRet ="\n";
-		if (this.methode == this.type)
+		if (this.nom == this.type)
 		{
 			sRet += "methode : " + String.format("%-20s","Constructor") + "	visibilité: " ;
 			sRet += String.format("%-10s", this.visibilite ) + (this.isStatic ? " Statique" : "");			
@@ -54,7 +54,7 @@ public class Methode
 		}
 		else
 		{
-			sRet += "methode : " + String.format("%-20s",this.methode) + "	visibilité: " ;
+			sRet += "methode : " + String.format("%-20s",this.nom) + "	visibilité: " ;
 			sRet += String.format("%-10s", this.visibilite ) + " type de retour: ";
 			sRet += String.format("%-10s", this.type) + "\nparamètres : \n";
 		}	
@@ -65,7 +65,7 @@ public class Methode
 			sRet += "aucun\n\n";
 		else
 			for ( Parametre param : this.lstParam )
-				sRet += "	p" + (++cpt) + ": " + String.format("%-10s", param.nom()) + " type:" + param.type() + "\n\n";
+				sRet += "	p" + (++cpt) + ": " + String.format("%-10s", param.getNom()) + " type:" + param.getType() + "\n\n";
 	
 		return sRet;
 	}

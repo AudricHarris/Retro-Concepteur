@@ -36,9 +36,9 @@ public class Classe
 	}
 
 	// Cette methode permet L'ajout de méthodes pour une classe
-	public void ajouterMethode(String visibilite, String nomMeth, String type, ArrayList<Parametre> lstParam)
+	public void ajouterMethode(String visibilite, String nomMeth, String type, ArrayList<Parametre> lstParam, boolean isStatic)
 	{
-		Methode meth = new Methode(visibilite, nomMeth, type, lstParam);
+		Methode meth = new Methode(visibilite, nomMeth, type, lstParam, isStatic);
 		if ( meth != null)
 			this.lstMethode.add(meth);
 	}

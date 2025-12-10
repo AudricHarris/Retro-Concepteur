@@ -124,13 +124,13 @@ public class AnalyseFichier
 
 		while (sc.hasNext())
 		{
-			String token = sc.next();
-			switch (token)
+			String text = sc.next();
+			switch (text)
 			{
 				case "public":
 				case "private":
 				case "protected":
-					if (visibility.isEmpty()) visibility = token;
+					if (visibility.isEmpty()) visibility = text;
 					break;
 				case "static": isStatic = true; break;
 				case "final":  isFinal  = true; break;
@@ -201,7 +201,7 @@ public class AnalyseFichier
 			String returnType = type;
 			if (name.equals(c.getNom())) returnType = name;
 
-			c.ajouterMethode(visibility, name, returnType, params);
+			c.ajouterMethode(visibility, name, returnType, params, isStatic);
 		}
 		else
 		{
