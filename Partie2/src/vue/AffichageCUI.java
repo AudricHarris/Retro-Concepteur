@@ -29,12 +29,12 @@ public class AffichageCUI
 				int indiceStatique = 0;
 
 				if (att.isStatic())
-					indiceStatique = att.nom().length();
+					indiceStatique = att.getNom().length();
 				
-				ligne += AffichageCUI.getSigneVisibilite(att.visibilite()) + " ";
-				ligne += String.format("%-" + tailleAttributMax + "s", " " + att.nom()) + " : " + att.type();
+				ligne += AffichageCUI.getSigneVisibilite(att.getVisibilite()) + " ";
+				ligne += String.format("%-" + tailleAttributMax + "s", " " + att.getNom()) + " : " + att.getType();
 				
-				if (att.constante())
+				if (att.isConstante())
 					ligne += "<<freeze>>";
 				
 				if (ligne.length() > maxLargeur) 
@@ -48,21 +48,21 @@ public class AffichageCUI
 
 			for (Methode meth : classe.getLstMethode())
 			{
-				if (meth.methode().equals("main")) 
+				if (meth.getNom().equals("main")) 
 					continue;
 
 				String ligne = "";
 				int indiceStatique = 0;
 
 				if (meth.isStatic())
-					indiceStatique = meth.methode().length();
+					indiceStatique = meth.getNom().length();
 
-				ligne += AffichageCUI.getSigneVisibilite(meth.visibilite()) + " " ;
+				ligne += AffichageCUI.getSigneVisibilite(meth.getVisibilite()) + " " ;
 				
-				String signature = meth.methode() + "(";
+				String signature = meth.getNom() + "(";
 				String params = "";
-				for (Parametre p : meth.lstParam())
-					params += p.nom() + ":" + p.type() + ",";
+				for (Parametre p : meth.getLstParam())
+					params += p.getNom() + ":" + p.getType() + ",";
 
 				if (params.length() > 0)
 					params = params.substring(0, params.length() - 1);
@@ -71,10 +71,9 @@ public class AffichageCUI
 
 				ligne += String.format("%-" + tailleMethodeMax + "s", signature);
 
-				if (!meth.type().equals("void") && !meth.methode().equals(classe.getNom())) 
-				{
-					ligne += " : " + meth.type();
-				}
+				if (!meth.getType().equals("void") && !meth.getNom().equals(classe.getNom())) 
+					ligne += " : " + meth.getType();
+
 
 				if (ligne.length() > maxLargeur) 
 					maxLargeur = ligne.length();

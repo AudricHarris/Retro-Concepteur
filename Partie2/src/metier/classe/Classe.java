@@ -43,13 +43,14 @@ public class Classe
 			this.lstMethode.add(meth);
 	}
 
+
 	public int getPlusGrandAttribut()
 	{
 		int grand = 0;
 		
 		for (Attribut att : this.lstAttribut) 
-			if(att.nom().length() > grand)
-				grand = att.nom().length();
+			if(att.getNom().length() > grand)
+				grand = att.getNom().length();
 		
 
 		return grand;
@@ -61,15 +62,15 @@ public class Classe
 		
 		for (Methode meth : this.lstMethode) 
 		{
-			if (meth.methode().equals("main")) continue;
+			if (meth.getNom().equals("main")) continue;
 
-			int tailleActuelle = meth.methode().length() + 2;
+			int tailleActuelle = meth.getNom().length() + 2;
 
-			if (!meth.lstParam().isEmpty())
+			if (!meth.getLstParam().isEmpty())
 			{
-				for (Parametre p : meth.lstParam())
+				for (Parametre p : meth.getLstParam())
 				{
-					tailleActuelle += p.nom().length() + 1 + p.type().length() + 1;
+					tailleActuelle += p.getNom().length() + 1 + p.getType().length() + 1;
 				}
 				tailleActuelle--;
 			}
@@ -81,15 +82,17 @@ public class Classe
 		return grand;
 	}
 
+
 	public int getNbConstante()
 	{
 		int cpt=0;
 		for ( Attribut att : this.lstAttribut )
 		{
-			if ( att.constante() ) cpt++;
+			if ( att.isConstante() ) cpt++;
 		}
 		return cpt;
 	}
+
 
 	public String toString()
 	{

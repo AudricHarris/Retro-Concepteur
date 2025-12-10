@@ -3,18 +3,55 @@ package metier.classe;
 import java.lang.reflect.Constructor;
 import java.util.ArrayList;
 
-/*
- * Record methode stock le nom, visibilite, type, lstParam d'une classe
- * Elle aura aussi un toString custom
+/**
+ * Class methode stock le nom, visibilite, type, lstParam et isStatic d'une classe
  */
-public record Methode(String visibilite,String methode, String type, ArrayList<Parametre> lstParam, boolean isStatic )
+public class Methode
 {
+	/**Stock la visibilité d'une méthode*/
+	private String visibilite;
+
+	/**Stock le nom de la methode*/
+	private String nom;
+
+	/**Stock le type de retour de la méthode*/
+	private String type;
+
+	/**Stock la liste des Parametre*/
+	private ArrayList<Parametre> lstParam;
+
+	/**Stock si la methode est static ou non */
+	private boolean isStatic;
+
+	/**
+	 *	Creer une instance de methode
+	 *	@param visibilite visibilité de la methode
+	 *	@param nom nom de la methode
+	 *	@param type type de retour de la methode
+	 *	@param lstParam param de la methode stocker
+	 *	@param isStatic si la methode isStatic
+	 */
+	public Methode(String visibilite,String nom, String type, ArrayList<Parametre> lstParam, boolean isStatic)
+	{
+		this.visibilite = visibilite;
+		this.nom        = nom;
+		this.type       = type;
+		this.lstParam   = lstParam;
+		this.isStatic   = isStatic;
+	}
+
+	public String getVisibilite() {return this.visibilite;}
+	public String getNom() {return this.nom;}
+	public String getType() {return type;}
+	public ArrayList<Parametre> getLstParam() {return this.lstParam;}
+	public boolean isStatic() {return this.isStatic;}
+
 	@Override
 	public String toString()
 	{
 
 		String sRet ="\n";
-		if (this.methode == this.type)
+		if (this.nom == this.type)
 		{
 			sRet += "methode : " + String.format("%-20s","Constructor") + "	visibilité: " ;
 			sRet += String.format("%-10s", this.visibilite ) + (this.isStatic ? " Statique" : "");			
@@ -23,7 +60,7 @@ public record Methode(String visibilite,String methode, String type, ArrayList<P
 		}
 		else
 		{
-			sRet += "methode : " + String.format("%-20s",this.methode) + "	visibilité: " ;
+			sRet += "methode : " + String.format("%-20s",this.nom) + "	visibilité: " ;
 			sRet += String.format("%-10s", this.visibilite ) + " type de retour: ";
 			sRet += String.format("%-10s", this.type) + "\nparamètres : \n";
 		}	
@@ -34,7 +71,7 @@ public record Methode(String visibilite,String methode, String type, ArrayList<P
 			sRet += "aucun\n\n";
 		else
 			for ( Parametre param : this.lstParam )
-				sRet += "	p" + (++cpt) + ": " + String.format("%-10s", param.nom()) + " type:" + param.type() + "\n\n";
+				sRet += "	p" + (++cpt) + ": " + String.format("%-10s", param.getNom()) + " type:" + param.getType() + "\n\n";
 	
 		return sRet;
 	}
