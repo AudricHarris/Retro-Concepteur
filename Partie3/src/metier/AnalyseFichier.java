@@ -18,16 +18,9 @@ import controller.Controller;
  */
 public class AnalyseFichier
 {
-	/**Contrôleur de l'application */
 	private Controller ctrl;
-
-	/**Stocke les classes sous format d'array list */
 	private ArrayList<Classe> lstClass;
-
-	/**Montre le niveau courant dans la lecture d'un fichier*/
 	private int               niveau;
-
-	/**Stocke les liaisons entre les classes*/
 	private List<Liaison> lstLiaisons;
 
 	/**
@@ -49,7 +42,6 @@ public class AnalyseFichier
 			File f = new File(repo);
 			AnalyseFichier.listeRepertoire(f, allFiles);
 
-			// Creation de classe pour chaque fichier et init niveau à 0 pour chaque classe
 			for (String file : allFiles)
 			{
 				Classe classCourante = new Classe(file.substring(file.lastIndexOf("/") + 1,file.lastIndexOf(".")));
@@ -61,7 +53,6 @@ public class AnalyseFichier
 		}
 		catch (Exception e) { System.out.println("fichier non trouvé"); }
 
-		// Création des liaisons entre les classes
 		for (Classe classe1 : this.lstClass) 
 		{
 			for (Classe classe2 : this.lstClass) 
