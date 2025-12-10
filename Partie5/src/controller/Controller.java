@@ -1,5 +1,8 @@
 package controller;
 
+import metier.classe.*;
+
+import java.util.ArrayList;
 
 import metier.AnalyseFichier;
 import vue.FrameUML;
@@ -17,9 +20,12 @@ public class Controller
 	public Controller() 
 	{
 		this.analyseFichier = new AnalyseFichier("/home/etudiant/lk240510/Documents/TESTSAE301");
-		this.frame = new FrameUML();
+		this.frame = new FrameUML(this);
 
 	}
+
+	public ArrayList<Classe> getLstClasse(){return analyseFichier.getLstClasses();}
+
 
 
 	public static void main(String[] args) 

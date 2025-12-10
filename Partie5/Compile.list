@@ -6,6 +6,7 @@ src/metier/classe/Methode.java
 src/metier/classe/Attribut.java
 src/metier/classe/Classe.java
 
-src/vue/AffichageCUI.java
+src/vue/PanelUML.java
+src/vue/FrameUML.java
 
 src/controller/Controller.java
