@@ -7,13 +7,25 @@ import metier.classe.Methode;
 import metier.AnalyseFichier;
 import metier.classe.Attribut;
 import metier.classe.Parametre;
+
+import controller.Controller;
+
 public class AffichageCUI
 {
 	private final static int TAILLE_MIN = 48;
+
+	Controller ctrl;
+	
+	public AffichageCUI(Controller controller)
+	{
+		this.ctrl = controller;
+	}
+
 	public String afficherClasse (AnalyseFichier analyseFichier)
 	{
-		ArrayList<Classe> lstClasse = analyseFichier.getLstClasses();
+		ArrayList<Classe> lstClasse = this.ctrl.getLstClasses();
 		String sRet = "";
+
 		for (Classe classe : lstClasse)
 		{
 			int maxLargeur = TAILLE_MIN;
@@ -68,7 +80,7 @@ public class AffichageCUI
 	{
 		String res = "";
 		int numAssociation = 1;
-		for (Liaison l : analyseFichier.getListLiaisonUnique())
+		for (Liaison l : this.ctrl.getListLiaisonUnique())
 		{
 			String nomFromClass = l.getFromClass().getNom();
 			String nomToClass = l.getToClass().getNom();
@@ -164,6 +176,8 @@ public class AffichageCUI
 
 		return blocMethodes;
 	}
+
+
 
 	private static char getSigneVisibilite(String visibilite)
 	{
