@@ -118,8 +118,7 @@ public class AffichageCUI
 				sRet += classe.getNom() + " implémente : ";
 				for (String interfaceNom : lstInterfaces)
 					sRet += interfaceNom + ", ";
-				if (lstInterfaces.size()==1) 
-					sRet = sRet.substring(0, sRet.length() - 2);
+				sRet = sRet.substring(0, sRet.length() - 2);
 				sRet += "\n";
 			}
 			sRet += "\n\n";
