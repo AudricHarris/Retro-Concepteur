@@ -1,10 +1,12 @@
 package vue;
+
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Scanner;
+
 import metier.classe.Classe;
 import metier.classe.Liaison;
 import metier.classe.Methode;
-import metier.AnalyseFichier;
 import metier.classe.Attribut;
 import metier.classe.Parametre;
 
@@ -21,7 +23,7 @@ public class AffichageCUI
 		this.ctrl = controller;
 	}
 
-	public String afficherClasse (AnalyseFichier analyseFichier)
+	public String afficherClasse ()
 	{
 		ArrayList<Classe> lstClasse = this.ctrl.getLstClasses();
 		String sRet = "";
@@ -35,9 +37,10 @@ public class AffichageCUI
 			int tailleMethodeMax = classe.getPlusGrandeMethode() + 1;
 			String separateur = "";
 
-			blocAttributs = this.getBlocAttribut(classe, tailleAttributMax, maxLargeur, analyseFichier );
-			blocMethodes = this.getBlocMethode(classe, tailleMethodeMax, maxLargeur);
+			blocAttributs = this.getBlocAttribut(classe, tailleAttributMax );
+			blocMethodes = this.getBlocMethode(classe, tailleMethodeMax );
 
+			maxLargeur = this.getTailleSeparateur(blocAttributs, blocMethodes);
 
 			if (classe.getNom().length() + 4 > maxLargeur)
 				maxLargeur = classe.getNom().length() + 4;
@@ -47,9 +50,9 @@ public class AffichageCUI
 
 			int decalage = (maxLargeur - classe.getNom().length()) / 2;
 
-			sRet += (classe.getIsInterface() ? String.format("%" + (decalage-4) + "s", "") + "{ interface }" + "\n" : "");
+			sRet += (classe.isInterface() ? String.format("%" + (decalage-4) + "s", "") + "{ interface }" + "\n" : "");
 			sRet += String.format("%" + decalage + "s", "") + classe.getNom() + "\n";
-			sRet += (classe.getIsAbstract() ? String.format("%" + (decalage-3) + "s", "") + "{ abstract }" + "\n" : "");
+			sRet += (classe.isAbstract() ? String.format("%" + (decalage-3) + "s", "") + "{ abstract }" + "\n" : "");
 			sRet += separateur + "\n";
 
 			sRet += blocAttributs;
@@ -76,11 +79,12 @@ public class AffichageCUI
 	}
 
 
-	public String afficherLiaison(AnalyseFichier analyseFichier)
+	public String afficherLiaison()
 	{
 		String res = "";
 		int numAssociation = 1;
-		for (Liaison l : this.ctrl.getListLiaisonUnique())
+		List<Liaison> listLiaison = this.ctrl.getListLiaison();
+		for (Liaison l : listLiaison)
 		{
 			String nomFromClass = l.getFromClass().getNom();
 			String nomToClass = l.getToClass().getNom();
@@ -88,7 +92,7 @@ public class AffichageCUI
 			res += "Association"+ numAssociation +" : Unidirectionnelle de " + nomFromClass + "(0..*) Vers " + nomToClass + multiplicity + "\n";
 			numAssociation++;
 		}
-		for (Liaison l : analyseFichier.getListLiaisonBinaire())
+		for (Liaison l : listLiaison)
 		{
 			String nomFromClass = l.getFromClass().getNom();
 			String nomToClass = l.getToClass().getNom();
@@ -99,7 +103,7 @@ public class AffichageCUI
 		return res;
 	}
 
-	public String getBlocAttribut  (Classe classe, int tailleAttributMax, int maxLargeur, AnalyseFichier analyseFichier) 
+	public String getBlocAttribut  (Classe classe, int tailleAttributMax) 
 	{
 		String blocAttributs="";
 		
@@ -107,8 +111,8 @@ public class AffichageCUI
 		{
 			String ligne = "";
 			int indiceStatique = 0;
-			// MODIF ICI : utilise la nouvelle méthode pour skipper si c'est une classe du projet (directe, générique ou tableau)
-			if (analyseFichier.refersToProjectClass(att.getType())) continue;
+
+			if (this.ctrl.estClasseProjet(att.getType())) continue;
 			if (att.isStatic())
 				indiceStatique = att.getNom().length();
 
@@ -119,13 +123,11 @@ public class AffichageCUI
 			if (att.isConstante())
 				ligne += "<<freeze>>";
 
-			if (ligne.length() > maxLargeur)
-				maxLargeur = ligne.length();
 
 			blocAttributs += ligne + "\n";
 
 			if (indiceStatique > 0)
-				blocAttributs += " " + "\u203E".repeat(indiceStatique) + "\n";
+				blocAttributs += "   " + "\u203E".repeat(indiceStatique) + "\n";
 		}
 
 		return blocAttributs;
@@ -133,7 +135,7 @@ public class AffichageCUI
 
 
 
-	public String getBlocMethode (Classe classe, int tailleMethodeMax, int maxLargeur)
+	public String getBlocMethode (Classe classe, int tailleMethodeMax)
 	{
 		String blocMethodes ="";
 		
@@ -165,9 +167,6 @@ public class AffichageCUI
 			if (!meth.getType().equals("void") && !meth.getNom().equals(classe.getNom()))
 				ligne += " : " + meth.getType();
 
-			if (ligne.length() > maxLargeur)
-				maxLargeur = ligne.length();
-
 			blocMethodes += ligne + "\n";
 
 			if (indiceStatique > 0)
@@ -175,6 +174,34 @@ public class AffichageCUI
 		}
 
 		return blocMethodes;
+	}
+
+
+	public int getLigneMax(String bloc)
+	{
+		int max =0;
+		int ligne;
+
+		try 
+		{
+			Scanner scanner = new Scanner(bloc);
+			scanner.useDelimiter("\\n");
+			while (scanner.hasNextLine()) 
+			{
+				ligne = scanner.next().length();
+				if ( ligne > max)
+					max = ligne;
+			}
+			scanner.close();
+
+		}catch(Exception e){}
+
+		return max;
+	}
+
+	public int getTailleSeparateur(String blocMeth, String blocAtt)
+	{
+		return Math.max(this.getLigneMax(blocMeth), this.getLigneMax(blocAtt));
 	}
 
 

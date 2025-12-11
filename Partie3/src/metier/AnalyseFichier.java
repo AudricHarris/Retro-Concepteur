@@ -7,23 +7,20 @@ import java.util.List;
 import java.util.Scanner;
 // Import package itern
 import metier.classe.*;
-import controller.Controller;
 /**
  * - Permet la lecture d'un dossier et la creation de classe.
  * Une fois crée nous ajoutons les methode et attribut à cette classe
  */
 public class AnalyseFichier
 {
-	private Controller ctrl;
 	private ArrayList<Classe> lstClass;
 	private List<Liaison> lstLiaisons;
 	/**
 	 * Construit l'instance AnalyseFichier et parcours le repo
 	 * @param repo chemin du repositoire avec programme java
 	 */
-	public AnalyseFichier(Controller ctrl, String repo)
+	public AnalyseFichier( String repo)
 	{
-		this.ctrl = ctrl;
 		this.lstClass = new ArrayList<Classe>();
 		ArrayList<String> allFiles = new ArrayList<String>();
 		this.lstLiaisons = new ArrayList<Liaison>();
@@ -96,25 +93,26 @@ public class AnalyseFichier
 		return new ArrayList<Liaison>(lstBinaire.values());
 	}
 
-	public boolean isAClass(String nom)
+	public boolean estClasse(String nom)
 	{
 		for ( Classe c : this.lstClass)
 			if (c.getNom().equals(nom)) return true;
 		return false;
 	}
 
-	public boolean refersToProjectClass(String type) 
+	public boolean estClasseProjet(String type) 
 	{
 		if (type == null || type.trim().isEmpty()) return false;
+
 		type = type.trim();
 
-		while (type.endsWith("[]")) {
+		while (type.endsWith("[]")) 
+		{
 			type = type.substring(0, type.length() - 2).trim();
 		}
 
-		if (!type.contains("<")) {
-			return isAClass(type);
-		}
+		if (!type.contains("<"))
+			return this.estClasse(type);
 
 		int start = type.indexOf('<');
 		int end = type.lastIndexOf('>');
@@ -122,14 +120,14 @@ public class AnalyseFichier
 		if (start != -1 && end > start) 
 		{
 			String base = type.substring(0, start).trim();
-			if (isAClass(base)) return true;
+			if (this.estClasse(base)) return true;
 
 			String args = type.substring(start + 1, end).trim();
 			if (!args.isEmpty()) 
 			{
 				String[] parts = args.split(",");
 				for (String part : parts)
-					if (refersToProjectClass(part.trim())) 
+					if (estClasseProjet(part.trim())) 
 						return true;
 			}
 		}

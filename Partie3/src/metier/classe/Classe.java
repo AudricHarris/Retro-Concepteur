@@ -30,8 +30,8 @@ public class Classe
 
 	// Getter
 	public String getNom()                      { return this.nom; }
-	public boolean getIsAbstract()                 { return this.isAbstract; }
-	public boolean getIsInterface()                { return this.isInterface; }
+	public boolean isAbstract()              { return this.isAbstract; }
+	public boolean isInterface()             { return this.isInterface; }
 	public Classe getHeritageClasse()           { return  this.heritageClasse; }
 	public ArrayList<Attribut> getLstAttribut() { return new ArrayList<Attribut>(this.lstAttribut); }
 	public ArrayList<Methode> getLstMethode()   { return new ArrayList<Methode> (this.lstMethode); }
