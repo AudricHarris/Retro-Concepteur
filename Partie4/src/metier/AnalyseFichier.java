@@ -250,8 +250,6 @@ public class AnalyseFichier
 		else if (!name.equals("("))
 			name = name.split("\\(")[0];
 
-		if (name.length() <= 2) return;
-
 		Classe c = lstClass.getLast();
 
 		if (trimmed.contains("(") && !trimmed.contains("="))
