@@ -44,7 +44,7 @@ public class LireFichier
 			{
 				String ligne = scanner.nextLine();
 				ligne = ligne.replace("\t", "").trim();
-				if (ligne.contains("class")) analyseFichier.insererProprieteClass(ligne);
+				if (ligne.contains("class") || ligne.contains("interface")) analyseFichier.insererProprieteClass(ligne);
 				if (ligne.isEmpty()) continue;
 				boolean skip = false;
 

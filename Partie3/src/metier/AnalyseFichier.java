@@ -1,12 +1,15 @@
 package metier;
+
 // Import package extern
 import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Scanner;
+
 // Import package itern
 import metier.classe.*;
+
 /**
  * - Permet la lecture d'un dossier et la creation de classe.
  * Une fois crée nous ajoutons les methode et attribut à cette classe
@@ -15,6 +18,7 @@ public class AnalyseFichier
 {
 	private ArrayList<Classe> lstClass;
 	private List<Liaison> lstLiaisons;
+
 	/**
 	 * Construit l'instance AnalyseFichier et parcours le repo
 	 * @param repo chemin du repositoire avec programme java
@@ -22,20 +26,25 @@ public class AnalyseFichier
 	public AnalyseFichier( String repo)
 	{
 		this.lstClass = new ArrayList<Classe>();
-		ArrayList<String> allFiles = new ArrayList<String>();
 		this.lstLiaisons = new ArrayList<Liaison>();
+		
+		ArrayList<String> allFiles = new ArrayList<String>();
+		
 		try
 		{
 			File f = new File(repo);
 			AnalyseFichier.listeRepertoire(f, allFiles);
+
 			for (String file : allFiles)
 			{
-				Classe classCourante = new Classe(file.substring(file.lastIndexOf("/") + 1,file.lastIndexOf(".")));
-				this.lstClass.add(classCourante);
+				String nomClasse = file.substring(file.lastIndexOf("/") + 1,file.lastIndexOf("."));
+
+				this.lstClass.add(new Classe(nomClasse));
 				LireFichier.lireFichier(file, this);
 			}
 		}
 		catch (Exception e) { System.out.println("fichier non trouvé"); }
+
 		for (Classe classe1 : this.lstClass)
 		{
 			for (Classe classe2 : this.lstClass)
@@ -44,22 +53,21 @@ public class AnalyseFichier
 				{
 					List<Liaison> liaisons = Liaison.creerLiaison(classe1, classe2, this);
 					for (Liaison liaison : liaisons)
-					{
-						if (liaison != null)
-							this.lstLiaisons.add(liaison);
-					}
+						if (liaison != null) this.lstLiaisons.add(liaison);
 				}
 			}
 		}
 	}
+
+
 	//---------------------------------------//
 	// Getters //
 	//---------------------------------------//
-	/**
-	 * Renvoie la list des classes
-	 * @return ArrayList ArrayList de tout les classe qu'on a parcourus
-	 */
-	public ArrayList<Classe> getLstClasses() {return new ArrayList<Classe>(this.lstClass);}
+	
+
+	public ArrayList<Classe> getLstClasses () {return new ArrayList<Classe>(this.lstClass);}
+	public List<Liaison>     getListLiaison() { return this.lstLiaisons;                     }
+
 	/**
 	 * Determine si le string est un Modificateur
 	 * @param text fraction d'une ligne
@@ -72,8 +80,10 @@ public class AnalyseFichier
 				text.equals("final"));
 	}
 
-	public List<Liaison> getListLiaison() { return this.lstLiaisons; }
-
+	/**
+	 * Retourne la liste de tout les liaison uni-directionelle
+	 * @return lstUnique la liste des liaison unique
+	 */
 	public List<Liaison> getListLiaisonUnique()
 	{
 		List<Liaison> lstUnique = new ArrayList<Liaison>();
@@ -83,36 +93,53 @@ public class AnalyseFichier
 		return lstUnique;
 	}
 
+	/**
+	 * Retourne la liste de tout les liaison bi-directionelle
+	 * @return lstBinaire la liste des liaison binaire
+	 */
 	public List<Liaison> getListLiaisonBinaire()
 	{
 		HashMap<Classe, Liaison> lstBinaire = new HashMap<Classe, Liaison>();
+		
 		for (Liaison l : this.lstLiaisons)
+		{
 			if (l.estBinaire() && !lstBinaire.containsKey(l.getToClass()) &&
-					!lstBinaire.containsKey(l.getFromClass()))
+			    !lstBinaire.containsKey(l.getFromClass()))
+			{
 				lstBinaire.put(l.getToClass(), l);
+			}
+		}
+
 		return new ArrayList<Liaison>(lstBinaire.values());
 	}
 
+	/**
+	 * Retourne si le nom existe dans liste classe
+	 * @return boolean si oui ou nom la classe nom existe
+	 */
 	public boolean estClasse(String nom)
 	{
 		for ( Classe c : this.lstClass)
 			if (c.getNom().equals(nom)) return true;
+		
 		return false;
 	}
 
+	/**
+	 * Retourne si oui ou non la classe existe même inseré dans une collections
+	 * @param type la chaine de caractère du type
+	 * @return Boolean si la classe du type existe
+	 */
 	public boolean estClasseProjet(String type) 
 	{
+		type = type.trim();
+		
 		if (type == null || type.trim().isEmpty()) return false;
 
-		type = type.trim();
-
 		while (type.endsWith("[]")) 
-		{
 			type = type.substring(0, type.length() - 2).trim();
-		}
 
-		if (!type.contains("<"))
-			return this.estClasse(type);
+		if (!type.contains("<")) return this.estClasse(type);
 
 		int start = type.indexOf('<');
 		int end = type.lastIndexOf('>');
@@ -125,15 +152,18 @@ public class AnalyseFichier
 			String args = type.substring(start + 1, end).trim();
 			if (!args.isEmpty()) 
 			{
-				String[] parts = args.split(",");
-				for (String part : parts)
-					if (estClasseProjet(part.trim())) 
+				Scanner scPartit = new Scanner(args);
+				scPartit.useDelimiter(",");
+
+				while (scPartit.hasNext())
+					if (estClasseProjet(scPartit.next().trim())) 
 						return true;
 			}
 		}
 
 		return false;
 	}
+
 
 	//---------------------------------------//
 	// methode instance //
@@ -145,6 +175,9 @@ public class AnalyseFichier
 		if (trimmed.contains("{")) trimmed = trimmed.substring(0, trimmed.length()-1);
 		if (trimmed.contains("abstract")) 
 			c.setIsAbstract(true);
+
+		if (trimmed.contains("interface")) 
+			c.setIsInterface(true);		
 		
 
 		if (trimmed.contains("extends"))
@@ -244,6 +277,8 @@ public class AnalyseFichier
 
 		if (ligne.contains("{"))
 			ligne = ligne.substring(0,ligne.indexOf("{")-1);
+		
+		if (ligne.contains("@Override")) return;
 
 		if (ligne.contains("(") && !ligne.contains("="))
 			traiterMethode(ligne, visibilite, isStatic);
