@@ -2,7 +2,9 @@ package vue;
 
 import java.util.ArrayList;
 import metier.classe.Classe;
+import metier.classe.Liaison;
 import metier.classe.Methode;
+import metier.AnalyseFichier;
 import metier.classe.Attribut;
 import metier.classe.Parametre;
 
@@ -104,6 +106,28 @@ public class AffichageCUI
 		
 		return sRet;
 	}
+
+	public String afficherLiaison(AnalyseFichier analyseFichier)
+	{
+		String res = "";
+		for (Liaison l : analyseFichier.getListLiaisonUnique())
+		{
+			String nomFromClass = l.getFromClass().getNom();
+			String nomToClass = l.getToClass().getNom();
+			String multiplicity = l.getToMultiplicity().toString();
+			res += "Unidirectionnelle de " +  nomFromClass + multiplicity +  " Vers " + nomToClass + "(1..1)\n";
+		}
+
+		for (Liaison l : analyseFichier.getListLiaisonBinaire())
+		{
+			String nomFromClass = l.getFromClass().getNom();
+			String nomToClass = l.getToClass().getNom();
+			String multiplicity = l.getToMultiplicity().toString();
+			res += "bidirectionnelle de " +  nomFromClass + multiplicity +  " Vers " + nomToClass + "(0..*)\n";
+		}
+		return res;
+	}
+
 
 
 	private static char getSigneVisibilite(String visibilite)

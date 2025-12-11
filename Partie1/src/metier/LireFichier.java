@@ -36,7 +36,7 @@ public class LireFichier
 				}
 				else
 				{
-					analyseFichier.analyserLigne(ligne);
+					if(!estCommentaire) analyseFichier.analyserLigne(ligne);
 					if (ligne.contains("/*")) estCommentaire = true;
 				}
 			}

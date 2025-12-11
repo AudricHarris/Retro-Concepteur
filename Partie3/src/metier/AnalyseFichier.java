@@ -208,8 +208,13 @@ public class AnalyseFichier
 			name = type.substring(0, idx);
 			type = "";
 		}
-		else if (!name.equals("("))
-			name = name.split("\\(")[0];
+		else
+			if (!name.equals("("))
+			{
+				Scanner scName = new Scanner(name);
+				scName.useDelimiter("\\(");
+				name = scName.next();
+		}
 
 		if (name.length() <= 2) return;
 

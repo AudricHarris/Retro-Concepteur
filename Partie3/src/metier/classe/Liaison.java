@@ -2,6 +2,7 @@ package metier.classe;
 import controller.Controller;
 import metier.AnalyseFichier;
 import metier.classe.Classe;
+import metier.classe.Multiplicite;
 import metier.classe.Parametre;
 
 import java.util.ArrayList;
@@ -52,7 +53,7 @@ public class Liaison
 	 * */
 	private Liaison(Classe classe1 , Classe classe2, Attribut attribut, AnalyseFichier analyseFichier)
 	{
-		this.toMultiplicity = new Multiplicite("temp","temp");
+		this.toMultiplicity = new Multiplicite("0","temp");
 
 		this.fromClass =  classe1;
 		this.toClass = classe2;
@@ -67,7 +68,6 @@ public class Liaison
 				this.toMultiplicity = new Multiplicite("1","temp");
 				break;
 			}
-			else this.toMultiplicity = new Multiplicite("0","temp");
 			
 		}
 
@@ -87,7 +87,7 @@ public class Liaison
 		return false;
 	}
 
-
+	public Multiplicite getToMultiplicity() { return this.toMultiplicity; }
 		
 	public String toString()
 	{
