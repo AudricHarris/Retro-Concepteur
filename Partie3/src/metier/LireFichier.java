@@ -24,66 +24,77 @@ public class LireFichier
 	{
 		boolean estCommentaire = false;
 		if (chemin == null || chemin.isEmpty())
-		{
 			throw new IllegalArgumentException("Le chemin ne peut pas être null");
-		}
 
 		List<String> codeNetoye = LireFichier.codePropre(chemin, analyseFichier);
 		for (String s : codeNetoye)
 			analyseFichier.analyserLigne(s);
 	}
 
-	public static List<String> codePropre(String chemin, AnalyseFichier analyseFichier) {
+	public static List<String> codePropre(String chemin, AnalyseFichier analyseFichier) 
+	{
 		List<String> codeLines = new ArrayList<String>();
 		StringBuilder currentSignature = null;
-		try {
+		try 
+		{
 			Scanner scanner = new Scanner(new File(chemin), "UTF-8");
 			int niveau = 0;
 			boolean estCommentaire = false;
-			while (scanner.hasNextLine()) {
+			while (scanner.hasNextLine()) 
+			{
 				String ligne = scanner.nextLine();
 				ligne = ligne.replace("\t", "").trim();
 				if (ligne.contains("class")) analyseFichier.insererProprieteClass(ligne);
 				if (ligne.isEmpty()) continue;
 				boolean skip = false;
-				if (estCommentaire) {
-					if (ligne.contains("*/")) {
+
+				if (estCommentaire) 
+				{
+					if (ligne.contains("*/"))
 						estCommentaire = false;
-					}
+					
 					skip = true;
 				}
-				else if (ligne.startsWith("//")) {
+
+				else if (ligne.startsWith("//"))
+					skip = true;
+				
+				else if (ligne.startsWith("/*"))
+				{
+					if (!ligne.endsWith("*/")) 
+						estCommentaire = true;
+
 					skip = true;
 				} 
-				else if (ligne.startsWith("/*")) {
-					if (!ligne.endsWith("*/")) {
-						estCommentaire = true;
-					}
-					skip = true;
-				} else if (ligne.startsWith("*")) {
-					if (ligne.contains("*/")) {
+				
+				else if (ligne.startsWith("*")) 
+				{
+					if (ligne.contains("*/")) 
 						estCommentaire = false;
-					}
 					skip = true;
 				}
-				if (skip) {
+				
+				if (skip) 
 					continue;
-				}
+
 				// Gérer les commentaires inline /* potentiels
-				if (ligne.contains("/*")) {
+				if (ligne.contains("/*"))
 					estCommentaire = true;
-				}
+
 				// Ajouter si niveau == 1, avec fusion des lignes multi-lignes
-				if (niveau == 1) {
-					if (currentSignature == null) {
+				if (niveau == 1) 
+				{
+					if (currentSignature == null)
 						currentSignature = new StringBuilder();
-					}
+
 					currentSignature.append(ligne).append("\n");
-					if (ligne.contains(";") || ligne.contains("{")) {
+					if (ligne.contains(";") || ligne.contains("{")) 
+					{
 						String s = currentSignature.toString().trim();
-						if (s.endsWith("{")) {
+
+						if (s.endsWith("{")) 
 							s = s.substring(0, s.length() - 1).trim();
-						}
+
 						codeLines.add(s);
 						currentSignature = null;
 					}
@@ -92,12 +103,13 @@ public class LireFichier
 				int opens = ligne.length() - ligne.replace("{", "").length();
 				int closes = ligne.length() - ligne.replace("}", "").length();
 				niveau += opens - closes;
-				if (niveau < 0) {
+				if (niveau < 0)
 					niveau = 0;
-				}
 			}
 			scanner.close();
-		} catch (FileNotFoundException e) {
+		} 
+		catch (FileNotFoundException e) 
+		{
 			e.printStackTrace();
 		}
 		return codeLines;

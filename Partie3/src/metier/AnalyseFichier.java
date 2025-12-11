@@ -54,10 +54,6 @@ public class AnalyseFichier
 				}
 			}
 		}
-		System.out.println("Unique");
-		System.out.println(this.getListLiaisonUnique());
-		System.out.println("Binaire");
-		System.out.println(this.getListLiaisonBinaire());
 	}
 	//---------------------------------------//
 	// Getters //
@@ -78,7 +74,9 @@ public class AnalyseFichier
 				text.equals("protected") || text.equals("static") ||
 				text.equals("final"));
 	}
+
 	public List<Liaison> getListLiaison() { return this.lstLiaisons; }
+
 	public List<Liaison> getListLiaisonUnique()
 	{
 		List<Liaison> lstUnique = new ArrayList<Liaison>();
@@ -87,6 +85,7 @@ public class AnalyseFichier
 				lstUnique.add(l);
 		return lstUnique;
 	}
+
 	public List<Liaison> getListLiaisonBinaire()
 	{
 		HashMap<Classe, Liaison> lstBinaire = new HashMap<Classe, Liaison>();
@@ -96,6 +95,7 @@ public class AnalyseFichier
 				lstBinaire.put(l.getToClass(), l);
 		return new ArrayList<Liaison>(lstBinaire.values());
 	}
+
 	public boolean isAClass(String nom)
 	{
 		for ( Classe c : this.lstClass)
@@ -103,37 +103,34 @@ public class AnalyseFichier
 		return false;
 	}
 
-	public boolean refersToProjectClass(String type) {
+	public boolean refersToProjectClass(String type) 
+	{
 		if (type == null || type.trim().isEmpty()) return false;
 		type = type.trim();
 
-		// Gère les tableaux multiples (Classe[][], etc.)
 		while (type.endsWith("[]")) {
 			type = type.substring(0, type.length() - 2).trim();
 		}
 
-		// Si pas de générique, check direct
 		if (!type.contains("<")) {
 			return isAClass(type);
 		}
 
-		// Gère les génériques
 		int start = type.indexOf('<');
 		int end = type.lastIndexOf('>');
-		if (start != -1 && end > start) {
-			// Check le type de base (ex: MyClass<String> → check "MyClass")
+
+		if (start != -1 && end > start) 
+		{
 			String base = type.substring(0, start).trim();
 			if (isAClass(base)) return true;
 
-			// Check les arguments génériques (ex: <String, List<Classe>>)
 			String args = type.substring(start + 1, end).trim();
-			if (!args.isEmpty()) {
+			if (!args.isEmpty()) 
+			{
 				String[] parts = args.split(",");
-				for (String part : parts) {
-					if (refersToProjectClass(part.trim())) {
+				for (String part : parts)
+					if (refersToProjectClass(part.trim())) 
 						return true;
-					}
-				}
 			}
 		}
 
@@ -147,12 +144,10 @@ public class AnalyseFichier
 	{
 		String trimmed = ligne.trim();
 		Classe c = this.lstClass.getLast();
-		System.out.println(trimmed);
 		if (trimmed.contains("{")) trimmed = trimmed.substring(0, trimmed.length()-1);
 		if (trimmed.contains("abstract")) 
-		{
 			c.setIsAbstract(true);
-		}
+		
 
 		if (trimmed.contains("extends"))
 		{
@@ -164,11 +159,13 @@ public class AnalyseFichier
 			String heritage = trimmed.substring(trimmed.indexOf("extends") + 7, indFin).trim();
 			c.setHeritageClasse(new Classe(heritage.trim()));
 			for (Classe cls : lstClass)
+			{
 				if (cls.getNom().equals(heritage.trim()))
 				{
 					c.setHeritageClasse(c);
 					break;
 				}
+			}
 		}
 		if (trimmed.contains("implements"))
 		{
@@ -197,17 +194,23 @@ public class AnalyseFichier
 	public void analyserLigne(String ligne)
 	{
 		ligne = ligne.trim();
-		if (ligne.isEmpty() || ligne.startsWith("//") || ligne.startsWith("/*") || ligne.startsWith("*")) return;
+		
 		String visibilite = "";
 		boolean isStatic = false;
 		boolean isFinal = false;
 		boolean modificateurTrouve = true;
+
+		if (ligne.isEmpty() || ligne.startsWith("//") || ligne.startsWith("/*") || ligne.startsWith("*")) return;
+
+
 		while (modificateurTrouve)
 		{
 			modificateurTrouve = false;
 			int indexEspace = ligne.indexOf(' ');
 			if (indexEspace == -1) break;
+
 			String mot = ligne.substring(0, indexEspace);
+			
 			switch (mot)
 			{
 				case "public":
@@ -240,52 +243,74 @@ public class AnalyseFichier
 			if (modificateurTrouve)
 				ligne = ligne.substring(indexEspace + 1).trim();
 		}
+
+		if (ligne.contains("{"))
+			ligne = ligne.substring(0,ligne.indexOf("{")-1);
+
 		if (ligne.contains("(") && !ligne.contains("="))
 			traiterMethode(ligne, visibilite, isStatic);
 		else
 			traiterAttribut(ligne, visibilite, isStatic, isFinal);
 	}
+
+
 	private void traiterAttribut(String ligneRestante, String visibilite, boolean isStatic, boolean isFinal)
 	{
 		int indexPointVirgule = ligneRestante.indexOf(';');
 		if (indexPointVirgule != -1)
 			ligneRestante = ligneRestante.substring(0, indexPointVirgule).trim();
+
 		int indexEgal = ligneRestante.indexOf('=');
 		if (indexEgal != -1)
 			ligneRestante = ligneRestante.substring(0, indexEgal).trim();
+
+		ligneRestante = ligneRestante.replaceAll("\\s+", " ").trim();
 		int dernierEspace = ligneRestante.lastIndexOf(' ');
 		if (dernierEspace == -1)
 			return;
+
 		String type = ligneRestante.substring(0, dernierEspace).trim();
 		String nom = ligneRestante.substring(dernierEspace + 1).trim();
 		Classe c = lstClass.getLast();
+
 		c.ajouterAttribut(nom, isFinal, type, visibilite, isStatic);
 	}
+
+
 	private void traiterMethode(String ligneRestante, String visibilite, boolean isStatic)
 	{
 		int indexParOuvrante = ligneRestante.indexOf('(');
 		String declaration = ligneRestante.substring(0, indexParOuvrante);
 		int indexParFermante = ligneRestante.lastIndexOf(')');
 		String contenuParametres = "";
-		contenuParametres = ligneRestante.substring(indexParOuvrante + 1, indexParFermante);
+
 		String nom = "";
 		String type = "";
+		declaration = declaration.replaceAll("\\s+", " ").trim();
 		int dernierEspace = declaration.lastIndexOf(' ');
 		Classe c = lstClass.getLast();
+
+		contenuParametres = ligneRestante.substring(indexParOuvrante + 1, indexParFermante);
+		
 		if (dernierEspace == -1)
 		{
 			nom = declaration;
 			type = "";
-		} else
+		} 
+		
+		else
 		{
 			type = declaration.substring(0, dernierEspace).trim();
 			nom = declaration.substring(dernierEspace + 1).trim();
 		}
+		
 		ArrayList<Parametre> params = extraireParametres(contenuParametres);
 		if (nom.equals(c.getNom()))
 			type = nom;
 		c.ajouterMethode(visibilite, nom, type, params, isStatic);
 	}
+
+
 	private ArrayList<Parametre> extraireParametres(String paramsStr)
 	{
 		ArrayList<Parametre> listeParams = new ArrayList<Parametre>();
