@@ -151,7 +151,7 @@ public class AnalyseFichier
 					indFin = trimmed.indexOf("implements");
 				else
 					indFin = trimmed.length();
-				String heritage = trimmed.substring(trimmed.indexOf("extends") + 7, indFin-1).trim();
+				String heritage = trimmed.substring(trimmed.indexOf("extends") + 7, indFin).trim();
 				Classe c = lstClass.getLast();
 				c.setHeritageClasse(new Classe(heritage.trim()));
 				for (Classe cls : lstClass)
@@ -164,7 +164,7 @@ public class AnalyseFichier
 			if (trimmed.contains("implements")) 
 			{
 				int indFin = trimmed.length();
-				String partImplement = 	trimmed.substring(trimmed.indexOf("implements")+10, indFin-1).trim();
+				String partImplement = 	trimmed.substring(trimmed.indexOf("implements")+10, indFin).trim();
 				try 
 				{
 					Scanner sc = new Scanner(partImplement);
