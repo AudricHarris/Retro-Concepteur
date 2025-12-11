@@ -129,12 +129,7 @@ public class AnalyseFichier
 		// Determiner si commentaire ou si nÃ©cessaire de traiter
 		if (ligne.length() < 1) return;
 		if (trimmed.isEmpty() || trimmed.startsWith("//")) return;
-		
-		// Metre Ã  jour le niveau
-		if (trimmed.contains("{")) this.niveau++;
-		if (trimmed.contains("}")) this.niveau--;
-
-		if (this.niveau == 1) this.extraireMethodeAttribut(trimmed);
+	
 
 		if (trimmed.contains("abstract")) 
 		{
@@ -156,7 +151,7 @@ public class AnalyseFichier
 					indFin = trimmed.indexOf("implements");
 				else
 					indFin = trimmed.length();
-				String heritage = trimmed.substring(trimmed.indexOf("extends") + 7, indFin).trim();
+				String heritage = trimmed.substring(trimmed.indexOf("extends") + 7, indFin-1).trim();
 				Classe c = lstClass.getLast();
 				c.setHeritageClasse(new Classe(heritage.trim()));
 				for (Classe cls : lstClass)
@@ -169,7 +164,7 @@ public class AnalyseFichier
 			if (trimmed.contains("implements")) 
 			{
 				int indFin = trimmed.length();
-				String partImplement = 	trimmed.substring(trimmed.indexOf("implements")+10, indFin).trim();
+				String partImplement = 	trimmed.substring(trimmed.indexOf("implements")+10, indFin-1).trim();
 				try 
 				{
 					Scanner sc = new Scanner(partImplement);
@@ -190,6 +185,12 @@ public class AnalyseFichier
 				}
 			}
 		}
+		
+		// Metre Ã  jour le niveau
+		if (trimmed.contains("{")) this.niveau++;
+		if (trimmed.contains("}")) this.niveau--;
+
+		if (this.niveau == 1) this.extraireMethodeAttribut(trimmed);
 	}
 
 	/**
