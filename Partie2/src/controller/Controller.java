@@ -16,7 +16,7 @@ public class Controller
 
 	public Controller() 
 	{
-		this.analyseFichier = new AnalyseFichier("/home/etudiant/ll240582/TP/s2/s2.01_dev_application/repo/sae2125/Groupe8-SAE125/source/metier");
+		this.analyseFichier = new AnalyseFichier("/home/etudiant/ha241570/Documents/uml_test_project/src/com/example/uml");
 		this.affichageCUI = new AffichageCUI();
 
 	}

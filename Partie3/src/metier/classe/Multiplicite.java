@@ -39,6 +39,6 @@ public class Multiplicite
 	
 	public String toString()
 	{
-		return "[" + this.borneInf + ".." + this.borneSup + "]";
+		return "(" + this.borneInf + ".." + this.borneSup + ")";
 	}
 }

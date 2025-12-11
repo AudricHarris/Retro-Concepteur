@@ -1,6 +1,7 @@
 package metier.classe;
 import controller.Controller;
 import metier.AnalyseFichier;
+import metier.classe.Classe;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -8,9 +9,9 @@ import java.util.List;
 public class Liaison 
 {
 
-    private String fromClass;
-    private String toClass;
-    private Multiplicite toMultiplicity;
+	private Classe fromClass;
+	private Classe toClass;
+	private Multiplicite toMultiplicity;
 	private String nomVar;
 
 	private Controller ctrl;
@@ -22,9 +23,9 @@ public class Liaison
 		Liaison liaison = null;
 		for (Attribut attribut1 : classe1.getLstAttribut())
 		{
-			if (attribut1.getType().equals(classe2.getNom()       ) || 
-			    attribut1.getType().contains(classe2.getNom()+">" ) ||
-			    attribut1.getType().contains(classe2.getNom()+"[]")) 
+			if (attribut1.getType().equals(classe2.getNom()	   ) || 
+				attribut1.getType().contains(classe2.getNom()+">" ) ||
+				attribut1.getType().contains(classe2.getNom()+"[]")) 
 			{
 				liaison = new Liaison( classe1, classe2, attribut1);
 				lstLiaisons.add(liaison);
@@ -68,28 +69,33 @@ public class Liaison
 			this.toMultiplicity.setBorneSup("1");
 	}
 	
+	private Classe getToClasse() { return this.toClass; }
+
 	private static boolean estCollection(String type) 
 	{
-        if (type == null) return false;
-        String t = type.trim();
+		if (type == null) return false;
+		String t = type.trim();
 
 		
-        if (t.contains("[]"))
-            return true;
+		if (t.contains("[]"))
+			return true;
 
 		
-        return t.startsWith("List<")
-            || t.startsWith("ArrayList<")
-            || t.startsWith("LinkedList<")
-            || t.startsWith("Set<")
-            || t.startsWith("HashSet<")
-            || t.startsWith("TreeSet<")
-            || t.startsWith("Collection")
-            || t.startsWith("Iterable<");
-    }
+		return t.startsWith("List<")
+			|| t.startsWith("ArrayList<")
+			|| t.startsWith("LinkedList<")
+			|| t.startsWith("Set<")
+			|| t.startsWith("HashSet<")
+			|| t.startsWith("TreeSet<")
+			|| t.startsWith("Collection")
+			|| t.startsWith("Iterable<");
+	}
+
+
+	
 	public String toString()
 	{
-		return this.fromClass + " ----> " + this.toMultiplicity.toString() + " " + this.toClass + " " + this.nomVar;
+		return this.fromClass.getNom() + " ----> " + this.toMultiplicity.toString() + " " + this.toClass.getNom() + " " + this.nomVar;
 	}
 	
 }

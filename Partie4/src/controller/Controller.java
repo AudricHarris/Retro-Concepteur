@@ -25,7 +25,11 @@ public class Controller
 	{
 		System.out.println(this.affichageCUI.afficherClasse(this.analyseFichier.getLstClasses()));
 	}
-
+	
+	public void AfficherLiaison()
+	{
+		System.out.println(this.affichageCUI.afficherLiaison(this.analyseFichier));
+	}
 
 	public static void main(String[] args) 
 	{

@@ -16,7 +16,7 @@ public class Controller
 
 	public Controller() 
 	{
-		this.analyseFichier = new AnalyseFichier(this,"/home/etudiant/ha241570/TP/s3/s3.01_dev_application/Retro-Concepteur/Partie3/tests");
+		this.analyseFichier = new AnalyseFichier(this,"/home/etudiant/ha241570/TP/s3/r3.05_prog_syst/test");
 		this.affichageCUI = new AffichageCUI();
 
 	}
@@ -26,10 +26,16 @@ public class Controller
 		System.out.println(this.affichageCUI.afficherClasse(this.analyseFichier.getLstClasses()));
 	}
 
+	public void afficherLiaison()
+	{
+			System.out.println(this.affichageCUI.afficherLiaison(this.analyseFichier));
+	}
 
 	public static void main(String[] args) 
 	{
-		new Controller().afficher();
+		Controller controller = new Controller();
+		controller.afficher();
+		controller.afficherLiaison();
 	}
 
 }
