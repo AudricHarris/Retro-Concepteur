@@ -16,14 +16,14 @@ public class Controller
 
 	public Controller() 
 	{
-		this.analyseFichier = new AnalyseFichier(this,"/home/etudiant/ha241570/TP/s3/s3.01_dev_application/Retro-Concepteur/Partie3/tests");
+		this.analyseFichier = new AnalyseFichier(this,"/home/etudiant/ha241570/TP/s3/s3.01_dev_application/Retro-Concepteur/Partie4/tests");
 		this.affichageCUI = new AffichageCUI();
 
 	}
 
 	public void afficher ()
 	{
-		System.out.println(this.affichageCUI.afficherClasse(this.analyseFichier.getLstClasses()));
+		System.out.println(this.affichageCUI.afficherClasse(this.analyseFichier));
 	}
 
 	public void afficherLiaison()

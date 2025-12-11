@@ -1,92 +1,72 @@
 package metier;
-
-
 // Import package extern
 import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Scanner;
-
 // Import package itern
 import metier.classe.*;
-
 import controller.Controller;
-
 /**
  * - Permet la lecture d'un dossier et la creation de classe.
- *   Une fois crée nous ajoutons les methode et attribut à cette classe
+ * Une fois crée nous ajoutons les methode et attribut à cette classe
  */
 public class AnalyseFichier
 {
 	private Controller ctrl;
 	private ArrayList<Classe> lstClass;
 	private List<Liaison> lstLiaisons;
-
 	/**
 	 * Construit l'instance AnalyseFichier et parcours le repo
 	 * @param repo chemin du repositoire avec programme java
 	 */
 	public AnalyseFichier(Controller ctrl, String repo)
 	{
-		this.ctrl	 = ctrl;
+		this.ctrl = ctrl;
 		this.lstClass = new ArrayList<Classe>();
-
 		ArrayList<String> allFiles = new ArrayList<String>();
-
 		this.lstLiaisons = new ArrayList<Liaison>();
-		
 		try
 		{
 			File f = new File(repo);
 			AnalyseFichier.listeRepertoire(f, allFiles);
-
 			for (String file : allFiles)
 			{
 				Classe classCourante = new Classe(file.substring(file.lastIndexOf("/") + 1,file.lastIndexOf(".")));
 				this.lstClass.add(classCourante);
-
 				LireFichier.lireFichier(file, this);
 			}
 		}
 		catch (Exception e) { System.out.println("fichier non trouvé"); }
-
-		for (Classe classe1 : this.lstClass) 
+		for (Classe classe1 : this.lstClass)
 		{
-			for (Classe classe2 : this.lstClass) 
+			for (Classe classe2 : this.lstClass)
 			{
-				if (classe1 != classe2) 
+				if (classe1 != classe2)
 				{
 					List<Liaison> liaisons = Liaison.creerLiaison(classe1, classe2, this);
-		
-					for (Liaison liaison : liaisons) 
+					for (Liaison liaison : liaisons)
 					{
-						if (liaison != null) 
+						if (liaison != null)
 							this.lstLiaisons.add(liaison);
 					}
 				}
 			}
-			
 		}
-
 		System.out.println("Unique");
 		System.out.println(this.getListLiaisonUnique());
 		System.out.println("Binaire");
 		System.out.println(this.getListLiaisonBinaire());
 	}
-
 	//---------------------------------------//
-	//			  Getters				  //
+	// Getters //
 	//---------------------------------------//
-
 	/**
 	 * Renvoie la list des classes
 	 * @return ArrayList ArrayList de tout les classe qu'on a parcourus
 	 */
 	public ArrayList<Classe> getLstClasses() {return new ArrayList<Classe>(this.lstClass);}
-
-
-
 	/**
 	 * Determine si le string est un Modificateur
 	 * @param text fraction d'une ligne
@@ -94,39 +74,121 @@ public class AnalyseFichier
 	 */
 	public boolean getModificateur(String text)
 	{
-		return (text.equals("public")	|| text.equals("private") || 
-				text.equals("protected") || text.equals("static")  || 
+		return (text.equals("public") || text.equals("private") ||
+				text.equals("protected") || text.equals("static") ||
 				text.equals("final"));
 	}
-
 	public List<Liaison> getListLiaison() { return this.lstLiaisons; }
-
 	public List<Liaison> getListLiaisonUnique()
 	{
 		List<Liaison> lstUnique = new ArrayList<Liaison>();
-		
 		for (Liaison l : this.lstLiaisons)
 			if (!l.estBinaire())
 				lstUnique.add(l);
-
 		return lstUnique;
 	}
-	
 	public List<Liaison> getListLiaisonBinaire()
 	{
 		HashMap<Classe, Liaison> lstBinaire = new HashMap<Classe, Liaison>();
 		for (Liaison l : this.lstLiaisons)
-			if (l.estBinaire() && !lstBinaire.containsKey(l.getToClass()) && 
-				!lstBinaire.containsKey(l.getFromClass())) 
+			if (l.estBinaire() && !lstBinaire.containsKey(l.getToClass()) &&
+					!lstBinaire.containsKey(l.getFromClass()))
 				lstBinaire.put(l.getToClass(), l);
-
 		return new ArrayList<Liaison>(lstBinaire.values());
+	}
+	public boolean isAClass(String nom)
+	{
+		for ( Classe c : this.lstClass)
+			if (c.getNom().equals(nom)) return true;
+		return false;
+	}
+
+	public boolean refersToProjectClass(String type) {
+		if (type == null || type.trim().isEmpty()) return false;
+		type = type.trim();
+
+		// Gère les tableaux multiples (Classe[][], etc.)
+		while (type.endsWith("[]")) {
+			type = type.substring(0, type.length() - 2).trim();
+		}
+
+		// Si pas de générique, check direct
+		if (!type.contains("<")) {
+			return isAClass(type);
+		}
+
+		// Gère les génériques
+		int start = type.indexOf('<');
+		int end = type.lastIndexOf('>');
+		if (start != -1 && end > start) {
+			// Check le type de base (ex: MyClass<String> → check "MyClass")
+			String base = type.substring(0, start).trim();
+			if (isAClass(base)) return true;
+
+			// Check les arguments génériques (ex: <String, List<Classe>>)
+			String args = type.substring(start + 1, end).trim();
+			if (!args.isEmpty()) {
+				String[] parts = args.split(",");
+				for (String part : parts) {
+					if (refersToProjectClass(part.trim())) {
+						return true;
+					}
+				}
+			}
+		}
+
+		return false;
 	}
 
 	//---------------------------------------//
-	//		 methode instance			  //
+	// methode instance //
 	//---------------------------------------//
-	
+	public void insererProprieteClass(String ligne)
+	{
+		String trimmed = ligne.trim();
+		Classe c = this.lstClass.getLast();
+		System.out.println(trimmed);
+		if (trimmed.contains("{")) trimmed = trimmed.substring(0, trimmed.length()-1);
+		if (trimmed.contains("abstract")) 
+		{
+			c.setIsAbstract(true);
+		}
+
+		if (trimmed.contains("extends"))
+		{
+			int indFin;
+			if (trimmed.contains("implements"))
+				indFin = trimmed.indexOf("implements");
+			else
+				indFin = trimmed.length();
+			String heritage = trimmed.substring(trimmed.indexOf("extends") + 7, indFin).trim();
+			c.setHeritageClasse(new Classe(heritage.trim()));
+			for (Classe cls : lstClass)
+				if (cls.getNom().equals(heritage.trim()))
+				{
+					c.setHeritageClasse(c);
+					break;
+				}
+		}
+		if (trimmed.contains("implements"))
+		{
+			int indFin = trimmed.length();
+			String partImplement = trimmed.substring(trimmed.indexOf("implements")+10, indFin).trim();
+			try
+			{
+				Scanner sc = new Scanner(partImplement);
+				sc.useDelimiter(",");
+				while (sc.hasNext())
+				{
+					String nomInterface = sc.next().trim();
+					c.ajouterInterface(nomInterface);
+				}
+			} catch (Exception e)
+			{
+				e.printStackTrace();
+			}
+		}
+	}
 	/**
 	 * Mets à jour le niveau si des accolades sont present
 	 * Determine si la ligne pourait posseder des methodes ou attributs
@@ -134,128 +196,126 @@ public class AnalyseFichier
 	 */
 	public void analyserLigne(String ligne)
 	{
-		String trimmed = ligne.trim();
-		
-		this.extraireMethodeAttribut(trimmed);
-	}
-
-	/**
-	 * Traite la ligne et Instancie les méthode ou attribut de cette ligne
-	 * @param ligne une ligne de codei à information utile
-	 */
-	public void extraireMethodeAttribut(String ligne)
-	{
-		String trimmed = ligne.trim();
-		if (trimmed.isEmpty()) return;
-
-		String visibility = "";
+		ligne = ligne.trim();
+		if (ligne.isEmpty() || ligne.startsWith("//") || ligne.startsWith("/*") || ligne.startsWith("*")) return;
+		String visibilite = "";
 		boolean isStatic = false;
 		boolean isFinal = false;
-
-		Scanner sc = new Scanner(ligne);
-		sc.useDelimiter("\\s+"); // tout espace qui ce rÃ©pÃ¨te une ou plusieur fois
-
-		while (sc.hasNext())
+		boolean modificateurTrouve = true;
+		while (modificateurTrouve)
 		{
-			String text = sc.next();
-			switch (text)
+			modificateurTrouve = false;
+			int indexEspace = ligne.indexOf(' ');
+			if (indexEspace == -1) break;
+			String mot = ligne.substring(0, indexEspace);
+			switch (mot)
 			{
 				case "public":
 				case "private":
 				case "protected":
-					if (visibility.isEmpty()) visibility = text;
-					break;
-				case "static": isStatic = true; break;
-				case "final":  isFinal  = true; break;
-				default:
-					break;
-			}
-		}
-
-		sc = new Scanner(ligne);
-		sc.useDelimiter("\\s+"); // tout espace qui ce rÃ©pÃ¨te une ou plusieur fois
-
-		String text = "";
-		while (sc.hasNext())
-		{
-			text = sc.next();
-			if (!this.getModificateur(text)) break;
-		}
-
-		if (!sc.hasNext() && this.getModificateur(text)) return;
-
-		String type = text;
-		String name = sc.hasNext() ? sc.next() : type;
-
-		if (type.contains("("))
-		{
-			int idx = type.indexOf("(");
-			name = type.substring(0, idx);
-			type = "";
-		}
-		else
-			if (!name.equals("("))
-			{
-				Scanner scName = new Scanner(name);
-				scName.useDelimiter("\\(");
-				name = scName.next();
-		}
-
-		if (name.length() <= 2) return;
-
-		Classe c = lstClass.getLast();
-
-		if (trimmed.contains("(") && !trimmed.contains("="))
-		{
-			int start = trimmed.indexOf('(') + 1;
-			int end   = trimmed.indexOf(')');
-			if (end < 0) end = trimmed.length();
-
-			String paramStr = trimmed.substring(start, end).trim();
-			ArrayList<Parametre> params = new ArrayList<>();
-
-			if (!paramStr.isEmpty())
-			{
-				Scanner param = new Scanner(paramStr);
-				param.useDelimiter(",");
-				while (param.hasNext())
 				{
-					String p = param.next().trim();
-					Scanner sp = new Scanner(p);
-					sp.useDelimiter("\\s+");
-	
-					ArrayList<String> parts = new ArrayList<>();
-					while (sp.hasNext()) parts.add(sp.next());
-
-					if (parts.size() >= 2)
-					{
-						String pName = parts.get(parts.size() - 1);
-						String pType = String.join(" ", parts.subList(0, parts.size() - 1));
-						params.add(new Parametre(pName, pType));
-					}
+					visibilite = mot;
+					modificateurTrouve = true;
+					break;
+				}
+				case "static":
+				{
+					isStatic = true;
+					modificateurTrouve = true;
+					break;
+				}
+				case "final" :
+				{
+					isFinal = true;
+					modificateurTrouve = true;
+					break;
+				}
+				case "abstract":
+				case "synchronized":
+				{
+					modificateurTrouve = true;
+					break;
 				}
 			}
-
-			String returnType = type;
-			if (name.equals(c.getNom())) returnType = name;
-
-			c.ajouterMethode(visibility, name, returnType, params, isStatic);
+			if (modificateurTrouve)
+				ligne = ligne.substring(indexEspace + 1).trim();
 		}
+		if (ligne.contains("(") && !ligne.contains("="))
+			traiterMethode(ligne, visibilite, isStatic);
 		else
-		{
-			if (name.equals(type)) return;
-
-			name = name.replace(";", "");
-			c.ajouterAttribut(name, isFinal, type, visibility, isStatic);
-		}
+			traiterAttribut(ligne, visibilite, isStatic, isFinal);
 	}
-
-
+	private void traiterAttribut(String ligneRestante, String visibilite, boolean isStatic, boolean isFinal)
+	{
+		int indexPointVirgule = ligneRestante.indexOf(';');
+		if (indexPointVirgule != -1)
+			ligneRestante = ligneRestante.substring(0, indexPointVirgule).trim();
+		int indexEgal = ligneRestante.indexOf('=');
+		if (indexEgal != -1)
+			ligneRestante = ligneRestante.substring(0, indexEgal).trim();
+		int dernierEspace = ligneRestante.lastIndexOf(' ');
+		if (dernierEspace == -1)
+			return;
+		String type = ligneRestante.substring(0, dernierEspace).trim();
+		String nom = ligneRestante.substring(dernierEspace + 1).trim();
+		Classe c = lstClass.getLast();
+		c.ajouterAttribut(nom, isFinal, type, visibilite, isStatic);
+	}
+	private void traiterMethode(String ligneRestante, String visibilite, boolean isStatic)
+	{
+		int indexParOuvrante = ligneRestante.indexOf('(');
+		String declaration = ligneRestante.substring(0, indexParOuvrante);
+		int indexParFermante = ligneRestante.lastIndexOf(')');
+		String contenuParametres = "";
+		contenuParametres = ligneRestante.substring(indexParOuvrante + 1, indexParFermante);
+		String nom = "";
+		String type = "";
+		int dernierEspace = declaration.lastIndexOf(' ');
+		Classe c = lstClass.getLast();
+		if (dernierEspace == -1)
+		{
+			nom = declaration;
+			type = "";
+		} else
+		{
+			type = declaration.substring(0, dernierEspace).trim();
+			nom = declaration.substring(dernierEspace + 1).trim();
+		}
+		ArrayList<Parametre> params = extraireParametres(contenuParametres);
+		if (nom.equals(c.getNom()))
+			type = nom;
+		c.ajouterMethode(visibilite, nom, type, params, isStatic);
+	}
+	private ArrayList<Parametre> extraireParametres(String paramsStr)
+	{
+		ArrayList<Parametre> listeParams = new ArrayList<Parametre>();
+		if (paramsStr.isEmpty())
+			return listeParams;
+		int debut = 0;
+		while (true)
+		{
+			int indexVirgule = paramsStr.indexOf(',', debut);
+			String unParametreStr;
+			if (indexVirgule == -1)
+				unParametreStr = paramsStr.substring(debut).trim();
+			else
+				unParametreStr = paramsStr.substring(debut, indexVirgule).trim();
+			int espace = unParametreStr.lastIndexOf(' ');
+			if (espace != -1)
+			{
+				String pType = unParametreStr.substring(0, espace).trim();
+				String pNom = unParametreStr.substring(espace + 1).trim();
+				listeParams.add(new Parametre(pNom, pType));
+			}
+			if (indexVirgule == -1) break;
+			debut = indexVirgule + 1;
+		}
+		return listeParams;
+	}
 	//---------------------------------------//
-	//		  methode static			   //
+	// methode static //
 	//---------------------------------------//
-
-	/** 
+	/**
 	 * Ajoute tout les fichier java dans l'array list fournit
 	 * @param path chemin du repertoire
 	 * @param allFiles arrayListe vide qu'on va remplir avec les chemins des .java
@@ -263,7 +323,6 @@ public class AnalyseFichier
 	public static void listeRepertoire(File path, List<String> allFiles)
 	{
 		File[] list = path.listFiles();
-
 		if (list != null)
 		{
 			for (File f : list)
@@ -281,8 +340,5 @@ public class AnalyseFichier
 				}
 			}
 		}
-
 	}
-
 }
-
