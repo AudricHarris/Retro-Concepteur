@@ -21,7 +21,6 @@ public class AnalyseFichier
 {
 	private Controller ctrl;
 	private ArrayList<Classe> lstClass;
-	private int			   niveau;
 	private List<Liaison> lstLiaisons;
 
 	/**
@@ -32,7 +31,6 @@ public class AnalyseFichier
 	{
 		this.ctrl	 = ctrl;
 		this.lstClass = new ArrayList<Classe>();
-		this.niveau   = 0;
 
 		ArrayList<String> allFiles = new ArrayList<String>();
 
@@ -49,7 +47,6 @@ public class AnalyseFichier
 				this.lstClass.add(classCourante);
 
 				LireFichier.lireFichier(file, this);
-				this.niveau = 0;
 			}
 		}
 		catch (Exception e) { System.out.println("fichier non trouvé"); }
@@ -88,11 +85,7 @@ public class AnalyseFichier
 	 */
 	public ArrayList<Classe> getLstClasses() {return new ArrayList<Classe>(this.lstClass);}
 
-	/**
-	 * Renvoie le niveau actuelle (profondeur de lecture)
-	 * @return nbNiveau le niveau actuelle
-	 */
-	public int getNiveau	() {return this.niveau;}
+
 
 	/**
 	 * Determine si le string est un Modificateur
@@ -143,15 +136,7 @@ public class AnalyseFichier
 	{
 		String trimmed = ligne.trim();
 		
-		// Determiner si commentaire ou si nÃ©cessaire de traiter
-		if (ligne.length() < 1) return;
-		if (trimmed.isEmpty() || trimmed.startsWith("//")) return;
-		
-		// Metre Ã  jour le niveau
-		if (trimmed.contains("{")) this.niveau++;
-		if (trimmed.contains("}")) this.niveau--;
-
-		if (this.niveau == 1) this.extraireMethodeAttribut(trimmed);
+		this.extraireMethodeAttribut(trimmed);
 	}
 
 	/**
