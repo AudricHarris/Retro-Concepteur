@@ -101,17 +101,7 @@ public class AnalyseFichier
 	 */
 	public int getNiveau    () {return this.niveau;}
 
-	/**
-	 * Determine si le string est un Modificateur
-	 * @param text fraction d'une ligne
-	 * @return boolean si le text contient un Modificateur
-	 */
-	public boolean getModificateur(String text)
-	{
-		return (text.equals("public")    || text.equals("private") || 
-				text.equals("protected") || text.equals("static")  || 
-				text.equals("final"));
-	}
+
 
 	//---------------------------------------//
 	//         methode instance              //
@@ -129,7 +119,8 @@ public class AnalyseFichier
 		// Determiner si commentaire ou si nÃ©cessaire de traiter
 		if (ligne.length() < 1) return;
 		if (trimmed.isEmpty() || trimmed.startsWith("//")) return;
-	
+		
+
 
 		if (trimmed.contains("abstract")) 
 		{
@@ -186,115 +177,167 @@ public class AnalyseFichier
 			}
 		}
 		
+		if (this.niveau == 1) this.extraireMethodeAttribut(trimmed);
 		// Metre Ã  jour le niveau
 		if (trimmed.contains("{")) this.niveau++;
 		if (trimmed.contains("}")) this.niveau--;
 
-		if (this.niveau == 1) this.extraireMethodeAttribut(trimmed);
+		
 	}
 
-	/**
-	 * Traite la ligne et Instancie les méthode ou attribut de cette ligne
-	 * @param ligne une ligne de codei à information utile
-	 */
-	public void extraireMethodeAttribut(String ligne)
-	{
-		String trimmed = ligne.trim();
-		if (trimmed.isEmpty()) return;
 
-		String visibility = "";
+	public void extraireMethodeAttribut(String ligne) 
+	{
+		ligne = ligne.trim();
+		if (ligne.isEmpty() || ligne.startsWith("//") || ligne.startsWith("/*") || ligne.startsWith("*")) return;
+
+		String visibilite = ""; 
 		boolean isStatic = false;
 		boolean isFinal = false;
 
-		Scanner sc = new Scanner(ligne);
-		sc.useDelimiter("\\s+"); // tout espace qui ce rÃ©pÃ¨te une ou plusieur fois
-
-		while (sc.hasNext())
+		boolean modificateurTrouve = true;
+		while (modificateurTrouve) 
 		{
-			String text = sc.next();
-			switch (text)
+			modificateurTrouve = false; 
+			
+			int indexEspace = ligne.indexOf(' ');
+			if (indexEspace == -1) break; 
+
+			String mot = ligne.substring(0, indexEspace);
+
+			switch (mot) 
 			{
 				case "public":
 				case "private":
 				case "protected":
-					if (visibility.isEmpty()) visibility = text;
-					break;
-				case "static": isStatic = true; break;
-				case "final":  isFinal  = true; break;
-				default:
-					break;
-			}
-		}
-
-		sc = new Scanner(ligne);
-		sc.useDelimiter("\\s+"); // tout espace qui ce rÃ©pÃ¨te une ou plusieur fois
-
-		String text = "";
-		while (sc.hasNext())
-		{
-			text = sc.next();
-			if (!this.getModificateur(text)) break;
-		}
-
-		if (!sc.hasNext() && this.getModificateur(text)) return;
-
-		String type = text;
-		String name = sc.hasNext() ? sc.next() : type;
-
-		if (type.contains("("))
-		{
-			int idx = type.indexOf("(");
-			name = type.substring(0, idx);
-			type = "";
-		}
-		else if (!name.equals("("))
-			name = name.split("\\(")[0];
-
-		Classe c = lstClass.getLast();
-
-		if (trimmed.contains("(") && !trimmed.contains("="))
-		{
-			int start = trimmed.indexOf('(') + 1;
-			int end   = trimmed.indexOf(')');
-			if (end < 0) end = trimmed.length();
-
-			String paramStr = trimmed.substring(start, end).trim();
-			ArrayList<Parametre> params = new ArrayList<>();
-
-			if (!paramStr.isEmpty())
-			{
-				Scanner param = new Scanner(paramStr);
-				param.useDelimiter(",");
-				while (param.hasNext())
 				{
-					String p = param.next().trim();
-					Scanner sp = new Scanner(p);
-					sp.useDelimiter("\\s+");
-	
-					ArrayList<String> parts = new ArrayList<>();
-					while (sp.hasNext()) parts.add(sp.next());
-
-					if (parts.size() >= 2)
-					{
-						String pName = parts.get(parts.size() - 1);
-						String pType = String.join(" ", parts.subList(0, parts.size() - 1));
-						params.add(new Parametre(pName, pType));
-					}
+					visibilite = mot;
+					modificateurTrouve = true;
+					break;
+				}
+				case "static":
+				{
+					isStatic = true;
+					modificateurTrouve = true;
+					break;
+				}
+				case "final" :
+				{
+					isFinal = true;
+					modificateurTrouve = true;
+					break;
+				}
+				case "abstract":
+				case "synchronized": 
+				{
+					modificateurTrouve = true;
+					break;
 				}
 			}
+			
+			if (modificateurTrouve) 
+				ligne = ligne.substring(indexEspace + 1).trim();
+   		}
 
-			String returnType = type;
-			if (name.equals(c.getNom())) returnType = name;
+		if (ligne.contains("(") && !ligne.contains("=")) 
+			traiterMethode(ligne, visibilite, isStatic);
+		else 
+			traiterAttribut(ligne, visibilite, isStatic, isFinal);
+	}
+	
 
-			c.ajouterMethode(visibility, name, returnType, params, isStatic);
-		}
-		else
+	private void traiterAttribut(String ligneRestante, String visibilite, boolean isStatic, boolean isFinal) 
+	{
+
+		int indexPointVirgule = ligneRestante.indexOf(';');
+		if (indexPointVirgule != -1) 
+			ligneRestante = ligneRestante.substring(0, indexPointVirgule).trim();
+		
+
+		int indexEgal = ligneRestante.indexOf('=');
+		if (indexEgal != -1) 
+			ligneRestante = ligneRestante.substring(0, indexEgal).trim();
+	
+
+		int dernierEspace = ligneRestante.lastIndexOf(' ');
+		if (dernierEspace == -1) 
+			return; 
+
+		String type = ligneRestante.substring(0, dernierEspace).trim();
+		String nom = ligneRestante.substring(dernierEspace + 1).trim();
+
+		
+		Classe c = lstClass.getLast();
+		c.ajouterAttribut(nom, isFinal, type, visibilite, isStatic);
+	}
+
+
+	private void traiterMethode(String ligneRestante, String visibilite, boolean isStatic) 
+	{
+		int indexParOuvrante = ligneRestante.indexOf('(');
+		
+		String declaration = ligneRestante.substring(0, indexParOuvrante);
+		
+		int indexParFermante = ligneRestante.lastIndexOf(')');
+		String contenuParametres = "";
+
+		contenuParametres = ligneRestante.substring(indexParOuvrante + 1, indexParFermante);
+		
+		String nom = "";
+		String type = "";
+		
+		int dernierEspace = declaration.lastIndexOf(' ');
+		Classe c = lstClass.getLast();
+
+		if (dernierEspace == -1) 
 		{
-			if (name.equals(type)) return;
-
-			name = name.replace(";", "");
-			c.ajouterAttribut(name, isFinal, type, visibility, isStatic);
+			nom = declaration;
+			type = ""; 
+		} else 
+		{
+			type = declaration.substring(0, dernierEspace).trim();
+			nom = declaration.substring(dernierEspace + 1).trim();
 		}
+
+		ArrayList<Parametre> params = extraireParametres(contenuParametres);
+
+		if (nom.equals(c.getNom())) 
+			type = nom;
+
+		c.ajouterMethode(visibilite, nom, type, params, isStatic);
+	}
+
+
+	private ArrayList<Parametre> extraireParametres(String paramsStr) 
+	{
+		ArrayList<Parametre> listeParams = new ArrayList<Parametre>();
+		if (paramsStr.isEmpty()) 
+			return listeParams;
+
+		int debut = 0;
+		while (true) 
+		{
+			int indexVirgule = paramsStr.indexOf(',', debut);
+			
+			String unParametreStr;
+			if (indexVirgule == -1) 				
+				unParametreStr = paramsStr.substring(debut).trim();
+			else 				
+				unParametreStr = paramsStr.substring(debut, indexVirgule).trim();
+			
+			int espace = unParametreStr.lastIndexOf(' ');
+			if (espace != -1) 
+			{
+				String pType = unParametreStr.substring(0, espace).trim();
+				String pNom = unParametreStr.substring(espace + 1).trim();
+				listeParams.add(new Parametre(pNom, pType));
+			}
+
+			if (indexVirgule == -1) break; 
+			debut = indexVirgule + 1; 
+		}
+		
+		return listeParams;
 	}
 
 

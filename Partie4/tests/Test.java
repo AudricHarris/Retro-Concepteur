@@ -16,7 +16,8 @@ public class Test
     // Cas 4 : fin de bloc sur une ligne contenant aussi du code
     /* début bloc multi-ligne
        encore dans le bloc
-    */ int c = 3; // ta méthode ignore cette ligne complète (code perdu)
+    */ 
+   int c = 3; // ta méthode ignore cette ligne complète (code perdu)
 
     // Cas 5 : bloc multi-ligne avec étoiles
     /*
@@ -32,7 +33,8 @@ public class Test
     int e = 5; // vérifier que seul ce code est pris, pas la ligne avec "*/"
 
     // Cas 7 : mélange bizarre de séquences
-    int f = 6; /* bloc */ int g = 7; // ta méthode voit tout comme une seule ligne de code + commentaire
+    int f = 6; /* bloc */ 
+	int g = 7; // ta méthode voit tout comme une seule ligne de code + commentaire
                                      // mais elle ne sait pas vraiment enlever le bloc ni le //
 
     // Cas 8 : commentaire qui ressemble à du code
@@ -44,7 +46,9 @@ public class Test
        fin du bloc
     */
 
-    public void vrai() 
+    public void vrai(
+		String test
+	) 
     {
         int j = 10; /* commentaire dans une méthode
                        qui continue sur plusieurs lignes
