@@ -51,17 +51,18 @@ public class PanelUML extends JPanel
 		
 		for (Classe c : this.ctrl.getLstClasse()) 
 		{
-			this.mapClasseRectangle.put(c, new Rectangle(x, y, 0, 0));
+			Rectangle rect = new Rectangle(x, y, 0, 0);
+			this.mapClasseRectangle.put(c, rect);
 			x += 250;
 			if (x > 800)  
-				x = 50; y += 300; 
+				x = 50; y += 300;
 		}
 	}
 
 	public void dessinerRectangle(int x, int y,int tailleX, int tailleY )
 	{
 
-		this.g2.setColor(new Color(0, 0, 0)); 
+		this.g2.setColor(new Color(255, 255, 255)); 
 		this.g2.fillRect(x, y, tailleX, tailleY);
 		
 		this.g2.setColor(Color.BLACK);
@@ -98,6 +99,7 @@ public class PanelUML extends JPanel
 			y = this.mapClasseRectangle.get(classe).getY();
 
 			int largeurMaxPixels = metrics.stringWidth(classe.getNom());
+			this.dessinerRectangle(x, y, 50,50);
 		}
 	}
 
