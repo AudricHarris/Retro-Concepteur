@@ -4,6 +4,7 @@ package metier;
 // Import package extern
 import java.io.File;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Scanner;
 
@@ -20,7 +21,7 @@ public class AnalyseFichier
 {
 	private Controller ctrl;
 	private ArrayList<Classe> lstClass;
-	private int               niveau;
+	private int			   niveau;
 	private List<Liaison> lstLiaisons;
 
 	/**
@@ -29,7 +30,7 @@ public class AnalyseFichier
 	 */
 	public AnalyseFichier(Controller ctrl, String repo)
 	{
-		this.ctrl     = ctrl;
+		this.ctrl	 = ctrl;
 		this.lstClass = new ArrayList<Classe>();
 		this.niveau   = 0;
 
@@ -59,7 +60,7 @@ public class AnalyseFichier
 			{
 				if (classe1 != classe2) 
 				{
-					List<Liaison> liaisons = Liaison.creerLiaison(classe1, classe2);
+					List<Liaison> liaisons = Liaison.creerLiaison(classe1, classe2, this);
 		
 					for (Liaison liaison : liaisons) 
 					{
@@ -70,11 +71,15 @@ public class AnalyseFichier
 			}
 			
 		}
-		
+
+		System.out.println("Unique");
+		System.out.println(this.getListLiaisonUnique());
+		System.out.println("Binaire");
+		System.out.println(this.getListLiaisonBinaire());
 	}
 
 	//---------------------------------------//
-	//              Getters                  //
+	//			  Getters				  //
 	//---------------------------------------//
 
 	/**
@@ -87,7 +92,7 @@ public class AnalyseFichier
 	 * Renvoie le niveau actuelle (profondeur de lecture)
 	 * @return nbNiveau le niveau actuelle
 	 */
-	public int getNiveau    () {return this.niveau;}
+	public int getNiveau	() {return this.niveau;}
 
 	/**
 	 * Determine si le string est un Modificateur
@@ -96,13 +101,37 @@ public class AnalyseFichier
 	 */
 	public boolean getModificateur(String text)
 	{
-		return (text.equals("public")    || text.equals("private") || 
+		return (text.equals("public")	|| text.equals("private") || 
 				text.equals("protected") || text.equals("static")  || 
 				text.equals("final"));
 	}
 
+	public List<Liaison> getListLiaison() { return this.lstLiaisons; }
+
+	public List<Liaison> getListLiaisonUnique()
+	{
+		List<Liaison> lstUnique = new ArrayList<Liaison>();
+		
+		for (Liaison l : this.lstLiaisons)
+			if (!l.estBinaire())
+				lstUnique.add(l);
+
+		return lstUnique;
+	}
+	
+	public List<Liaison> getListLiaisonBinaire()
+	{
+		HashMap<Classe, Liaison> lstBinaire = new HashMap<Classe, Liaison>();
+		for (Liaison l : this.lstLiaisons)
+			if (l.estBinaire() && !lstBinaire.containsKey(l.getToClass()) && 
+				!lstBinaire.containsKey(l.getFromClass())) 
+				lstBinaire.put(l.getToClass(), l);
+
+		return new ArrayList<Liaison>(lstBinaire.values());
+	}
+
 	//---------------------------------------//
-	//         methode instance              //
+	//		 methode instance			  //
 	//---------------------------------------//
 	
 	/**
@@ -233,7 +262,7 @@ public class AnalyseFichier
 
 
 	//---------------------------------------//
-	//          methode static               //
+	//		  methode static			   //
 	//---------------------------------------//
 
 	/** 
