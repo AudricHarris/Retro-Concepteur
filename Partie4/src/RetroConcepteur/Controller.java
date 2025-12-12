@@ -11,7 +11,7 @@ import RetroConcepteur.metier.AnalyseFichier;
 import RetroConcepteur.metier.classe.Classe;
 import RetroConcepteur.metier.classe.Liaison;
 
-/*
+/**
  * Controller est la pont entre notre logique et l'IHM
  */
 public class Controller 
@@ -19,7 +19,10 @@ public class Controller
 	private AnalyseFichier analyseFichier;
 	private AffichageCUI   affichageCUI;
 
-
+	/**
+	 * Constructeur de controller
+	 * @param cheminDonnees chemin du projets java avec fichier java
+	 */
 	public Controller(String cheminDonnees) 
 	{
 		this.analyseFichier = new AnalyseFichier(cheminDonnees);
@@ -27,20 +30,13 @@ public class Controller
 		
 	}
 
-	/* 
-	* Getters
-	 */
-	public ArrayList<Classe> getLstClasses()
-	{
-		return this.analyseFichier.getLstClasses();
-	}
+	//---------------------------------------//
+	//             Getters                   //
+	//---------------------------------------//
+	public ArrayList<Classe> getLstClasses () { return this.analyseFichier.getLstClasses (); }
+	public List<Liaison>     getListLiaison() { return this.analyseFichier.getListLiaison(); }
 
-	public List<Liaison> getListLiaison()
-	{
-		return this.analyseFichier.getListLiaison();
-	}
-	
-	public List<Liaison> getListLiaisonUnique()
+	public List<Liaison> getListLiaisonUnique() 
 	{
 		return this.analyseFichier.getListLiaisonUnique();
 	}
@@ -50,10 +46,6 @@ public class Controller
 		return this.analyseFichier.getListLiaisonBinaire();
 	}
 
-
-	/*
-	* Autres Methodes
-	*/
 
 	public boolean estClasseProjet(String type)
 	{
@@ -65,7 +57,12 @@ public class Controller
 		return this.analyseFichier.getLstClasses().get(ind);
 	}
 
-	public void afficher ()
+	//---------------------------------------//
+	//             Affichage                 //
+	//---------------------------------------//
+
+
+	public void afficherClasse()
 	{
 		System.out.println(this.affichageCUI.afficherClasse());
 	}
@@ -75,12 +72,17 @@ public class Controller
 		System.out.println(this.affichageCUI.afficherLiaison());
 	}
 
+	//---------------------------------------//
+	//             Methode static            //
+	//---------------------------------------//
+
+
 	public static void main(String[] args) 
 	{
 
 		String cheminRepertoire = (args.length > 0) ? args[0] : "./data";
 		Controller controller = new Controller(cheminRepertoire);
-		controller.afficher();
+		controller.afficherClasse();
 		controller.afficherLiaison();
 	}
 }

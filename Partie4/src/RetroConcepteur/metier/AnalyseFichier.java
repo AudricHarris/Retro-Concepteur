@@ -62,7 +62,7 @@ public class AnalyseFichier
 
 
 	//---------------------------------------//
-	// Getters //
+	//             Getters                   //
 	//---------------------------------------//
 	
 
@@ -149,7 +149,7 @@ public class AnalyseFichier
 
 
 	//---------------------------------------//
-	// methode instance //
+	//         methode instance              //
 	//---------------------------------------//
 	public void insererProprieteClass(String ligne)
 	{
@@ -354,7 +354,10 @@ public class AnalyseFichier
 			int indexVirgule = paramsStr.indexOf(',', debut);
 			String unParametreStr;
 			if (indexVirgule == -1)
-				unParametreStr = paramsStr.substring(debut).trim();
+				unParametreStr = 
+	/* 
+	* Getters
+	 */paramsStr.substring(debut).trim();
 			else
 				unParametreStr = paramsStr.substring(debut, indexVirgule).trim();
 			int espace = unParametreStr.lastIndexOf(' ');
@@ -371,7 +374,7 @@ public class AnalyseFichier
 	}
 
 	//---------------------------------------//
-	// methode static //
+	//           methode static              //
 	//---------------------------------------//
 	
 	/**

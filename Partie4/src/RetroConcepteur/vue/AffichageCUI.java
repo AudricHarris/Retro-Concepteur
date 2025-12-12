@@ -11,78 +11,27 @@ import RetroConcepteur.metier.classe.Liaison;
 import RetroConcepteur.metier.classe.Methode;
 import RetroConcepteur.metier.classe.Parametre;
 
-
+/**
+ * Affichage des classes avec attribut methode et param
+ */
 public class AffichageCUI
 {
 	private final static int TAILLE_MIN = 48;
 
 	Controller ctrl;
 	
+	/**
+	 *	Constructeur de AffichageCUI
+	 *	@param controller le Controller du mvc
+	 * */
 	public AffichageCUI(Controller controller)
 	{
 		this.ctrl = controller;
 	}
-
-	public String afficherClasse ()
-	{
-		ArrayList<Classe> lstClasse = this.ctrl.getLstClasses();
-		String sRet = "";
-
-		for (Classe classe : lstClasse)
-		{
-			int maxLargeur = AffichageCUI.TAILLE_MIN;
-			String blocAttributs = "";
-			String blocMethodes = "";
-			int tailleAttributMax = classe.getPlusGrandAttribut() + 1;
-			int tailleMethodeMax = classe.getPlusGrandeMethode() + 1;
-			String separateur = "";
-
-			blocAttributs = this.getBlocAttribut(classe, tailleAttributMax );
-			blocMethodes = this.getBlocMethode(classe, tailleMethodeMax );
-
-			maxLargeur = this.getTailleSeparateur(blocAttributs, blocMethodes);
-
-			if (classe.getNom().length() + 4 > maxLargeur)
-				maxLargeur = classe.getNom().length() + 4;
-
-			separateur = "-".repeat(maxLargeur);
-			sRet += separateur + "\n";
-
-			int decalageNom = (maxLargeur - classe.getNom().length()) / 2;
-
-
-
-			if (classe.isInterface()) 
-				sRet += this.getInterfaceFormate(maxLargeur);
-
-			if (classe.isAbstract()) 
-				sRet += this.getAbstractFormate(maxLargeur);
-
-			sRet += String.format("%" + decalageNom + "s", "") + classe.getNom() + "\n";
-			sRet += separateur + "\n";
-
-			sRet += blocAttributs;
-			sRet += separateur + "\n";
-			sRet += blocMethodes;
-			sRet += separateur + "\n\n\n";
-
-			List<String> lstInterfaces = classe.getLstInterfaces();
-			String heritage = classe.getHeritageClasse() != null ? classe.getHeritageClasse().getNom() : null;
-			if (heritage != null)
-				sRet += classe.getNom() + " hérite de " + heritage + "\n";
-
-			if (lstInterfaces != null && !lstInterfaces.isEmpty())
-			{
-				sRet += classe.getNom() + " implémente : ";
-				for (String interfaceNom : lstInterfaces)
-					sRet += interfaceNom + ", ";
-				sRet = sRet.substring(0, sRet.length() - 2);
-				sRet += "\n";
-			}
-			sRet += "\n\n";
-		}
-		return sRet;
-	}
+	
+	//---------------------------------------//
+	//             Getters                   //
+	//---------------------------------------//
 
 
 	public String getInterfaceFormate (int maxLargeur)
@@ -106,33 +55,6 @@ public class AffichageCUI
 		sRet += String.format("%" + decalageTag + "s", "") + sAbs + "\n";
 
 		return sRet;
-	}
-
-
-	public String afficherLiaison()
-	{
-		String res = "";
-		int numAssociation = 1;
-		for (Liaison l : this.ctrl.getListLiaisonUnique())
-		{
-			String nomFromClass = l.getFromClass().getNom();
-			String nomToClass = l.getToClass().getNom();
-			String multiplicityTo = l.getToMultiplicity().toString();
-			String multiplictyFrom = l.getFromMultiplicity().toString();
-			res += "Association "+ numAssociation +":Unidirectionnelle " + nomFromClass +
-			        multiplictyFrom + " ---> " + nomToClass + multiplicityTo + "\n";
-			numAssociation++;
-		}
-		for (Liaison l : this.ctrl.getListLiaisonBinaire())
-		{
-			String nomFromClass = l.getFromClass().getNom();
-			String nomToClass = l.getToClass().getNom();
-			String multiplicityTo = l.getToMultiplicity().toString();
-			String multiplictyFrom = l.getFromMultiplicity().toString();
-			res += "Association "+ numAssociation + ":bidirectionnelle " + nomFromClass + multiplictyFrom +" <--> " + nomToClass + multiplicityTo +"\n";
-			numAssociation++;
-		}
-		return res;
 	}
 
 	public String getBlocAttribut  (Classe classe, int tailleAttributMax) 
@@ -241,7 +163,108 @@ public class AffichageCUI
 	}
 
 
+	//---------------------------------------//
+	//          methode affichage            //
+	//---------------------------------------//
 
+	/**
+	 * Affiche les classe au bon format
+	 * @return string la classe afficher en texte
+	 */
+	public String afficherClasse ()
+	{
+		ArrayList<Classe> lstClasse = this.ctrl.getLstClasses();
+		String sRet = "";
+
+		for (Classe classe : lstClasse)
+		{
+			int maxLargeur = AffichageCUI.TAILLE_MIN;
+			String blocAttributs = "";
+			String blocMethodes = "";
+			int tailleAttributMax = classe.getPlusGrandAttribut() + 1;
+			int tailleMethodeMax = classe.getPlusGrandeMethode() + 1;
+			String separateur = "";
+
+			blocAttributs = this.getBlocAttribut(classe, tailleAttributMax );
+			blocMethodes = this.getBlocMethode(classe, tailleMethodeMax );
+
+			maxLargeur = this.getTailleSeparateur(blocAttributs, blocMethodes);
+
+			if (classe.getNom().length() + 4 > maxLargeur)
+				maxLargeur = classe.getNom().length() + 4;
+
+			separateur = "-".repeat(maxLargeur);
+			sRet += separateur + "\n";
+
+			int decalageNom = (maxLargeur - classe.getNom().length()) / 2;
+
+
+
+			if (classe.isInterface()) 
+				sRet += this.getInterfaceFormate(maxLargeur);
+
+			if (classe.isAbstract()) 
+				sRet += this.getAbstractFormate(maxLargeur);
+
+			sRet += String.format("%" + decalageNom + "s", "") + classe.getNom() + "\n";
+			sRet += separateur + "\n";
+
+			sRet += blocAttributs;
+			sRet += separateur + "\n";
+			sRet += blocMethodes;
+			sRet += separateur + "\n\n\n";
+
+			List<String> lstInterfaces = classe.getLstInterfaces();
+			String heritage = classe.getHeritageClasse() != null ? classe.getHeritageClasse().getNom() : null;
+			if (heritage != null)
+				sRet += classe.getNom() + " hérite de " + heritage + "\n";
+
+			if (lstInterfaces != null && !lstInterfaces.isEmpty())
+			{
+				sRet += classe.getNom() + " implémente : ";
+				for (String interfaceNom : lstInterfaces)
+					sRet += interfaceNom + ", ";
+				sRet = sRet.substring(0, sRet.length() - 2);
+				sRet += "\n";
+			}
+			sRet += "\n\n";
+		}
+		return sRet;
+	}
+
+	/**
+	 * Affiche les liaison uni et bi directionnelle de chaque classe
+	 * @return string la liaison afficher en stack
+	 * */
+	public String afficherLiaison()
+	{
+		String res = "";
+		int numAssociation = 1;
+		for (Liaison l : this.ctrl.getListLiaisonUnique())
+		{
+			String nomFromClass = l.getFromClass().getNom();
+			String nomToClass = l.getToClass().getNom();
+			String multiplicityTo = l.getToMultiplicity().toString();
+			String multiplictyFrom = l.getFromMultiplicity().toString();
+			res += "Association "+ numAssociation +":Unidirectionnelle " + nomFromClass +
+			        multiplictyFrom + " ---> " + nomToClass + multiplicityTo + "\n";
+			numAssociation++;
+		}
+		for (Liaison l : this.ctrl.getListLiaisonBinaire())
+		{
+			String nomFromClass = l.getFromClass().getNom();
+			String nomToClass = l.getToClass().getNom();
+			String multiplicityTo = l.getToMultiplicity().toString();
+			String multiplictyFrom = l.getFromMultiplicity().toString();
+			res += "Association "+ numAssociation + ":bidirectionnelle " + nomFromClass + multiplictyFrom +" <--> " + nomToClass + multiplicityTo +"\n";
+			numAssociation++;
+		}
+		return res;
+	}
+
+	//---------------------------------------//
+	//          methode static               //
+	//---------------------------------------//
 	private static char getSigneVisibilite(String visibilite)
 	{
 		switch (visibilite)
