@@ -159,7 +159,7 @@ public class AffichageCUI
 			blocAttributs += ligne + "\n";
 
 			if (indiceStatique > 0)
-				blocAttributs += "   " + "\u203E".repeat(indiceStatique) + "\n";
+				blocAttributs += "   " + "‾".repeat(ligne.length() -3) + "\n";
 		}
 
 		return blocAttributs;
@@ -180,9 +180,7 @@ public class AffichageCUI
 			
 			if (meth.getNom().equals("main"))
 				continue;
-			
-			if (meth.isStatic())
-				indiceStatique = meth.getNom().length();
+		
 
 			ligne += AffichageCUI.getSigneVisibilite(meth.getVisibilite()) + " " ;
 			
@@ -198,12 +196,18 @@ public class AffichageCUI
 
 			if (!meth.getType().equals("void") && !meth.getNom().equals(classe.getNom()))
 				ligne += " : " + meth.getType();
+	
 
 			blocMethodes += ligne + "\n";
 
-			if (indiceStatique > 0)
-				blocMethodes += "  " + "\u203E".repeat(indiceStatique) + "\n";
+			if (meth.isStatic())
+			{
+				int longeur = ligne.length() - ((meth.getType().equals("void")) ?  3 : 2);
+				blocMethodes += "  " + "‾".repeat(longeur)  + "\n";
+			}
 		}
+				
+				
 
 		return blocMethodes;
 	}
