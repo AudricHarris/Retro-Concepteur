@@ -1,9 +1,9 @@
-package metier.classe;
-import metier.AnalyseFichier;
-
+package RetroConcepteur.metier.classe;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
+
+import RetroConcepteur.metier.AnalyseFichier;
 
 /**
  * Determine les Liaison potentiel entre les classe et leur multiplicité.
@@ -71,9 +71,9 @@ public class Liaison
 		else this.toMultiplicity.setBorneSup("1");
 	}
 	
-	public Classe getFromClass() { return fromClass; }
+	public Classe getFromClass() { return this.fromClass; }
 
-	public Classe getToClass() { return toClass; }
+	public Classe getToClass() { return this.toClass; }
 	
 	public Multiplicite getToMultiplicity() { return this.toMultiplicity; }
 

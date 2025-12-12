@@ -1,16 +1,16 @@
-package vue;
+package RetroConcepteur.vue;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
-import metier.classe.Classe;
-import metier.classe.Liaison;
-import metier.classe.Methode;
-import metier.classe.Attribut;
-import metier.classe.Parametre;
+import RetroConcepteur.Controller;
+import RetroConcepteur.metier.classe.Attribut;
+import RetroConcepteur.metier.classe.Classe;
+import RetroConcepteur.metier.classe.Liaison;
+import RetroConcepteur.metier.classe.Methode;
+import RetroConcepteur.metier.classe.Parametre;
 
-import controller.Controller;
 
 public class AffichageCUI
 {
@@ -30,7 +30,7 @@ public class AffichageCUI
 
 		for (Classe classe : lstClasse)
 		{
-			int maxLargeur = TAILLE_MIN;
+			int maxLargeur = AffichageCUI.TAILLE_MIN;
 			String blocAttributs = "";
 			String blocMethodes = "";
 			int tailleAttributMax = classe.getPlusGrandAttribut() + 1;

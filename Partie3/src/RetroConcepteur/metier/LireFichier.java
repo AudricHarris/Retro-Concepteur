@@ -1,4 +1,4 @@
-package metier;
+package RetroConcepteur.metier;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -6,7 +6,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
-import metier.AnalyseFichier;
+import RetroConcepteur.metier.AnalyseFichier;
 
 /*
  * Permet la lecture d'un fichier .java

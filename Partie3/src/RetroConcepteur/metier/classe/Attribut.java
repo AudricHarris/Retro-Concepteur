@@ -1,4 +1,4 @@
-package metier.classe;
+package RetroConcepteur.metier.classe;
 
 /**
  * Class Attribut est une instance qui permet de stocker les attribut d'un classe
@@ -36,12 +36,12 @@ public class Attribut
 	//              Getters                  //
 	//---------------------------------------//
 
-	public int     getNum       () {return num       ;}
-	public String  getNom       () {return nom       ;}
-	public boolean isConstante  () {return constante ;}
-	public String  getType      () {return type      ;}
-	public String  getVisibilite() {return visibilite;}
-	public boolean isStatic     () {return isStatic  ;}
+	public int     getNum       () {return this.num       ;}
+	public String  getNom       () {return this.nom       ;}
+	public boolean isConstante  () {return this.constante ;}
+	public String  getType      () {return this.type      ;}
+	public String  getVisibilite() {return this.visibilite;}
+	public boolean isStatic     () {return this.isStatic  ;}
 
 	//---------------------------------------//
 	//         Methode instance              //

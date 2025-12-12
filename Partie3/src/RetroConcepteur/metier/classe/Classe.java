@@ -1,4 +1,4 @@
-package metier.classe;
+package RetroConcepteur.metier.classe;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -30,9 +30,9 @@ public class Classe
 
 	// Getter
 	public String getNom()                      { return this.nom; }
-	public boolean isAbstract()              { return this.isAbstract; }
-	public boolean isInterface()             { return this.isInterface; }
-	public Classe getHeritageClasse()           { return  this.heritageClasse; }
+	public boolean isAbstract()                 { return this.isAbstract; }
+	public boolean isInterface()                { return this.isInterface; }
+	public Classe getHeritageClasse()           { return this.heritageClasse; }
 	public ArrayList<Attribut> getLstAttribut() { return new ArrayList<Attribut>(this.lstAttribut); }
 	public ArrayList<Methode> getLstMethode()   { return new ArrayList<Methode> (this.lstMethode); }
 	public ArrayList<String> getLstInterfaces() { return new ArrayList<String>  (this.lstInterfaces !=null ? this.lstInterfaces : new ArrayList<String>()); }
@@ -121,7 +121,7 @@ public class Classe
 
 	public String toString()
 	{
-		String sRet = this.nom + (isAbstract ? " { abstract }" + "\n" : "\n");
+		String sRet = this.nom + (this.isAbstract ? " { abstract }" + "\n" : "\n");
 		for (Attribut attribut : this.lstAttribut)
 			sRet += attribut.toString() + "\n";
 

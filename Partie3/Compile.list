@@ -1,13 +1,13 @@
-src/metier/AnalyseFichier.java
-src/metier/LireFichier.java
+src/RetroConcepteur/metier/AnalyseFichier.java
+src/RetroConcepteur/metier/LireFichier.java
 
-src/metier/classe/Liaison.java
-src/metier/classe/Multiplicite.java
-src/metier/classe/Parametre.java
-src/metier/classe/Methode.java
-src/metier/classe/Attribut.java
-src/metier/classe/Classe.java
+src/RetroConcepteur/metier/classe/Liaison.java
+src/RetroConcepteur/metier/classe/Multiplicite.java
+src/RetroConcepteur/metier/classe/Parametre.java
+src/RetroConcepteur/metier/classe/Methode.java
+src/RetroConcepteur/metier/classe/Attribut.java
+src/RetroConcepteur/metier/classe/Classe.java
 
-src/vue/AffichageCUI.java
+src/RetroConcepteur/vue/AffichageCUI.java
 
-src/controller/Controller.java
+src/RetroConcepteur/Controller.java

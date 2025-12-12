@@ -1,4 +1,4 @@
-package metier;
+package RetroConcepteur.metier;
 
 // Import package extern
 import java.io.File;
@@ -7,8 +7,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Scanner;
 
-// Import package itern
-import metier.classe.*;
+import RetroConcepteur.metier.classe.*;
 
 /**
  * - Permet la lecture d'un dossier et la creation de classe.
@@ -66,19 +65,7 @@ public class AnalyseFichier
 	
 
 	public ArrayList<Classe> getLstClasses () {return new ArrayList<Classe>(this.lstClass);}
-	public List<Liaison>     getListLiaison() { return this.lstLiaisons;                     }
-
-	/**
-	 * Determine si le string est un Modificateur
-	 * @param text fraction d'une ligne
-	 * @return boolean si le text contient un Modificateur
-	 */
-	public boolean getModificateur(String text)
-	{
-		return (text.equals("public") || text.equals("private") ||
-				text.equals("protected") || text.equals("static") ||
-				text.equals("final"));
-	}
+	public List<Liaison>     getListLiaison() { return new ArrayList<Liaison>(this.lstLiaisons);}
 
 	/**
 	 * Retourne la liste de tout les liaison uni-directionelle
@@ -97,7 +84,7 @@ public class AnalyseFichier
 	 * Retourne la liste de tout les liaison bi-directionelle
 	 * @return lstBinaire la liste des liaison binaire
 	 */
-		public List<Liaison> getListLiaisonBinaire()
+	public List<Liaison> getListLiaisonBinaire()
 	{
 		HashMap<Classe, Liaison> lstBinaire = new HashMap<Classe, Liaison>();
 		
@@ -107,7 +94,6 @@ public class AnalyseFichier
 			    !lstBinaire.containsKey(l.getFromClass()))
 			{
 				lstBinaire.put(l.getToClass(), l);
-				
 			}
 			else
 			{
@@ -209,7 +195,7 @@ public class AnalyseFichier
 				indFin = trimmed.length();
 			String heritage = trimmed.substring(trimmed.indexOf("extends") + 7, indFin).trim();
 			c.setHeritageClasse(new Classe(heritage.trim()));
-			for (Classe cls : lstClass)
+			for (Classe cls : this.lstClass)
 			{
 				if (cls.getNom().equals(heritage.trim()))
 				{
@@ -324,7 +310,7 @@ public class AnalyseFichier
 
 		String type = ligneRestante.substring(0, dernierEspace).trim();
 		String nom = ligneRestante.substring(dernierEspace + 1).trim();
-		Classe c = lstClass.getLast();
+		Classe c = this.lstClass.getLast();
 
 		c.ajouterAttribut(nom, isFinal, type, visibilite, isStatic);
 	}
@@ -341,7 +327,7 @@ public class AnalyseFichier
 		String type = "";
 		declaration = declaration.replaceAll("\\s+", " ").trim();
 		int dernierEspace = declaration.lastIndexOf(' ');
-		Classe c = lstClass.getLast();
+		Classe c = this.lstClass.getLast();
 
 		contenuParametres = ligneRestante.substring(indexParOuvrante + 1, indexParFermante);
 		
@@ -419,4 +405,16 @@ public class AnalyseFichier
 			}
 		}
 	}
+
+	/**
+	 * Determine si le string est un Modificateur
+	 * @param text fraction d'une ligne
+	 * @return boolean si le text contient un Modificateur
+	 */
+	//public static boolean getModificateur(String text)
+	//{
+	//	return (text.equals("public") || text.equals("private") ||
+	//			text.equals("protected") || text.equals("static") ||
+	//			text.equals("final"));
+	//}
 }

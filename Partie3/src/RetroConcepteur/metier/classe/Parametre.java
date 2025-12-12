@@ -1,4 +1,4 @@
-package metier.classe;
+package RetroConcepteur.metier.classe;
 
 /**
  * Class paramètres stock les informations des paramètres d'une méthode

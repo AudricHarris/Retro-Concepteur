@@ -1,14 +1,13 @@
-package controller;
+package RetroConcepteur;
 
-
-import metier.AnalyseFichier;
-import vue.AffichageCUI;
-
-import metier.classe.Classe;
-import metier.classe.Liaison;
+import RetroConcepteur.vue.AffichageCUI;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import RetroConcepteur.metier.AnalyseFichier;
+import RetroConcepteur.metier.classe.Classe;
+import RetroConcepteur.metier.classe.Liaison;
 
 /*
  * Controller est la pont entre notre logique et l'IHM
@@ -22,8 +21,9 @@ public class Controller
 
 	public Controller() 
 	{
-		this.analyseFichier = new AnalyseFichier("/home/etudiant/lk240510/TP/s3/s3.01_dev_application/Retro-Concepteur/Partie3/tests");
+		this.analyseFichier = new AnalyseFichier("/home/etudiant/lk240510/Bureau/Retro-Concepteur/Partie3/data");
 		this.affichageCUI   = new AffichageCUI(this);
+		
 	}
 
 	/* 
@@ -34,6 +34,11 @@ public class Controller
 		return this.analyseFichier.getLstClasses();
 	}
 
+	public List<Liaison> getListLiaison()
+	{
+		return this.analyseFichier.getListLiaison();
+	}
+	
 	public List<Liaison> getListLiaisonUnique()
 	{
 		return this.analyseFichier.getListLiaisonUnique();
@@ -44,10 +49,6 @@ public class Controller
 		return this.analyseFichier.getListLiaisonBinaire();
 	}
 
-	public List<Liaison> getListLiaison()
-	{
-		return this.analyseFichier.getListLiaison();
-	}
 
 	/*
 	* Autres Methodes

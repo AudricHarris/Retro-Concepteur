@@ -1,4 +1,4 @@
-package metier.classe;
+package RetroConcepteur.metier.classe;
 
 /**
  * Instance qui stock la Multiplicite d'une Liaison
