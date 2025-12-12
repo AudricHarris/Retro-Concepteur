@@ -77,12 +77,7 @@ public class Controller
 
 	public static void main(String[] args) 
 	{
-		try {
-			System.setOut(new PrintStream(System.out, true, "UTF-8"));
-		} catch (UnsupportedEncodingException e) {
-			e.printStackTrace();
-		}
-		
+
 		String cheminRepertoire = (args.length > 0) ? args[0] : "./data";
 		Controller controller = new Controller(cheminRepertoire);
 		controller.afficher();
