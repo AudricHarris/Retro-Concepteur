@@ -37,7 +37,7 @@ public abstract interface TestComplet extends Object implements Serializable, Cl
     }
 
     // Méthode abstraite (pas de corps)
-    public abstract void methodeAbstraite(int beuteu,
+    public abstract void methodeAbstraite(int test,
 		String ligne);
 
     // Méthode synchronisée
