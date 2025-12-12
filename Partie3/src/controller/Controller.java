@@ -39,6 +39,11 @@ public class Controller
 		return this.analyseFichier.getListLiaisonUnique();
 	}
 
+	public List<Liaison> getListLiaisonBinaire()
+	{
+		return this.analyseFichier.getListLiaisonBinaire();
+	}
+
 	public List<Liaison> getListLiaison()
 	{
 		return this.analyseFichier.getListLiaison();

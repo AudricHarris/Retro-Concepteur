@@ -97,7 +97,7 @@ public class AnalyseFichier
 	 * Retourne la liste de tout les liaison bi-directionelle
 	 * @return lstBinaire la liste des liaison binaire
 	 */
-	public List<Liaison> getListLiaisonBinaire()
+		public List<Liaison> getListLiaisonBinaire()
 	{
 		HashMap<Classe, Liaison> lstBinaire = new HashMap<Classe, Liaison>();
 		
@@ -107,6 +107,26 @@ public class AnalyseFichier
 			    !lstBinaire.containsKey(l.getFromClass()))
 			{
 				lstBinaire.put(l.getToClass(), l);
+				
+			}
+			else
+			{
+				if (l.estBinaire()) 
+				{
+					Liaison liaisonBinaire;
+
+					if (lstBinaire.get(l.getToClass()) != null)
+					{
+						liaisonBinaire = lstBinaire.get(l.getToClass());
+						liaisonBinaire.setFromMultiplicte( l.getFromMultiplicity());
+					}
+					
+					if (lstBinaire.get(l.getFromClass()) != null)
+					{
+						liaisonBinaire = lstBinaire.get(l.getFromClass());
+						liaisonBinaire.setFromMultiplicte(l.getToMultiplicity());
+					}
+				}
 			}
 		}
 
@@ -130,7 +150,7 @@ public class AnalyseFichier
 	 * @param type la chaine de caractère du type
 	 * @return Boolean si la classe du type existe
 	 */
-	public boolean estClasseProjet(String type) 
+	public boolean estClasseProjet(String type) 	
 	{
 		type = type.trim();
 		
@@ -173,7 +193,7 @@ public class AnalyseFichier
 		String trimmed = ligne.trim();
 		Classe c = this.lstClass.getLast();
 		if (trimmed.contains("{")) trimmed = trimmed.substring(0, trimmed.length()-1);
-		if (trimmed.contains("abstract")) 
+		if (trimmed.contains("abstract") && (trimmed.contains("class") || trimmed.contains("interface")))
 			c.setIsAbstract(true);
 
 		if (trimmed.contains("interface")) 

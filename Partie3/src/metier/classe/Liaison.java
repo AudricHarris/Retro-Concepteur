@@ -1,12 +1,9 @@
 package metier.classe;
-import controller.Controller;
 import metier.AnalyseFichier;
-import metier.classe.Classe;
-import metier.classe.Multiplicite;
-import metier.classe.Parametre;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Scanner;
 
 /**
  * Determine les Liaison potentiel entre les classe et leur multiplicité.
@@ -17,11 +14,10 @@ public class Liaison
 
 	private Classe fromClass;
 	private Classe toClass;
+	private Multiplicite fromMultiplicity;
 	private Multiplicite toMultiplicity;
 	private String nomVar;
 
-
-	private Controller ctrl;
 	private AnalyseFichier analyseFichier;
 
 	/**
@@ -53,8 +49,8 @@ public class Liaison
 	 * */
 	private Liaison(Classe classe1 , Classe classe2, Attribut attribut, AnalyseFichier analyseFichier)
 	{
-		this.toMultiplicity = new Multiplicite("0","temp");
-
+		this.toMultiplicity = new Multiplicite("1","temp");
+		this.fromMultiplicity = new Multiplicite("0", "*");
 		this.fromClass =  classe1;
 		this.toClass = classe2;
 		this.nomVar = attribut.getNom();
@@ -79,6 +75,10 @@ public class Liaison
 
 	public Classe getToClass() { return toClass; }
 	
+	public Multiplicite getToMultiplicity() { return this.toMultiplicity; }
+
+	public Multiplicite getFromMultiplicity() { return this.fromMultiplicity; }
+
 	public boolean estBinaire()
 	{
 		for (Liaison l : this.analyseFichier.getListLiaison())
@@ -87,8 +87,9 @@ public class Liaison
 		return false;
 	}
 
-	public Multiplicite getToMultiplicity() { return this.toMultiplicity; }
-		
+	
+	public void setFromMultiplicte(Multiplicite m) { this.fromMultiplicity = m;}
+
 	public String toString()
 	{
 		return this.fromClass.getNom() + " ----> " + this.toMultiplicity.toString() + " " + this.toClass.getNom() + " " + this.nomVar;
@@ -107,8 +108,34 @@ public class Liaison
 	 * */
 	public static boolean getCollectionType(String type, String nom)
 	{
-		for (String pattern : Liaison.LST_COLLECTIONS)
-			if (type.matches(pattern + nom+ ">")) return true;
+		type = type.trim();
+		
+		if (type == null || type.trim().isEmpty()) return false;
+
+		while (type.endsWith("[]")) 
+			type = type.substring(0, type.length() - 2).trim();
+
+		if (!type.contains("<") && type.equals(nom)) return true;
+
+		int start = type.indexOf('<');
+		int end = type.lastIndexOf('>');
+
+		if (start != -1 && end > start) 
+		{
+			String base = type.substring(0, start).trim();
+			if (base.equals(nom)) return true;
+
+			String args = type.substring(start + 1, end).trim();
+			if (!args.isEmpty()) 
+			{
+				Scanner scPartit = new Scanner(args);
+				scPartit.useDelimiter(",");
+
+				while (scPartit.hasNext())
+					if (getCollectionType(scPartit.next().trim(), nom)) 
+						return true;
+			}
+		}
 
 		return false;
 	}

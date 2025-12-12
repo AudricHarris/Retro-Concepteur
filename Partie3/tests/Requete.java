@@ -1,6 +1,7 @@
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.Locale;
 
 public class Requete {
@@ -37,6 +38,19 @@ public class Requete {
     public String getIpVisiteur() { return ipVisiteur; }
     public String getUrlSite() { return urlSite; }
     // Autres getters omis pour la concision...
+
+    public ArrayList<String> lalaInterface (
+        int              lala,
+        String  lolo
+
+    )    {
+        return new ArrayList<>();
+    }
+
+    public void abstraction()
+    {
+        System.out.println("dezjk");
+    }
 
     @Override
     public String toString() {

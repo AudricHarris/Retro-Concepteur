@@ -48,11 +48,17 @@ public class AffichageCUI
 			separateur = "-".repeat(maxLargeur);
 			sRet += separateur + "\n";
 
-			int decalage = (maxLargeur - classe.getNom().length()) / 2;
+			int decalageNom = (maxLargeur - classe.getNom().length()) / 2;
 
-			sRet += (classe.isInterface() ? String.format("%" + (decalage-4) + "s", "") + "{ interface }" + "\n" : "");
-			sRet += String.format("%" + decalage + "s", "") + classe.getNom() + "\n";
-			sRet += (classe.isAbstract() ? String.format("%" + (decalage-3) + "s", "") + "{ abstract }" + "\n" : "");
+
+
+			if (classe.isInterface()) 
+				sRet += this.getInterfaceFormate(maxLargeur);
+
+			if (classe.isAbstract()) 
+				sRet += this.getAbstractFormate(maxLargeur);
+
+			sRet += String.format("%" + decalageNom + "s", "") + classe.getNom() + "\n";
 			sRet += separateur + "\n";
 
 			sRet += blocAttributs;
@@ -79,25 +85,51 @@ public class AffichageCUI
 	}
 
 
+	public String getInterfaceFormate (int maxLargeur)
+	{
+		String sRet ="";
+		String sInter = "<<Interface>>";
+
+		int decalageTag = (maxLargeur - sInter.length()) / 2;
+		sRet += String.format("%" + decalageTag + "s", "") + sInter + "\n";
+
+		return sRet;
+	}
+
+
+	public String getAbstractFormate (int maxLargeur)
+	{
+		String sRet ="";
+		String sAbs = "<<Abstract>>";
+
+		int decalageTag = (maxLargeur - sAbs.length()) / 2;
+		sRet += String.format("%" + decalageTag + "s", "") + sAbs + "\n";
+
+		return sRet;
+	}
+
+
 	public String afficherLiaison()
 	{
 		String res = "";
 		int numAssociation = 1;
-		List<Liaison> listLiaison = this.ctrl.getListLiaison();
-		for (Liaison l : listLiaison)
+		for (Liaison l : this.ctrl.getListLiaisonUnique())
 		{
 			String nomFromClass = l.getFromClass().getNom();
 			String nomToClass = l.getToClass().getNom();
-			String multiplicity = l.getToMultiplicity().toString();
-			res += "Association"+ numAssociation +" : Unidirectionnelle de " + nomFromClass + "(0..*) Vers " + nomToClass + multiplicity + "\n";
+			String multiplicityTo = l.getToMultiplicity().toString();
+			String multiplictyFrom = l.getFromMultiplicity().toString();
+			res += "Association "+ numAssociation +":Unidirectionnelle " + nomFromClass +
+			        multiplictyFrom + " ---> " + nomToClass + multiplicityTo + "\n";
 			numAssociation++;
 		}
-		for (Liaison l : listLiaison)
+		for (Liaison l : this.ctrl.getListLiaisonBinaire())
 		{
 			String nomFromClass = l.getFromClass().getNom();
 			String nomToClass = l.getToClass().getNom();
-			String multiplicity = l.getToMultiplicity().toString();
-			res += "Association "+ numAssociation + " :bidirectionnelle de " + nomFromClass + "(1..*) Vers " + nomToClass + multiplicity +"\n";
+			String multiplicityTo = l.getToMultiplicity().toString();
+			String multiplictyFrom = l.getFromMultiplicity().toString();
+			res += "Association "+ numAssociation + ":bidirectionnelle " + nomFromClass + multiplictyFrom +" <--> " + nomToClass + multiplicityTo +"\n";
 			numAssociation++;
 		}
 		return res;
@@ -170,7 +202,7 @@ public class AffichageCUI
 			blocMethodes += ligne + "\n";
 
 			if (indiceStatique > 0)
-				blocMethodes += "   " + "\u203E".repeat(indiceStatique) + "\n";
+				blocMethodes += "  " + "\u203E".repeat(indiceStatique) + "\n";
 		}
 
 		return blocMethodes;
