@@ -1,4 +1,4 @@
-package vue;
+package RetroConcepteur.vue;
 
 import javax.swing.*;
 
@@ -10,29 +10,27 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.util.*;
 
-import controller.Controller;
-import metier.classe.*;
-import metier.forme.*;
-
-
+import RetroConcepteur.Controller;
+import RetroConcepteur.metier.classe.*;
+import RetroConcepteur.vue.outil.*;;
 
 public class PanelUML extends JPanel
 {
 	private FrameUML frame;
 	private Controller ctrl;
 	private Graphics2D g2;
-	private AffichageCUI affichageCUI;
+	private Formateur formateur;
 
 	private List<Classe> lstClasse;
-	private HashMap<Classe,Rectangle> mapClasseRectangle;
+	private HashMap<Classe, Rectangle> mapClasseRectangle;
 
 	public PanelUML(FrameUML frame, Controller ctrl)
 	{
 		this.frame = frame;
 		this.ctrl = ctrl;
-		this.affichageCUI = new AffichageCUI();
+		this.formateur = new Formateur(this.ctrl);
 
-		this.lstClasse = this.ctrl.getLstClasse();
+		this.lstClasse = this.ctrl.getLstClasses();
 		this.mapClasseRectangle = new HashMap<Classe, Rectangle>();
 		
 		this.setPreferredSize(new Dimension(1000, 700));
@@ -49,11 +47,10 @@ public class PanelUML extends JPanel
 		int x = 50;
 		int y = 50;
 		
-		for (Classe c : this.ctrl.getLstClasse()) 
+		for (Classe c : this.ctrl.getLstClasses()) 
 		{
 			Rectangle rect = new Rectangle(x, y, 0, 0);
-			// this.ctrl.setTailleX(rect);
-			// this.ctrl.setTailleY(rect);
+	
 			this.mapClasseRectangle.put(c, rect);
 			x += 250;
 			if (x > 800)  
@@ -80,11 +77,13 @@ public class PanelUML extends JPanel
 	 */
 	protected void paintComponent( Graphics g )
 	{
-		int largeurAtt;
 		int x, y;
 		int largeurMeth;
+		int largeurAttribut;
+		String blocAtt, blocMeth;
+		int largeurX, hauteurY;
 
-		Font font = new Font("Serif", Font.PLAIN, 12); // Taille 12 c'est mieux que 10
+		Font font = new Font("Serif", Font.PLAIN, 12); 
 
 		super.paintComponent(g);
 		this.g2 = (Graphics2D) g;
@@ -95,13 +94,21 @@ public class PanelUML extends JPanel
 		// Hauteur d'une ligne de texte en pixels
 		int hauteurLigne = metrics.getHeight();
 
-		for (Classe classe : this.lstClasse) 
+		for (Classe classe : this.lstClasse)
 		{
 			x = this.mapClasseRectangle.get(classe).getX();
 			y = this.mapClasseRectangle.get(classe).getY();
 
-			int largeurMaxPixels = metrics.stringWidth(classe.getNom());
-			this.dessinerRectangle(x, y, 50,50);
+			largeurAttribut = classe.getPlusGrandAttribut() +1;
+			largeurMeth     = classe.getPlusGrandeMethode() +1;
+
+			blocAtt = this.formateur.getBlocAttribut(classe, largeurAttribut);
+			blocMeth = this.formateur.getBlocMethode(classe, largeurMeth);
+
+			largeurX = metrics.stringWidth(this.formateur.getLigneMax(blocMeth, blocAtt));
+			hauteurY = hauteurLigne * 
+
+			this.dessinerRectangle(x, y, largeurX, hauteurY);
 		}
 	}
 

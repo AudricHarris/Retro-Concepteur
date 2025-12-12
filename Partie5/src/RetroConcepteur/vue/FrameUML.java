@@ -1,4 +1,4 @@
-package vue;
+package RetroConcepteur.vue;
 
 import java.awt.BorderLayout;
 import java.awt.FlowLayout;
@@ -7,7 +7,7 @@ import java.io.File;
 
 import javax.swing.*;
 
-import controller.*;
+import RetroConcepteur.Controller;
 
 public class FrameUML extends JFrame implements ActionListener
 {

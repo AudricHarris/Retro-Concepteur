@@ -1,15 +1,14 @@
 package RetroConcepteur;
 
-import RetroConcepteur.vue.AffichageCUI;
+import RetroConcepteur.vue.Formateur;
 
-import java.io.PrintStream;
-import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.List;
 
 import RetroConcepteur.metier.AnalyseFichier;
 import RetroConcepteur.metier.classe.Classe;
 import RetroConcepteur.metier.classe.Liaison;
+import RetroConcepteur.vue.FrameUML;
 
 /*
  * Controller est la pont entre notre logique et l'IHM
@@ -17,14 +16,20 @@ import RetroConcepteur.metier.classe.Liaison;
 public class Controller 
 {
 	private AnalyseFichier analyseFichier;
-	private AffichageCUI   affichageCUI;
+	private Formateur   affichageCUI;
 
+	private FrameUML frameUML;
+	private String cheminDonnees;
 
-	public Controller(String cheminDonnees) 
+	public Controller( String cheminDonnees ) 
 	{
-		this.analyseFichier = new AnalyseFichier(cheminDonnees);
-		this.affichageCUI   = new AffichageCUI(this);
-		
+		this.cheminDonnees = cheminDonnees;
+		this.analyseFichier = new AnalyseFichier(this.cheminDonnees);
+
+		//affichage CUI désactivé pour l'instant
+		//this.affichageCUI   = new AffichageCUI(this);
+
+		this.frameUML = new FrameUML(this);
 	}
 
 	/* 
@@ -76,11 +81,8 @@ public class Controller
 	}
 
 	public static void main(String[] args) 
-	{
-
+	{ 
 		String cheminRepertoire = (args.length > 0) ? args[0] : "./data";
-		Controller controller = new Controller(cheminRepertoire);
-		controller.afficher();
-		controller.afficherLiaison();
+        new Controller(cheminRepertoire);
 	}
 }

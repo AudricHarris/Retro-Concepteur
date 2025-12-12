@@ -207,8 +207,6 @@ public class Formateur
 			}
 		}
 				
-				
-
 		return blocMethodes;
 	}
 

@@ -22,7 +22,7 @@ public class AnalyseFichier
 	 * Construit l'instance AnalyseFichier et parcours le repo
 	 * @param repo chemin du repositoire avec programme java
 	 */
-	public AnalyseFichier( String repo)
+	public AnalyseFichier( String repo )
 	{
 		this.lstClass = new ArrayList<Classe>();
 		this.lstLiaisons = new ArrayList<Liaison>();
