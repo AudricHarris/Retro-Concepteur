@@ -1,11 +1,12 @@
 echo "Compilation du projet RetroConcepteur..."
-javac "@Compile.list" -d ./bin
+javac "@Compile.list" -d ./class
 
 # Vérifier si la compilation a réussi
 if [ $? -eq 0 ]; then
     echo "Exécution du programme..."
     echo
-    java -cp ./bin controller.Controller
+    # Passer le répertoire data en argument
+    java -cp ./class RetroConcepteur.Controller $1
 else
     echo "Erreur de compilation!"
     exit 1
