@@ -22,7 +22,11 @@ public class Controller
 
 	public Controller(String cheminDonnees) 
 	{
+<<<<<<< Updated upstream:Partie3/src/RetroConcepteur/Controller.java
 		this.analyseFichier = new AnalyseFichier(cheminDonnees);
+=======
+		this.analyseFichier = new AnalyseFichier("/home/etudiant/ha241570/TP/s3/s3.01_dev_application/Retro-Concepteur/Partie3/tests");
+>>>>>>> Stashed changes:Partie3/src/controller/Controller.java
 		this.affichageCUI   = new AffichageCUI(this);
 		
 	}

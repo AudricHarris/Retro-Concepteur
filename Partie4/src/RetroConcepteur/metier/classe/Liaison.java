@@ -10,25 +10,32 @@ import RetroConcepteur.metier.AnalyseFichier;
  */
 public class Liaison 
 {
-	public static final String[] LST_COLLECTIONS = {"List<","ArrayList<", "LinkedList<" ,"Set<" ,"HashSet<" ,"Collection" ,"Iterable<"};
+	public static final String[] LST_COLLECTIONS = {"List<","ArrayList<", "LinkedList<" ,
+	                                                "Set<" ,"HashSet<"  ,"Collection"   ,
+	                                                "Iterable<"};
 
 	private Classe fromClass;
 	private Classe toClass;
+
 	private Multiplicite fromMultiplicity;
 	private Multiplicite toMultiplicity;
+	
+	private AnalyseFichier analyseFichier;
+	
 	private String nomVar;
 
-	private AnalyseFichier analyseFichier;
 
 	/**
 	 * Fabrique de la classe Liaison
 	 * @param classe1 Une première classe
 	 * @param classe2 une deuxième classe
 	 */
-	public static List<Liaison> creerLiaison(Classe classe1 , Classe classe2, AnalyseFichier analyseFichier)
+	public static List<Liaison> creerLiaison(Classe classe1 , Classe classe2,
+		                                     AnalyseFichier analyseFichier   )
 	{
 		List<Liaison> lstLiaisons = new ArrayList<Liaison>();
-		Liaison liaison = null;
+		Liaison       liaison     = null;
+
 		for (Attribut attribut1 : classe1.getLstAttribut())
 		{
 			if (attribut1.getType().startsWith(classe2.getNom()) ||
@@ -38,6 +45,7 @@ public class Liaison
 				lstLiaisons.add(liaison);
 			}
 		}
+
 		return lstLiaisons;
 	}
 	
@@ -47,16 +55,25 @@ public class Liaison
 	 * @param classe2 une deuxième classe
 	 * @param attribut attribut qui lie les deux classe
 	 * */
-	private Liaison(Classe classe1 , Classe classe2, Attribut attribut, AnalyseFichier analyseFichier)
+	private Liaison(Classe classe1 , Classe classe2, Attribut attribut,
+		            AnalyseFichier analyseFichier                      )
 	{
-		this.toMultiplicity = new Multiplicite("1","temp");
+
+		this.toMultiplicity   = new Multiplicite("1","temp");
 		this.fromMultiplicity = new Multiplicite("0", "*");
-		this.fromClass =  classe1;
-		this.toClass = classe2;
-		this.nomVar = attribut.getNom();
-		this.analyseFichier = analyseFichier;
-		Methode constructeur =  classe1.getLstMethode().size() >= 1 ? classe1.getLstMethode().get(0) : null;
-		List<Parametre> params = constructeur != null ? constructeur.getLstParam() : new ArrayList<Parametre>();
+		this.fromClass        = classe1;
+		this.toClass          = classe2;
+		this.nomVar           = attribut.getNom();
+		this.analyseFichier   = analyseFichier;
+
+		Methode constructeur =  classe1.getLstMethode().size() >= 1  ? 
+		                        classe1.getLstMethode().get(0) : 
+		                        null;
+
+		List<Parametre> params = constructeur != null       ?
+		                         constructeur.getLstParam() : 
+		                         new ArrayList<Parametre>();
+
 		for (Parametre parametre : params) 
 		{
 			if (parametre.getType().contains(classe2.getNom()))
@@ -70,13 +87,15 @@ public class Liaison
 		if (Liaison.estCollection(attribut.getType())) this.toMultiplicity.setBorneSup("*");
 		else this.toMultiplicity.setBorneSup("1");
 	}
-	
+
+	//---------------------------------------//
+	//              Getters                  //
+	//---------------------------------------//
+
 	public Classe getFromClass() { return this.fromClass; }
+	public Classe getToClass  () { return this.toClass;   }
 
-	public Classe getToClass() { return this.toClass; }
-	
-	public Multiplicite getToMultiplicity() { return this.toMultiplicity; }
-
+	public Multiplicite getToMultiplicity  () { return this.toMultiplicity;   }
 	public Multiplicite getFromMultiplicity() { return this.fromMultiplicity; }
 
 	public boolean estBinaire()
@@ -86,13 +105,22 @@ public class Liaison
 				return true;
 		return false;
 	}
+	
+	//---------------------------------------//
+	//            Modificateur               //
+	//---------------------------------------//
 
 	
 	public void setFromMultiplicte(Multiplicite m) { this.fromMultiplicity = m;}
 
+	//---------------------------------------//
+	//            Methode instance           //
+	//---------------------------------------//
+
 	public String toString()
 	{
-		return this.fromClass.getNom() + " ----> " + this.toMultiplicity.toString() + " " + this.toClass.getNom() + " " + this.nomVar;
+		return this.fromClass.getNom() + " ----> " + this.toMultiplicity.toString() + " " +
+		       this.toClass.getNom  () + " "       + this.nomVar;
 	}
 	
 

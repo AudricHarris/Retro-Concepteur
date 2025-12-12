@@ -44,8 +44,12 @@ public class LireFichier
 			{
 				String ligne = scanner.nextLine();
 				ligne = ligne.replace("\t", "").trim();
-				if (ligne.contains("class") || ligne.contains("interface")) analyseFichier.insererProprieteClass(ligne);
+				
+				if (ligne.contains("class") || ligne.contains("interface"))
+					analyseFichier.insererProprieteClass(ligne);
+
 				if (ligne.isEmpty()) continue;
+
 				boolean skip = false;
 
 				if (estCommentaire) 
@@ -77,15 +81,11 @@ public class LireFichier
 				if (skip) 
 					continue;
 
-				// Gérer les commentaires inline /* potentiels
-				if (ligne.contains("/*"))
-					estCommentaire = true;
+				if (ligne.contains("/*")) estCommentaire = true;
 
-				// Ajouter si niveau == 1, avec fusion des lignes multi-lignes
 				if (niveau == 1) 
 				{
-					if (currentSignature == null)
-						currentSignature = new StringBuilder();
+					if (currentSignature == null) currentSignature = new StringBuilder();
 
 					currentSignature.append(ligne).append("\n");
 					if (ligne.contains(";") || ligne.contains("{")) 
@@ -99,7 +99,7 @@ public class LireFichier
 						currentSignature = null;
 					}
 				}
-				// Mettre à jour le niveau
+
 				int opens = ligne.length() - ligne.replace("{", "").length();
 				int closes = ligne.length() - ligne.replace("}", "").length();
 				niveau += opens - closes;
@@ -107,11 +107,12 @@ public class LireFichier
 					niveau = 0;
 			}
 			scanner.close();
-		} 
+		}
 		catch (FileNotFoundException e) 
 		{
 			e.printStackTrace();
 		}
+
 		return codeLines;
 	}
 }

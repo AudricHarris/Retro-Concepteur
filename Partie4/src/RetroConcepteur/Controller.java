@@ -72,7 +72,7 @@ public class Controller
 
 	public void afficherLiaison()
 	{
-			System.out.println(this.affichageCUI.afficherLiaison());
+		System.out.println(this.affichageCUI.afficherLiaison());
 	}
 
 	public static void main(String[] args) 

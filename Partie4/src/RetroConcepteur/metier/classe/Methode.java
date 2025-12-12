@@ -8,11 +8,11 @@ import java.util.ArrayList;
  */
 public class Methode
 {
-	private String visibilite;
-	private String nom;
-	private String type;
+	private String               visibilite;
+	private String               nom;
+	private String               type;
 	private ArrayList<Parametre> lstParam;
-	private boolean isStatic;
+	private boolean              isStatic;
 
 	/**
 	 *	Creer une instance de methode

@@ -10,13 +10,13 @@ import java.util.Scanner;
 import RetroConcepteur.metier.classe.*;
 
 /**
- * - Permet la lecture d'un dossier et la creation de classe.
+ * Permet la lecture d'un dossier et la creation de classe.
  * Une fois crée nous ajoutons les methode et attribut à cette classe
  */
 public class AnalyseFichier
 {
 	private ArrayList<Classe> lstClass;
-	private List<Liaison> lstLiaisons;
+	private List<Liaison>     lstLiaisons;
 
 	/**
 	 * Construit l'instance AnalyseFichier et parcours le repo
@@ -24,7 +24,7 @@ public class AnalyseFichier
 	 */
 	public AnalyseFichier( String repo)
 	{
-		this.lstClass = new ArrayList<Classe>();
+		this.lstClass    = new ArrayList<Classe> ();
 		this.lstLiaisons = new ArrayList<Liaison>();
 		
 		ArrayList<String> allFiles = new ArrayList<String>();
@@ -36,9 +36,11 @@ public class AnalyseFichier
 
 			for (String file : allFiles)
 			{
-				String nomClasse = file.substring(file.lastIndexOf("/") + 1,file.lastIndexOf("."));
+				String nomClasse = file.substring(file.lastIndexOf("/") + 1,
+				                                    file.lastIndexOf("."));
 
 				this.lstClass.add(new Classe(nomClasse));
+
 				LireFichier.lireFichier(file, this);
 			}
 		}
@@ -64,7 +66,7 @@ public class AnalyseFichier
 	//---------------------------------------//
 	
 
-	public ArrayList<Classe> getLstClasses () {return new ArrayList<Classe>(this.lstClass);}
+	public ArrayList<Classe> getLstClasses () { return new ArrayList<Classe> (this.lstClass);   }
 	public List<Liaison>     getListLiaison() { return new ArrayList<Liaison>(this.lstLiaisons);}
 
 	/**
@@ -125,8 +127,7 @@ public class AnalyseFichier
 	 */
 	public boolean estClasse(String nom)
 	{
-		for ( Classe c : this.lstClass)
-			if (c.getNom().equals(nom)) return true;
+		for ( Classe c : this.lstClass) if (c.getNom().equals(nom)) return true;
 		
 		return false;
 	}
@@ -138,34 +139,10 @@ public class AnalyseFichier
 	 */
 	public boolean estClasseProjet(String type) 	
 	{
-		type = type.trim();
 		
-		if (type == null || type.trim().isEmpty()) return false;
-
-		while (type.endsWith("[]")) 
-			type = type.substring(0, type.length() - 2).trim();
-
-		if (!type.contains("<")) return this.estClasse(type);
-
-		int start = type.indexOf('<');
-		int end = type.lastIndexOf('>');
-
-		if (start != -1 && end > start) 
-		{
-			String base = type.substring(0, start).trim();
-			if (this.estClasse(base)) return true;
-
-			String args = type.substring(start + 1, end).trim();
-			if (!args.isEmpty()) 
-			{
-				Scanner scPartit = new Scanner(args);
-				scPartit.useDelimiter(",");
-
-				while (scPartit.hasNext())
-					if (estClasseProjet(scPartit.next().trim())) 
-						return true;
-			}
-		}
+		for (Classe c : this.lstClass)
+			if (Liaison.getCollectionType(type, c.getNom()))
+				return true;
 
 		return false;
 	}
@@ -223,6 +200,7 @@ public class AnalyseFichier
 			}
 		}
 	}
+
 	/**
 	 * Mets à jour le niveau si des accolades sont present
 	 * Determine si la ligne pourait posseder des methodes ou attributs
@@ -292,7 +270,13 @@ public class AnalyseFichier
 			traiterAttribut(ligne, visibilite, isStatic, isFinal);
 	}
 
-
+	/**
+	 * Traite la ligne pour créer l'attribut
+	 * @param ligneRestante ligne de code avec attribut
+	 * @param visibilite    Visibilite de l'attribut
+	 * @param isStatic      si l'attribut est global ou instance
+	 * @param isFinal       si l'attribut est une constante
+	 */
 	private void traiterAttribut(String ligneRestante, String visibilite, boolean isStatic, boolean isFinal)
 	{
 		int indexPointVirgule = ligneRestante.indexOf(';');
@@ -316,6 +300,12 @@ public class AnalyseFichier
 	}
 
 
+	/**
+	 * Traite la ligne pour créer la methode
+	 * @param ligneRestante ligne de code avec attribut
+	 * @param visibilite    Visibilite de l'attribut
+	 * @param isStatic      si l'attribut est global ou instance
+	 */
 	private void traiterMethode(String ligneRestante, String visibilite, boolean isStatic)
 	{
 		int indexParOuvrante = ligneRestante.indexOf('(');
@@ -349,7 +339,10 @@ public class AnalyseFichier
 		c.ajouterMethode(visibilite, nom, type, params, isStatic);
 	}
 
-
+	/**
+	 * Creer les Parametre à partir d'une ligne de code
+	 * @param paramsStr le string du param avec type
+	 */
 	private ArrayList<Parametre> extraireParametres(String paramsStr)
 	{
 		ArrayList<Parametre> listeParams = new ArrayList<Parametre>();
@@ -376,9 +369,11 @@ public class AnalyseFichier
 		}
 		return listeParams;
 	}
+
 	//---------------------------------------//
 	// methode static //
 	//---------------------------------------//
+	
 	/**
 	 * Ajoute tout les fichier java dans l'array list fournit
 	 * @param path chemin du repertoire
