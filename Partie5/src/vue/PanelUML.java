@@ -52,6 +52,8 @@ public class PanelUML extends JPanel
 		for (Classe c : this.ctrl.getLstClasse()) 
 		{
 			Rectangle rect = new Rectangle(x, y, 0, 0);
+			// this.ctrl.setTailleX(rect);
+			// this.ctrl.setTailleY(rect);
 			this.mapClasseRectangle.put(c, rect);
 			x += 250;
 			if (x > 800)  
