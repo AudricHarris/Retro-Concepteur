@@ -406,15 +406,4 @@ public class AnalyseFichier
 		}
 	}
 
-	/**
-	 * Determine si le string est un Modificateur
-	 * @param text fraction d'une ligne
-	 * @return boolean si le text contient un Modificateur
-	 */
-	//public static boolean getModificateur(String text)
-	//{
-	//	return (text.equals("public") || text.equals("private") ||
-	//			text.equals("protected") || text.equals("static") ||
-	//			text.equals("final"));
-	//}
 }

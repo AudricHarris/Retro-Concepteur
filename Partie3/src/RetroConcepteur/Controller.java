@@ -11,7 +11,6 @@ import RetroConcepteur.metier.classe.Liaison;
 
 /*
  * Controller est la pont entre notre logique et l'IHM
- * TODO : Ammeliorer le système de chemin de fichier pour eviter de le changer à chaque fois
  */
 public class Controller 
 {
