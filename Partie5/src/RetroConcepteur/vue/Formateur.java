@@ -50,8 +50,7 @@ public class Formateur
 
 			int decalageNom = (maxLargeur - classe.getNom().length()) / 2;
 
-
-
+			
 			if (classe.isInterface()) 
 				sRet += this.getInterfaceFormate(maxLargeur);
 
@@ -211,7 +210,7 @@ public class Formateur
 	}
 
 
-	public int getLigneMax(String bloc)
+	public int getLigneMaxEntier(String bloc)
 	{
 		int max =0;
 		int ligne;
@@ -235,7 +234,7 @@ public class Formateur
 
 	public int getTailleSeparateur(String blocMeth, String blocAtt)
 	{
-		return Math.max(this.getLigneMax(blocMeth), this.getLigneMax(blocAtt));
+		return Math.max(this.getLigneMaxEntier(blocMeth), this.getLigneMaxEntier(blocAtt));
 	}
 
 
@@ -260,6 +259,7 @@ public class Formateur
 
 		return ligneMax;
 	}
+
 
 
 	public String getLigneMax (String blocMeth, String blocAtt)

@@ -28,16 +28,15 @@ public class Arc
 	{ 
 		if(type != null) 
 			this.type = type; 
+	}
 
-		switch (type) 
-		{
-			case "value":
-				
-				break;
-		
-			default:
-				break;
-		}
+	public void dessinerArc()
+	{
+
+	}
+
+	public void tracerLigneContinue()
+	{
 		
 	}
 

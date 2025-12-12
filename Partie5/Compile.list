@@ -8,11 +8,10 @@ src/RetroConcepteur/metier/classe/Methode.java
 src/RetroConcepteur/metier/classe/Attribut.java
 src/RetroConcepteur/metier/classe/Classe.java
 
-
 src/RetroConcepteur/vue/outil/Arc.java
 src/RetroConcepteur/vue/outil/Rectangle.java
 
-src/RetroConcepteur/vue/AffichageCUI.java
+src/RetroConcepteur/vue/Formateur.java
 src/RetroConcepteur/vue/FrameUML.java
 src/RetroConcepteur/vue/PanelUML.java
 
