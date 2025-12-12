@@ -123,6 +123,7 @@ public class AnalyseFichier
 
 	/**
 	 * Retourne si le nom existe dans liste classe
+	 * @param nom nom du potentiel classe
 	 * @return boolean si oui ou nom la classe nom existe
 	 */
 	public boolean estClasse(String nom)
@@ -342,6 +343,7 @@ public class AnalyseFichier
 	/**
 	 * Creer les Parametre à partir d'une ligne de code
 	 * @param paramsStr le string du param avec type
+	 * @return lstParam lst des Parametre
 	 */
 	private ArrayList<Parametre> extraireParametres(String paramsStr)
 	{

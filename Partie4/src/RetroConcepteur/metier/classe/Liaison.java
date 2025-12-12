@@ -29,6 +29,7 @@ public class Liaison
 	 * Fabrique de la classe Liaison
 	 * @param classe1 Une première classe
 	 * @param classe2 une deuxième classe
+	 * @return lstLiaison list des liaison entre les classe
 	 */
 	public static List<Liaison> creerLiaison(Classe classe1 , Classe classe2,
 		                                     AnalyseFichier analyseFichier   )
@@ -54,6 +55,7 @@ public class Liaison
 	 * @param classe1 une premièr classe
 	 * @param classe2 une deuxième classe
 	 * @param attribut attribut qui lie les deux classe
+	 * @param analyseFichier classe analyse 
 	 * */
 	private Liaison(Classe classe1 , Classe classe2, Attribut attribut,
 		            AnalyseFichier analyseFichier                      )
