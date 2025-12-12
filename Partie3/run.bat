@@ -1,7 +1,8 @@
 @echo off
 
 echo Compilation du projet RetroConcepteur...
-javac "@Compile.list" -d ./class
+
+javac -encoding UTF-8 "@Compile.list" -d ./class
 
 REM Vérifier si la compilation a réussi
 if %ERRORLEVEL% EQU 0 (
