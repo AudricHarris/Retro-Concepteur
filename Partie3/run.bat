@@ -1,5 +1,7 @@
 @echo off
 
+chcp 65001 > nul
+
 echo Compilation du projet RetroConcepteur...
 
 javac -encoding UTF-8 "@Compile.list" -d ./class
