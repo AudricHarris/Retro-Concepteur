@@ -19,9 +19,9 @@ public class Controller
 	private AffichageCUI   affichageCUI;
 
 
-	public Controller() 
+	public Controller(String cheminDonnees) 
 	{
-		this.analyseFichier = new AnalyseFichier("/home/etudiant/lk240510/Bureau/Retro-Concepteur/Partie3/data");
+		this.analyseFichier = new AnalyseFichier(cheminDonnees);
 		this.affichageCUI   = new AffichageCUI(this);
 		
 	}
@@ -76,9 +76,9 @@ public class Controller
 
 	public static void main(String[] args) 
 	{
-		Controller controller = new Controller();
+		String cheminRepertoire = (args.length > 0) ? args[0] : "./data";
+		Controller controller = new Controller(cheminRepertoire);
 		controller.afficher();
 		controller.afficherLiaison();
 	}
-
 }
