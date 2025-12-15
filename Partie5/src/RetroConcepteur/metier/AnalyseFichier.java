@@ -93,7 +93,7 @@ public class AnalyseFichier
 		for (Liaison l : this.lstLiaisons)
 		{
 			if (l.estBinaire() && !lstBinaire.containsKey(l.getToClass()) &&
-			    !lstBinaire.containsKey(l.getFromClass()))
+				!lstBinaire.containsKey(l.getFromClass()))
 			{
 				lstBinaire.put(l.getToClass(), l);
 			}
@@ -147,7 +147,6 @@ public class AnalyseFichier
 
 		return false;
 	}
-
 
 	//---------------------------------------//
 	//         methode instance              //

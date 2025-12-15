@@ -1,6 +1,8 @@
 package RetroConcepteur.metier.classe;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -101,7 +103,6 @@ public class Classe
 		}
 		return grand;
 	}
-
 	/**
 	 * Retourne le nombre de constante de la classe
 	 * @return int le nombre de constante
@@ -113,7 +114,105 @@ public class Classe
 
 		return cpt;
 	}
+	
+	/**
+	* Retourne une liste ordonnée des attributs :
+	* 1. Statiques constants (static final)
+	* 2. Finaux non-statiques (final)
+	* 3. Instance (non-static, non-final)
+	* Dans chaque groupe : tri par visibilité (public > protected > private)
+	* @return List<Attribut> liste ordonnée
+	*/
+	public List<Attribut> getListOrdonneeAttribut()
+	{
+		List<Attribut> lstOrdonnee = new ArrayList<>();
+		
+		// Groupes
+		List<Attribut> staticFinal = new ArrayList<>();
+		List<Attribut> finalInstance = new ArrayList<>();
+		List<Attribut> instanceVars = new ArrayList<>();
+		
+		for (Attribut att : this.lstAttribut)
+		{
+			if (att.isStatic() && att.isConstante())
+			{
+				staticFinal.add(att);
+			}
+			else 
+				if (!att.isStatic() && att.isConstante()) finalInstance.add(att);
+				else instanceVars.add(att);
+		}
+		
+		List<String> visibilities = Arrays.asList("public", "protected", "private", "default");
+		
 
+		for (List<Attribut> group : Arrays.asList(staticFinal, finalInstance, instanceVars))
+			for (String vis : visibilities)
+				lstOrdonnee.addAll(getAttributsParVisibilite(group, vis));
+		
+		return lstOrdonnee;
+	}
+	
+	
+	/**
+	* Retourne une liste ordonnée des méthodes :
+	* 1. Méthodes statiques
+	* 2. Méthodes d'instance (incluant constructeurs)
+	* Dans chaque groupe : tri par visibilité (public > protected > private)
+	* @return List<Methode> liste ordonnée
+	*/
+	public List<Methode> getListOrdonneeMethode()
+	{
+		List<Methode> lstOrdonnee = new ArrayList<>();
+		
+		List<Methode> staticMethods = new ArrayList<>();
+		List<Methode> instanceMethods = new ArrayList<>();
+		
+		for (Methode meth : this.lstMethode)
+			if (meth.isStatic()) staticMethods.add(meth);
+			else instanceMethods.add(meth);
+		
+		List<String> visibilities = Arrays.asList("public", "protected", "private", "default");
+		
+		for (List<Methode> group : Arrays.asList(staticMethods, instanceMethods))
+			for (String vis : visibilities)
+				lstOrdonnee.addAll(getMethodesParVisibilite(group, vis));
+		
+		return lstOrdonnee;
+	}
+	
+	private List<Attribut> getAttributsParVisibilite(List<Attribut> liste, String visibiliteCible)
+	{
+		List<Attribut> result = new ArrayList<>();
+		
+		for (Attribut att : liste)
+		{
+			String visibilite = att.getVisibilite();
+			if (visibilite.equals(visibiliteCible) || 
+				(visibiliteCible.equals("default")     && 
+				!visibilite.matches("public|protected|private")))
+			{
+				result.add(att);
+			}
+		}
+		return result;
+	}
+	private List<Methode> getMethodesParVisibilite(List<Methode> liste, String visibiliteCible)
+	{
+		List<Methode> result = new ArrayList<>();
+		
+		for (Methode meth : liste)
+		{
+			String visiblite = meth.getVisibilite();
+			if (visiblite.equals(visibiliteCible)    || 
+				(visibiliteCible.equals("default") && 
+				!visiblite.matches("public|protected|private")))
+			{
+				result.add(meth);
+			}
+		}
+		return result;
+	}
 	//---------------------------------------//
 	//          Modificateur                 //
 	//---------------------------------------//
