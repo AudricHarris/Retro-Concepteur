@@ -174,7 +174,7 @@ public class Classe
 		
 		List<String> visibilities = Arrays.asList("public", "protected", "private", "default");
 		
-		for (List<Methode> group : Arrays.asList(staticMethods, instanceMethods))
+		for (List<Methode> group : Arrays.asList(instanceMethods, staticMethods))
 			for (String vis : visibilities)
 				lstOrdonnee.addAll(getMethodesParVisibilite(group, vis));
 		
