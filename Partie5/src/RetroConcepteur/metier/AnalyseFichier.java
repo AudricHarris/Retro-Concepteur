@@ -26,38 +26,8 @@ public class AnalyseFichier
 	{
 		this.lstClass    = new ArrayList<Classe> ();
 		this.lstLiaisons = new ArrayList<Liaison>();
-		
-		ArrayList<String> allFiles = new ArrayList<String>();
-		
-		try
-		{
-			File f = new File(repo);
-			AnalyseFichier.listeRepertoire(f, allFiles);
 
-			for (String file : allFiles)
-			{
-				String nomClasse = file.substring(file.lastIndexOf("/") + 1,
-				                                    file.lastIndexOf("."));
-
-				this.lstClass.add(new Classe(nomClasse));
-
-				LireFichier.lireFichier(file, this);
-			}
-		}
-		catch (Exception e) { System.out.println("fichier non trouvé"); }
-
-		for (Classe classe1 : this.lstClass)
-		{
-			for (Classe classe2 : this.lstClass)
-			{
-				if (classe1 != classe2)
-				{
-					List<Liaison> liaisons = Liaison.creerLiaison(classe1, classe2, this);
-					for (Liaison liaison : liaisons)
-						if (liaison != null) this.lstLiaisons.add(liaison);
-				}
-			}
-		}
+		this.ouvrirDossier(repo);
 	}
 
 
@@ -151,6 +121,44 @@ public class AnalyseFichier
 	//---------------------------------------//
 	//         methode instance              //
 	//---------------------------------------//
+	public void ouvrirDossier(String repo)
+	{
+		this.lstClass.clear();
+		this.lstLiaisons.clear();
+
+		ArrayList<String> allFiles = new ArrayList<String>();
+		try
+		{
+			File f = new File(repo);
+			AnalyseFichier.listeRepertoire(f, allFiles);
+
+			for (String file : allFiles)
+			{
+				String nomClasse = file.substring(file.lastIndexOf("/") + 1,
+				                                    file.lastIndexOf("."));
+
+				this.lstClass.add(new Classe(nomClasse));
+
+				LireFichier.lireFichier(file, this);
+			}
+
+			// Créer les liaisons après avoir ajouté toutes les classes
+			for (Classe classe1 : this.lstClass)
+			{
+				for (Classe classe2 : this.lstClass)
+				{
+					if (classe1 != classe2)
+					{
+						List<Liaison> liaisons = Liaison.creerLiaison(classe1, classe2, this);
+						for (Liaison liaison : liaisons)
+							if (liaison != null) this.lstLiaisons.add(liaison);
+					}
+				}
+			}
+		}
+		catch (Exception e) { System.out.println("fichier non trouvé"); }
+	}
+
 	public void insererProprieteClass(String ligne)
 	{
 		String trimmed = ligne.trim();
@@ -194,6 +202,7 @@ public class AnalyseFichier
 					String nomInterface = sc.next().trim();
 					c.ajouterInterface(nomInterface);
 				}
+				sc.close();
 			} catch (Exception e)
 			{
 				e.printStackTrace();

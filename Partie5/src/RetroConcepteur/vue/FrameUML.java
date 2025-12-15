@@ -3,20 +3,30 @@ package RetroConcepteur.vue;
 import java.awt.BorderLayout;
 import java.awt.FlowLayout;
 import java.awt.event.*;
+import java.awt.image.BufferedImage;
 import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.util.Map;
 import java.awt.Dimension;
 import java.awt.Toolkit;
+import java.awt.Graphics2D;
 
-
+import javax.imageio.ImageIO;
 import javax.swing.*;
 
 import RetroConcepteur.Controller;
+import RetroConcepteur.metier.classe.Classe;
+import RetroConcepteur.vue.outil.Rectangle;
 
-public class FrameUML extends JFrame implements ActionListener
+import RetroConcepteur.vue.BarreMenu;
+
+public class FrameUML extends JFrame
 {
 	private Controller ctrl;
 
-	private JMenuBar barFichier;
+	private BarreMenu barreMenu;
 
 	private JMenuItem menuQuitter;
 	private JMenuItem menuOuvrir;
@@ -45,61 +55,71 @@ public class FrameUML extends JFrame implements ActionListener
 		/* Création des Composants       */
 		/* ----------------------------- */
 
-		this.panelUml   = new PanelUML(this, this.ctrl);
+		this.panelUml     = new PanelUML(this, this.ctrl);
 
-		this.barFichier = new JMenuBar();
-
-		JMenu menuFichier = new JMenu("Fichier");
-
-		this.menuOuvrir = new JMenuItem("Ouvrir");
-		this.menuQuitter = new JMenuItem("Quitter");
+		this.barreMenu    = new BarreMenu(this);
 
 		/* ----------------------------- */
 		/* Positionnement des Composants */
 		/* ----------------------------- */
 
-		menuFichier.add(this.menuOuvrir);
-		menuFichier.add(this.menuQuitter);
-
-		this.barFichier.add(menuFichier);
-
-		this.setJMenuBar(barFichier);
+		this.setJMenuBar(this.barreMenu);
 		this.add(this.panelUml, BorderLayout.CENTER);
 
 		/* ----------------------------- */
 		/* Activation des Composants     */
 		/* ----------------------------- */
-		
-		this.menuOuvrir.addActionListener(this);
-		this.menuQuitter.addActionListener(this);
 
 		this.setVisible(true);
 		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-
-
 	}
 
-
-	public void actionPerformed( ActionEvent evt )
+	public void ouvrirFichier()
 	{
-		if ( evt.getSource() == this.menuOuvrir )
-		{
-			JFileChooser fileChooser = new JFileChooser();
-			fileChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
-			int returnValue = fileChooser.showOpenDialog( null );
+		JFileChooser fileChooser = new JFileChooser();
+		fileChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+		int returnValue = fileChooser.showOpenDialog( null );
 
-			if ( returnValue == JFileChooser.APPROVE_OPTION )
+		if ( returnValue == JFileChooser.APPROVE_OPTION )
+		{
+			this.dossierUML  = fileChooser.getSelectedFile();
+			this.ctrl.ouvrirDossier("" + this.dossierUML);
+			this.panelUml.reinitialiser();
+			System.out.println(this.dossierUML);
+		}
+	}
+
+	public void sauverFichier()
+	{
+		JFileChooser fileChooser = new JFileChooser();
+		fileChooser.setDialogTitle("Sauvegarder le diagramme");
+		fileChooser.setSelectedFile(new File("diagramme.png"));
+		int valRet = fileChooser.showSaveDialog(this);
+		if (valRet == JFileChooser.APPROVE_OPTION) 
+		{
+			File file = fileChooser.getSelectedFile();
+			if (!file.getName().endsWith(".png")) 
 			{
-				this.dossierUML  = fileChooser.getSelectedFile();
-				System.out.println(this.dossierUML);
+				file = new File(file.getAbsolutePath() + ".png");
 			}
-			
+			try 
+			{
+				BufferedImage image = new BufferedImage(this.panelUml.getWidth(), this.panelUml.getHeight(), BufferedImage.TYPE_INT_RGB);
+				Graphics2D g2d = image.createGraphics();
+				this.panelUml.paint(g2d);
+				g2d.dispose();
+				ImageIO.write(image, "png", file);
+				JOptionPane.showMessageDialog(this, "Diagramme sauvegardé avec succès!");
+			} 
+			catch (IOException e) 
+			{
+				JOptionPane.showMessageDialog(this, "Erreur lors de la sauvegarde: " + e.getMessage());
+			}
 		}
-
-		if ( evt.getSource() == this.menuQuitter )
-		{
-			System.exit( 0 );
-		}
-			
+	}
+	
+	public void exporter()
+	{
+		//utilise serialisation pour exporter le diagramme UML
 	}
 }

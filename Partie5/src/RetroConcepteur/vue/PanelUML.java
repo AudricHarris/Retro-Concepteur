@@ -7,12 +7,20 @@ import java.awt.Font;
 import java.awt.FontMetrics;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
-import java.util.*;
+import java.awt.Point;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+
 import java.awt.AlphaComposite;
+
 import RetroConcepteur.Controller;
 import RetroConcepteur.metier.classe.*;
 import RetroConcepteur.vue.outil.*;
+
 import java.awt.Panel;
+import java.awt.Toolkit;
 
 public class PanelUML extends JPanel
 {
@@ -20,6 +28,10 @@ public class PanelUML extends JPanel
 	private Controller ctrl;
 	private List<Classe> lstClasse;
 	private HashMap<Classe, Rectangle> mapClasseRectangle;
+	private List<Liaison> lstLiaisons;
+	private List<Arc>  lstArcs;
+
+	private DessinerFleche dessinerFleche;
 
 	// Marges et interligne du rectangle de l'uml
 	private final int MARGE = 10; 
@@ -29,16 +41,34 @@ public class PanelUML extends JPanel
 	{
 		this.frame = frame;
 		this.ctrl = ctrl;
+		this.dessinerFleche = new DessinerFleche();
 
 		this.lstClasse = this.ctrl.getLstClasses();
 		this.mapClasseRectangle = new HashMap<Classe, Rectangle>();
+		this.lstLiaisons = new ArrayList<Liaison>(this.ctrl.getListLiaison());
+		this.lstArcs = new ArrayList<Arc>();
 		
 		// On définit une grande zone pour permettre le scroll si besoin
-		this.setPreferredSize(new Dimension(2000, 2000));
+		this.setPreferredSize(new Dimension(2000, 2000));	
 		this.initialiserPositions();
+
+		GereSouris gs = new GereSouris(this);
+		this.addMouseListener      (gs);
+		this.addMouseMotionListener(gs);
 
 		this.repaint();
 		this.setVisible(true);
+	}
+
+	public void reinitialiser()
+	{
+		this.lstClasse = this.ctrl.getLstClasses();
+		this.lstLiaisons = new ArrayList<Liaison>(this.ctrl.getListLiaison());
+		this.mapClasseRectangle.clear();
+		this.lstArcs.clear();
+		this.reinitialiser();
+		this.initialiserPositions();
+		this.repaint();
 	}
 	
 	/**
@@ -47,19 +77,41 @@ public class PanelUML extends JPanel
 	private void initialiserPositions()
 	{
 		int x = 50;
-		int y = 50;
-		
+		int y = 50;	
+		int yMax = 0;
+
+		// for ( Classe c : this.lstClasse )
+		// {
+		// 	Rectangle rect = new Rectangle(0, 0, 0,0);
+		// 	this.mapClasseRectangle.put(c, rect);
+		// }
+
+		//this.repaint();
+
 		for (Classe c : this.lstClasse) 
 		{
-			Rectangle rect = new Rectangle(x, y, 0, 0); 
+			Rectangle rect = new Rectangle(x, y, 0, 0);
 			this.mapClasseRectangle.put(c, rect);
-			
-			x += 500; 
-			if (x > 1000) 
+			Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();			
+
+			x += rect.getX() + 50;
+
+			if ( yMax < rect.getTailleY() ) yMax = rect.getTailleY();
+
+			if (x+rect.getTailleX() > screenSize.width) 
 			{ 
-				x = 50; 
-				y += 350; 
+				x = 50;
+				y += 350;
 			}
+		}
+		
+		for (Liaison l : this.lstLiaisons) 
+		{
+			String classe1 = l.getFromClass().getNom();
+			String classe2 = l.getToClass().getNom();
+			//HashMap<Point,Point> p = this.determinerPosLibre(this.mapClasseRectangle.get(classe1), this.mapClasseRectangle.get(classe2));
+			//Arc arc = new Arc ();
+
 		}
 	}
 
@@ -72,6 +124,8 @@ public class PanelUML extends JPanel
 		// Configuration de la police
 		Font font = new Font("SansSerif", Font.PLAIN, 12);
 		Font fontGras = new Font("SansSerif", Font.BOLD, 12);
+		
+
 		
 		g2.setFont(font); 
 		FontMetrics metrics = g2.getFontMetrics();
@@ -97,31 +151,67 @@ public class PanelUML extends JPanel
 
 			// Calcul largeur attributs
 			int largeurAttributsMax = 0;
+			int largeurAvantDeuxPointsAtt = 0;
 			ArrayList<String> strAttributs = new ArrayList<>();
-			for (Attribut att : classe.getLstAttribut()) 
+			for (Attribut att : classe.getListOrdonneeAttribut()) 
 			{
-				// On ignore les attributs "Liaison" (si c'est une classe du projet)
+				// On ignore les attributs Liaison
 				if (this.ctrl.estClasseProjet(att.getType())) continue;
 
-				s = this.getSignatureAttribut(att);
-				strAttributs.add(s);
-
-				largeur = metrics.stringWidth(s);
-				if (largeur > largeurAttributsMax) 
-					largeurAttributsMax = largeur;
+				String avant = this.getVisibiliteSymbole(att.getVisibilite()) + " " + att.getNom();
+				int largeurAvant = metrics.stringWidth(avant);
+				
+				if (largeurAvant > largeurAvantDeuxPointsAtt)
+					largeurAvantDeuxPointsAtt = largeurAvant;
 			}
 
-			// Calcul largeur méthodes
-			int largeurMethodesMax = 0;
-			ArrayList<String> strMethodes = new ArrayList<>();
-			for (Methode meth : classe.getLstMethode()) 
+			for (Attribut att : classe.getListOrdonneeAttribut()) 
 			{
-				s = this.getSignatureMethode(meth);
-				strMethodes.add(s);
+				if (this.ctrl.estClasseProjet(att.getType())) continue;
+				
+				s = this.getSignatureAttribut(att, largeurAvantDeuxPointsAtt, metrics);
+				strAttributs.add(s);
 				largeur = metrics.stringWidth(s);
 
-				if (largeur > largeurMethodesMax) 
-					largeurMethodesMax = largeur ;
+				if (largeur > largeurAttributsMax) 
+					largeurAttributsMax = largeur ;
+			}
+
+			 
+			int largeurMethodesMax = 0;
+			int largeurAvantDeuxPointsMeth = 0; 
+			ArrayList<String> strMethodes = new ArrayList<>();
+			
+			for (Methode meth : classe.getListOrdonneeMethode()) 
+			{
+				if (meth.getNom().equals("main")) continue;
+				
+				String avant = getVisibiliteSymbole(meth.getVisibilite()) + " " + meth.getNom() + "(";
+				List<Parametre> params = meth.getLstParam();
+				for (int i = 0; i < params.size(); i++) 
+				{
+					avant += params.get(i).getNom() + " : " + params.get(i).getType();
+					if (i < params.size() - 1) 
+						avant += ", ";
+				}
+				avant += ")";
+				
+				int largeurAvant = metrics.stringWidth(avant);
+				if (largeurAvant > largeurAvantDeuxPointsMeth)
+					largeurAvantDeuxPointsMeth = largeurAvant;
+			}
+			
+			for (Methode meth : classe.getListOrdonneeMethode()) 
+			{
+				s = this.getSignatureMethode(meth, largeurAvantDeuxPointsMeth, metrics);
+				if (!s.isEmpty()) 
+				{
+					strMethodes.add(s);
+					largeur = metrics.stringWidth(s);
+
+					if (largeur > largeurMethodesMax) 
+						largeurMethodesMax = largeur ;
+				}
 			}
 
 			int largeurRect = Math.max(largeurTitre, Math.max(largeurAttributsMax, largeurMethodesMax)) + (MARGE * 2);
@@ -189,7 +279,7 @@ public class PanelUML extends JPanel
 			g2.setColor(Color.BLACK);
 			yCourant = yDepartTmp + INTERLIGNE;
 			int i = 0;
-			for (Attribut att : classe.getLstAttribut())
+			for (Attribut att : classe.getListOrdonneeAttribut())
 			{
 				if (this.ctrl.estClasseProjet(att.getType())) 
 					continue;
@@ -224,8 +314,10 @@ public class PanelUML extends JPanel
 			g2.setColor(Color.BLACK);
 			yCourant = yDepartTmp + INTERLIGNE;
 			i = 0;
-			for (Methode meth : classe.getLstMethode()) 
+			for (Methode meth : classe.getListOrdonneeMethode()) 
 			{
+				if (meth.getNom().equals("main")) continue;
+				
 				s = strMethodes.get(i++);
 				g2.drawString(s, x + MARGE, yCourant + metrics.getAscent());
 
@@ -249,39 +341,74 @@ public class PanelUML extends JPanel
 			rect.setTailleY(hauteurRect);
 
 		}
+
+		for (Liaison l : this.ctrl.getListLiaison()) 
+		{
+		
+			// Récupérer les rectangles correspondants
+			Rectangle r1 = this.mapClasseRectangle.get(l.getFromClass());
+			Rectangle r2 = this.mapClasseRectangle.get(l.getToClass());
+
+			if (r1 != null && r2 != null) 
+			{
+				// Pour l'instant, on trace de centre à centre (c'est le plus simple)
+				// Note : Cela dessinera la flèche SOUS le rectangle d'arrivée si on ne calcule pas l'intersection
+				this.dessinerFleche.dessinerLiaison(g2, 
+									r1.getCentreX(), r1.getCentreY(), 
+									r2.getCentreX(), r2.getCentreY(), 
+									"DEPENDANCE"); // Remplacer par l.getType()
+			}
+		}
 	}
 
 	// --- Méthodes utilitaires pour générer les chaînes ---
 
-	private String getSignatureAttribut(Attribut att) 
+	private String getSignatureAttribut(Attribut att, int largeurMax, FontMetrics metrics) 
 	{
-		String s = this.getVisibiliteSymbole(att.getVisibilite()) + " " + att.getNom() + " : " + att.getType();
-		if (att.isConstante()) s += " {freeze}";
-		return s;
+		String freeze = "";
+		if (att.isConstante()) freeze = " {freeze}";
+		
+		String avant = this.getVisibiliteSymbole(att.getVisibilite()) + " " + att.getNom();
+		int largeurAvant = metrics.stringWidth(avant);
+		int espacesNecessaires = largeurMax - largeurAvant;
+		
+		// Calculer le nombre d'espaces à ajouter
+		int nbEspaces = espacesNecessaires / metrics.stringWidth(" ");
+		String espaces = " ".repeat(Math.max(0, nbEspaces));
+		
+		return avant + espaces + " : " + att.getType() + freeze;
 	}
 
-	private String getSignatureMethode(Methode meth) 
+	private String getSignatureMethode(Methode meth, int largeurMax, FontMetrics metrics) 
 	{
 		if (meth.getNom().equals("main")) return ""; 
 
-		String sRet = "";
-		sRet += getVisibiliteSymbole(meth.getVisibilite()) + " ";
-		sRet += meth.getNom() + "(";
+		String avant = getVisibiliteSymbole(meth.getVisibilite()) + " " + meth.getNom() + "(";
 		
 		List<Parametre> params = meth.getLstParam();
 		for (int i = 0; i < params.size(); i++) 
 		{
-			sRet += params.get(i).getNom() + " : " + params.get(i).getType();
+			avant += params.get(i).getNom() + " : " + params.get(i).getType();
 			if (i < params.size() - 1) 
-				sRet += ", ";
+				avant += ", ";
 		}
-		sRet += ")";
+		avant += ")";
 		
-		if (!meth.getType().equals("void") && !meth.getType().isEmpty()) 
-			sRet += " : " + meth.getType();
+		if (meth.getType().equals("void") || meth.getType().isEmpty() || meth.getType().equals(meth.getNom())) 
+			return avant;
 		
+		// Calculer l'espacement pour aligner les types de retour
+		int largeurAvant = metrics.stringWidth(avant);
+		int espacesNecessaires = largeurMax - largeurAvant;
+		int nbEspaces = espacesNecessaires / metrics.stringWidth(" ");
+		String espaces = " ".repeat(Math.max(0, nbEspaces));
 		
-		return sRet;
+		return avant + espaces + "   : " + meth.getType();
+	}
+
+	public HashMap<Classe,Rectangle> getMap()
+	{
+		return this.mapClasseRectangle;
 	}
 
 
@@ -311,5 +438,45 @@ public class PanelUML extends JPanel
 		int xCentre = x + (largeur - metrics.stringWidth(texte)) / 2;
 		// metrics.getAscent() Distance verticale entre la ligne de base et le sommet des caractères les plus hauts
 		g.drawString(texte, xCentre, y + metrics.getAscent());
+	}
+
+	// public HashMap<Point,Point> determinerPosLibre(Rectangle source, Rectangle target) 
+	// {
+	// 	char zone = ' ';
+	// 	int nbPoints = 0;
+	// 	double cx1 = source.getCentreX();
+	// 	double cy1 = source.getCentreY();
+		
+	// 	double cx2 = target.getCentreX();
+	// 	double cy2 = target.getCentreY();
+
+	// 	double dx = cx2 - cx1;
+	// 	double dy = cy2 - cy1;
+
+
+	// 	double xNormalized = dx / source.getTailleX();
+	// 	double yNormalized = dy / source.getTailleY();
+
+	// 	if (Math.abs(yNormalized) > Math.abs(xNormalized)) 
+	// 	{
+	// 		if (yNormalized < 0) 
+	// 			zone = 'H';
+	// 		else 
+	// 			zone ='B';
+	// 	} 
+		
+	// 	else 
+	// 	{
+	// 		if (xNormalized < 0)
+	// 			zone = 'G';
+	// 		else
+	// 			zone = 'D';
+	// 	}
+
+	// }
+
+	private void repartirPointsLiaison( char zone) 
+	{
+		// À implémenter plus tard
 	}
 }
