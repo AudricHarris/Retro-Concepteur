@@ -127,8 +127,9 @@ public class PanelUML extends JPanel
 		
 
 		
-		g2.setFont(font); 
+		g2.setFont(font);
 		FontMetrics metrics = g2.getFontMetrics();
+
 		int hauteurTexte    = metrics.getHeight();
 		int largeur,yDepartGrosRect, yDepartTmp;
 		String s;
@@ -152,7 +153,7 @@ public class PanelUML extends JPanel
 			// Calcul largeur attributs
 			int largeurAttributsMax = 0;
 			int largeurAvantDeuxPointsAtt = 0;
-			ArrayList<String> strAttributs = new ArrayList<>();
+			ArrayList<String> strAttributs = new ArrayList<String>();
 			for (Attribut att : classe.getListOrdonneeAttribut()) 
 			{
 				// On ignore les attributs Liaison
@@ -345,14 +346,11 @@ public class PanelUML extends JPanel
 		for (Liaison l : this.ctrl.getListLiaison()) 
 		{
 		
-			// Récupérer les rectangles correspondants
 			Rectangle r1 = this.mapClasseRectangle.get(l.getFromClass());
 			Rectangle r2 = this.mapClasseRectangle.get(l.getToClass());
-
+			l.get
 			if (r1 != null && r2 != null) 
 			{
-				// Pour l'instant, on trace de centre à centre (c'est le plus simple)
-				// Note : Cela dessinera la flèche SOUS le rectangle d'arrivée si on ne calcule pas l'intersection
 				this.dessinerFleche.dessinerLiaison(g2, 
 									r1.getCentreX(), r1.getCentreY(), 
 									r2.getCentreX(), r2.getCentreY(), 

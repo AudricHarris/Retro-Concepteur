@@ -34,7 +34,10 @@ public class Arc
 	public int getY2()                        { return y2;         }
 	public String getType()                   { return this.type;  }
 
-
+	public void setX1(int x1)                
+	{ 
+		this.x1 = x1;      
+	}
 	public void setType(String type)
 	{ 
 		if(type != null) 
