@@ -20,13 +20,15 @@ public class BarreMenu extends JMenuBar implements ActionListener
 
 	private FrameUML   frame;
 
-	private String[][] modeleBarre = {  { "M", "Fichier",               "F"                    },
-										{ "I", "Ouvrir",                "O", "control O"       },
-										{ "I", "Sauvegarder",           "S", "control S"       },
-										{ "I", "Exporter",              "X", "control X"       },
-										{ "S"                                                  },
-										{ "I", "Quitter",               "Q", "alt F4"          },
-										{ "M", "Edition",               "E"                    }};	
+	private String[][] modeleBarre = {  { "M", "Fichier",                      "F"                    },
+										{ "I", "Ouvrir",                       "O", "control O"       },
+										{ "I", "Sauvegarder",                  "S", "control S"       },
+										{ "I", "Importer",                     "I", "control I"       },
+										{ "I", "Exporter",                     "E", "control E"       },
+										{ "S"                                                         },
+										{ "I", "Quitter",                      "Q", "alt F4"          },
+										{ "M", "Edition",                      "E"                    },
+										{ "C", "Afficher implements/inteface", "G", "control G"       }};
 
 	/*--------------*/
 	/* Constructeur */
@@ -86,7 +88,8 @@ public class BarreMenu extends JMenuBar implements ActionListener
 		{
 			case "Ouvrir"      -> this.frame.ouvrirFichier();
 			case "Sauvegarder" -> this.frame.sauverFichier();
-			case "Exporter" -> this.frame.exporter();
+			case "Importer"    -> this.frame.importer();
+			case "Exporter"    -> this.frame.exporter();
 			case "Quitter"     -> System.exit(0);
 
 			default        -> System.out.println("Aucune action associée à : " + cmd);

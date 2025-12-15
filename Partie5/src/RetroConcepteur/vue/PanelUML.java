@@ -7,474 +7,595 @@ import java.awt.Font;
 import java.awt.FontMetrics;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
-import java.awt.Point;
-
+import java.awt.Toolkit;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-import java.awt.AlphaComposite;
-
 import RetroConcepteur.Controller;
+import RetroConcepteur.metier.DiagramData;
 import RetroConcepteur.metier.classe.*;
 import RetroConcepteur.vue.outil.*;
 
-import java.awt.Panel;
-import java.awt.Toolkit;
-
 public class PanelUML extends JPanel
 {
-	private FrameUML frame;
-	private Controller ctrl;
-	private List<Classe> lstClasse;
-	private HashMap<Classe, Rectangle> mapClasseRectangle;
-	private List<Liaison> lstLiaisons;
-	private List<Arc>  lstArcs;
+    private FrameUML frame;
+    private Controller ctrl;
+    private List<Classe> lstClasse;
+    private HashMap<Classe, Rectangle> mapClasseRectangle;
+    private List<Liaison> lstLiaisons;
+	private List<Arc> lstArcs;
+    
+    private DessinerFleche dessinerFleche;
 
-	private DessinerFleche dessinerFleche;
+    // --- CONSTANTES DE STYLE ---
+    private final int PADDING_X = 10; 
+    private final int PADDING_Y = 5;  
+    private final int INTERLIGNE = 2; 
 
-	// Marges et interligne du rectangle de l'uml
-	private final int MARGE = 10; 
-	private final int INTERLIGNE = 5;
+    private final Color COL_TITRE = Color.LIGHT_GRAY; 
+    private final Color COL_ATT   = new Color(240, 240, 240); // Gris très clair
+    private final Color COL_METH  = Color.WHITE;      
 
-	public PanelUML(FrameUML frame, Controller ctrl)
-	{
-		this.frame = frame;
-		this.ctrl = ctrl;
-		this.dessinerFleche = new DessinerFleche();
+    public PanelUML(FrameUML frame, Controller ctrl)
+    {
+        this.frame = frame;
+        this.ctrl = ctrl;
+        this.dessinerFleche = new DessinerFleche();
 
-		this.lstClasse = this.ctrl.getLstClasses();
-		this.mapClasseRectangle = new HashMap<Classe, Rectangle>();
-		this.lstLiaisons = new ArrayList<Liaison>(this.ctrl.getListLiaison());
+        this.reinitialiserDonnees();
+        
+        this.setPreferredSize(new Dimension(2000, 2000));   
+        this.initialiserPositions();
+
+        GereSouris gs = new GereSouris(this);
+        this.addMouseListener(gs);
+        this.addMouseMotionListener(gs);
+
+        this.setVisible(true);
+    }
+
+    public void reinitialiser()
+    {
+        this.reinitialiserDonnees();
+        this.initialiserPositions();
+        this.repaint();
+    }
+
+    private void reinitialiserDonnees() 
+    {
+        this.lstClasse = this.ctrl.getLstClasses();
+        this.lstLiaisons = new ArrayList<Liaison>(this.ctrl.getListLiaison());
 		this.lstArcs = new ArrayList<Arc>();
-		
-		// On définit une grande zone pour permettre le scroll si besoin
-		this.setPreferredSize(new Dimension(2000, 2000));	
-		this.initialiserPositions();
+        this.mapClasseRectangle = new HashMap<Classe, Rectangle>();
+    }
+    
+    private void initialiserPositions()
+    {
+        int x = 50;
+        int y = 50; 
+        int yMax = 0;
+        Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
 
-		GereSouris gs = new GereSouris(this);
-		this.addMouseListener      (gs);
-		this.addMouseMotionListener(gs);
+        for (Classe c : this.lstClasse) 
+        {
+            Rectangle rect = new Rectangle(x, y, 0, 0, c.getNom());
+            this.mapClasseRectangle.put(c, rect);
 
-		this.repaint();
-		this.setVisible(true);
-	}
+            if ( yMax < rect.getTailleY() ) yMax = rect.getTailleY();
 
-	public void reinitialiser()
-	{
-		this.lstClasse = this.ctrl.getLstClasses();
-		this.lstLiaisons = new ArrayList<Liaison>(this.ctrl.getListLiaison());
-		this.mapClasseRectangle.clear();
-		this.lstArcs.clear();
-		this.reinitialiser();
-		this.initialiserPositions();
-		this.repaint();
-	}
-	
-	/**
-	 * Initialise les positions de départ des classes (grille simple)
-	 */
-	private void initialiserPositions()
-	{
-		int x = 50;
-		int y = 50;	
-		int yMax = 0;
+            x += 350; // Décalage arbitraire initial
+            if (x > screenSize.width - 200) 
+            { 
+                x = 50;
+                y += 30 + yMax;
+            }
+        }
 
-		// for ( Classe c : this.lstClasse )
-		// {
-		// 	Rectangle rect = new Rectangle(0, 0, 0,0);
-		// 	this.mapClasseRectangle.put(c, rect);
-		// }
-
-		//this.repaint();
-
-		for (Classe c : this.lstClasse) 
-		{
-			Rectangle rect = new Rectangle(x, y, 0, 0);
-			this.mapClasseRectangle.put(c, rect);
-			Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();			
-
-			x += rect.getX() + 50;
-
-			if ( yMax < rect.getTailleY() ) yMax = rect.getTailleY();
-
-			if (x+rect.getTailleX() > screenSize.width) 
-			{ 
-				x = 50;
-				y += 350;
-			}
-		}
-		
 		for (Liaison l : this.lstLiaisons) 
 		{
-			String classe1 = l.getFromClass().getNom();
-			String classe2 = l.getToClass().getNom();
-			//HashMap<Point,Point> p = this.determinerPosLibre(this.mapClasseRectangle.get(classe1), this.mapClasseRectangle.get(classe2));
-			//Arc arc = new Arc ();
-
+			int x1 = this.mapClasseRectangle.get( l.getFromClass() ).getCentreX();
+			int y1 = this.mapClasseRectangle.get( l.getFromClass() ).getCentreY();
+			int x2 = this.mapClasseRectangle.get( l.getToClass() ).getCentreX();
+			int y2 = this.mapClasseRectangle.get( l.getToClass() ).getCentreY();
+			
+			Arc arc = new Arc( l.getFromClass().getNom(), x1, y1, l.getToClass().getNom(),x2 ,y2 );
+			char zone = this.getZone( this.mapClasseRectangle.get( l.getFromClass() ), this.mapClasseRectangle.get( l.getToClass() ) );
+			this.mapClasseRectangle.get(l.getFromClass()).ajoutArc(zone, arc);
+			char zoneInverse = zoneInverse( zone );
+			this.mapClasseRectangle.get(l.getToClass()).ajoutArc( zoneInverse, arc);
+			
+			this.lstArcs.add( arc );
 		}
+    }
+
+	private int getPlusGrandeHauteur()
+	{
+		int max=0;
+		for ( Rectangle rect : this.mapClasseRectangle.values() )
+			if ( rect.getTailleY() > max ) max = rect.getTailleY();
+		return max;
 	}
 
-	@Override
-	protected void paintComponent(Graphics g)
+	private void determinerPositions()
 	{
-		super.paintComponent(g);
-		Graphics2D g2 = (Graphics2D) g;
-		
-		// Configuration de la police
-		Font font = new Font("SansSerif", Font.PLAIN, 12);
-		Font fontGras = new Font("SansSerif", Font.BOLD, 12);
-		
+		int xAvant, yAvant, largeurPrc, borPrc;
+        Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+        int hauteurMax = this.getPlusGrandeHauteur();
 
-		
-		g2.setFont(font);
-		FontMetrics metrics = g2.getFontMetrics();
+		xAvant = 0;
+		yAvant = 0;
+		largeurPrc = 0;
 
-		int hauteurTexte    = metrics.getHeight();
-		int largeur,yDepartGrosRect, yDepartTmp;
-		String s;
-		int hauteurRect;
-
-		for (Classe classe : this.lstClasse)
+		for (Rectangle rect : this.mapClasseRectangle.values()) 
 		{
-			Rectangle rect = this.mapClasseRectangle.get(classe);
-			int x = rect.getX();
-			yDepartGrosRect = rect.getY();
-			largeur = 0;
-			
-			// --- ETAPE 1 : CALCUL DES LARGEURS ---
-			
-			// Calcul largeur titre
-			int largeurTitre = metrics.stringWidth(classe.getNom());
-			if (classe.isInterface() || classe.isAbstract()) 
-				largeurTitre = Math.max(largeurTitre, metrics.stringWidth("<<Interface>>"));
-			
+            borPrc = xAvant + largeurPrc;
 
-			// Calcul largeur attributs
-			int largeurAttributsMax = 0;
-			int largeurAvantDeuxPointsAtt = 0;
-			ArrayList<String> strAttributs = new ArrayList<String>();
-			for (Attribut att : classe.getListOrdonneeAttribut()) 
+            rect.setX(borPrc + 50 );
+			if (rect.getX() > screenSize.width - 200 ) 
 			{
-				// On ignore les attributs Liaison
-				if (this.ctrl.estClasseProjet(att.getType())) continue;
-
-				String avant = this.getVisibiliteSymbole(att.getVisibilite()) + " " + att.getNom();
-				int largeurAvant = metrics.stringWidth(avant);
-				
-				if (largeurAvant > largeurAvantDeuxPointsAtt)
-					largeurAvantDeuxPointsAtt = largeurAvant;
+                rect.setY(rect.getY() + hauteurMax + 50);
+                rect.setX(50);
 			}
 
-			for (Attribut att : classe.getListOrdonneeAttribut()) 
-			{
-				if (this.ctrl.estClasseProjet(att.getType())) continue;
-				
-				s = this.getSignatureAttribut(att, largeurAvantDeuxPointsAtt, metrics);
-				strAttributs.add(s);
-				largeur = metrics.stringWidth(s);
-
-				if (largeur > largeurAttributsMax) 
-					largeurAttributsMax = largeur ;
-			}
-
-			 
-			int largeurMethodesMax = 0;
-			int largeurAvantDeuxPointsMeth = 0; 
-			ArrayList<String> strMethodes = new ArrayList<>();
-			
-			for (Methode meth : classe.getListOrdonneeMethode()) 
-			{
-				if (meth.getNom().equals("main")) continue;
-				
-				String avant = getVisibiliteSymbole(meth.getVisibilite()) + " " + meth.getNom() + "(";
-				List<Parametre> params = meth.getLstParam();
-				for (int i = 0; i < params.size(); i++) 
-				{
-					avant += params.get(i).getNom() + " : " + params.get(i).getType();
-					if (i < params.size() - 1) 
-						avant += ", ";
-				}
-				avant += ")";
-				
-				int largeurAvant = metrics.stringWidth(avant);
-				if (largeurAvant > largeurAvantDeuxPointsMeth)
-					largeurAvantDeuxPointsMeth = largeurAvant;
-			}
-			
-			for (Methode meth : classe.getListOrdonneeMethode()) 
-			{
-				s = this.getSignatureMethode(meth, largeurAvantDeuxPointsMeth, metrics);
-				if (!s.isEmpty()) 
-				{
-					strMethodes.add(s);
-					largeur = metrics.stringWidth(s);
-
-					if (largeur > largeurMethodesMax) 
-						largeurMethodesMax = largeur ;
-				}
-			}
-
-			int largeurRect = Math.max(largeurTitre, Math.max(largeurAttributsMax, largeurMethodesMax)) + (MARGE * 2);
-			
-			
-
-			int yCourant = yDepartTmp = yDepartGrosRect;
-
-			// --- Calcul et dessin de la section titre ---
-			
-			yDepartTmp = yCourant;
-			yCourant += MARGE;
-			
-			if (classe.isInterface()) 
-				yCourant += hauteurTexte;
-
-			if (classe.isAbstract() && !classe.isInterface()) 
-				yCourant += hauteurTexte;
-
-			yCourant += hauteurTexte + INTERLIGNE;
-
-			hauteurRect = yCourant - yDepartTmp;
-			this.RemplirRect(g2, x, yDepartTmp, largeurRect, hauteurRect, Color.gray);
-			
-			g2.setColor(Color.BLACK);
-			yCourant = yDepartTmp + MARGE;
-			
-			if (classe.isInterface()) 
-			{
-				dessinerStringCentre(g2, "<<Interface>>", x, yCourant, largeurRect);
-				yCourant += hauteurTexte;
-			}
-
-			if (classe.isAbstract() && !classe.isInterface()) 
-			{
-				dessinerStringCentre(g2, "<<Abstract>>", x, yCourant, largeurRect);
-				yCourant += hauteurTexte;
-			}
-
-			g2.setFont(fontGras);
-			dessinerStringCentre(g2, classe.getNom(), x, yCourant, largeurRect);
-			g2.setFont(font);
-
-			yCourant += hauteurTexte + INTERLIGNE;
-			
-			// --- Calcul et dessin de la section ATTRIBUTS ---
-			
-			// Calcul de la hauteur des attributs
-			yDepartTmp = yCourant;
-			yCourant += INTERLIGNE;
-			
-			int nbAttributsVisibles = 0;
-			for (Attribut att : classe.getLstAttribut())
-				if (!this.ctrl.estClasseProjet(att.getType()))
-					nbAttributsVisibles++;
-					
-			yCourant += nbAttributsVisibles * hauteurTexte + INTERLIGNE;
-
-			// Dessin du rectangle attributs 
-			hauteurRect = yCourant - yDepartTmp;
-			this.RemplirRect(g2, x, yDepartTmp, largeurRect, hauteurRect, Color.lightGray);
-			g2.drawRect(x, yDepartTmp, largeurRect, hauteurRect);
-			
-			// Maintenant on dessine le texte des attributs par-dessus le rectangle
-			g2.setColor(Color.BLACK);
-			yCourant = yDepartTmp + INTERLIGNE;
-			int i = 0;
-			for (Attribut att : classe.getListOrdonneeAttribut())
-			{
-				if (this.ctrl.estClasseProjet(att.getType())) 
-					continue;
-
-				s = strAttributs.get(i++);
-				g2.drawString(s, x + MARGE, yCourant + metrics.getAscent());
-				// metrics.getAscent() Distance verticale entre la ligne de base et le sommet des caractères les plus hauts
-				
-				// Souligner si statique
-				if (att.isStatic()) 
-				{
-					largeur = metrics.stringWidth(s);
-					g2.drawLine(x + MARGE, yCourant + metrics.getAscent() + 2, x + MARGE + largeur, yCourant + metrics.getAscent() + 2);
-				}
-				yCourant += hauteurTexte;
-			}
-			yCourant += INTERLIGNE;
-
-			// --- Calcul et dessin de la section METHODES ---
-			
-			// Calcul de la hauteur des méthodes
-			yDepartTmp = yCourant;
-			yCourant += INTERLIGNE;
-			yCourant += strMethodes.size() * hauteurTexte + MARGE;
-
-			// Dessin du rectangle méthodes 
-			hauteurRect = yCourant - yDepartTmp;
-			this.RemplirRect(g2, x, yDepartTmp, largeurRect, hauteurRect, Color.WHITE);
-			g2.drawRect(x, yDepartTmp, largeurRect, hauteurRect);
-			
-			// Maintenant on dessine le texte des méthodes par-dessus le rectangle
-			g2.setColor(Color.BLACK);
-			yCourant = yDepartTmp + INTERLIGNE;
-			i = 0;
-			for (Methode meth : classe.getListOrdonneeMethode()) 
-			{
-				if (meth.getNom().equals("main")) continue;
-				
-				s = strMethodes.get(i++);
-				g2.drawString(s, x + MARGE, yCourant + metrics.getAscent());
-
-				// Souligner si statique
-				if (meth.isStatic()) 
-				{
-					int w = metrics.stringWidth(s);
-					g2.drawLine(x + MARGE, yCourant + metrics.getAscent() + 2, x + MARGE + w, yCourant + metrics.getAscent() + 2);
-				}
-				yCourant += hauteurTexte;
-			}
-			yCourant += MARGE;
-
-			// Rectangle global de la classe
-			hauteurRect = yCourant - yDepartGrosRect;
-			g2.setColor(Color.BLACK);
-			g2.drawRect(x, yDepartGrosRect, largeurRect, hauteurRect);
-
-			// Mise à jour de l'objet métier Rectangle
-			rect.setTailleX(largeurRect);
-			rect.setTailleY(hauteurRect);
+            xAvant = rect.getX();
+            yAvant = rect.getY();
+            largeurPrc = rect.getTailleX();
 
 		}
+	}
 
-		for (Liaison l : this.ctrl.getListLiaison()) 
+    public HashMap<Classe,Rectangle> getMap() { return this.mapClasseRectangle; }
+
+    public List<Classe> getLstClasse() { return this.lstClasse; }
+    public List<Liaison> getLstLiaisons() { return this.lstLiaisons; }
+    public List<Arc> getLstArcs() { return this.lstArcs; }
+
+    public void chargerDiagramme(DiagramData data)
+    {
+        this.lstClasse = data.getLstClasse();
+        this.lstLiaisons = data.getLstLiaisons();
+        this.lstArcs = data.getLstArcs();
+        this.mapClasseRectangle = data.getMapClasseRectangle();
+        this.repaint();
+    }
+
+    // =========================================================================
+    //                             DESSIN PRINCIPAL
+    // =========================================================================
+
+    @Override
+    protected void paintComponent(Graphics g)
+    {
+        super.paintComponent(g);
+        Graphics2D g2 = (Graphics2D) g;
+        
+        // Configuration globale
+        Font font = new Font("SansSerif", Font.PLAIN, 12);
+        g2.setFont(font);
+        
+        // 1. Dessiner les classes
+        for (Classe classe : this.lstClasse)
+            this.dessinerClasse(g2, classe);
+
+        // 2. Dessiner les liaisons
+        for (Liaison l : this.lstLiaisons) 
+            this.dessinerLiaison(g2, l);
+
+
+
+
+    }
+
+    // =========================================================================
+    //                        DÉCOMPOSITION DU DESSIN CLASSE
+    // =========================================================================
+
+    private void dessinerClasse(Graphics2D g2, Classe classe)
+    {
+        FontMetrics metrics = g2.getFontMetrics();
+        Rectangle rect = this.mapClasseRectangle.get(classe);
+        int x = rect.getX();
+        int yDepart = rect.getY();
+		boolean plusDeTroisAtt  = false;
+        boolean plusDeTroisMeth = false;
+		int largeur;
+		
+        // --- ETAPE 1 : Préparation des listes de chaînes avec ALIGNEMENT ---
+        
+        // 1a. Attributs : Calcul de la largeur max de la partie gauche (Visibilité + Nom)
+        int maxLargeurGaucheAtt = 0;
+        ArrayList<Attribut> lstAttAfficher = new ArrayList<>();
+        
+		int cpt=0;
+        for (Attribut att : classe.getListOrdonneeAttribut())
+        {
+            if (!this.ctrl.estClasseProjet(att.getType())) 
+            {
+                String gauche = this.getVisibiliteSymbole(att.getVisibilite()) + " " + att.getNom();
+                largeur= metrics.stringWidth(gauche);
+                if (largeur > maxLargeurGaucheAtt) 
+					maxLargeurGaucheAtt = largeur;
+                lstAttAfficher.add(att);
+            }
+			if ( ++cpt > 3 ) 
+			{
+				plusDeTroisAtt = true;
+				break;
+			}
+        }
+
+        // 1b. Generation des chaînes attributs alignees
+        ArrayList<String> lstStrAttributs = new ArrayList<>();
+        for (Attribut att : lstAttAfficher) 
+            lstStrAttributs.add(this.getSignatureAttributAlignee(att, maxLargeurGaucheAtt, metrics));
+        
+
+        // 1c. Méthodes : Calcul de la largeur max de la partie gauche (Visibilité + Signature)
+        int maxLargeurGaucheMeth = 0;
+        ArrayList<Methode> lstMethAfficher= new ArrayList<>();
+
+		cpt=0;
+        for (Methode meth : classe.getListOrdonneeMethode()) 
+        {
+            if (!meth.getNom().equals("main")) 
+            {
+                String gauche = this.getDebutSignatureMethode(meth);
+                largeur= metrics.stringWidth(gauche);
+                if (largeur > maxLargeurGaucheMeth) maxLargeurGaucheMeth = largeur;
+                lstMethAfficher.add(meth);
+            }
+			if ( ++cpt > 3 ) 
+			{
+				plusDeTroisMeth = true;
+				break;
+			}
+				
+        }
+
+        // 1d. Génération des chaînes méthodes alignées
+        ArrayList<String> lstStrMethodes = new ArrayList<>();
+        for (Methode meth : lstMethAfficher) 
+            lstStrMethodes.add(this.getSignatureMethodeAlignee(meth, maxLargeurGaucheMeth, metrics));
+        
+
+        // --- ETAPE 2 : Calcul des dimensions ---
+        int largeurTitre = this.calculerLargeurTitre(classe, metrics);
+        int largeurAtt   = this.calculerLargeurMax(lstStrAttributs, metrics);
+        int largeurMeth  = this.calculerLargeurMax(lstStrMethodes, metrics);
+        
+        int largeurRect = Math.max(largeurTitre, Math.max(largeurAtt, largeurMeth)) + (PADDING_X * 2);
+
+        int hTitre = this.calculerHauteurTitre(classe, metrics.getHeight());
+        int hAtt   = this.calculerHauteurBloc(lstStrAttributs.size(), metrics.getHeight());
+        int hMeth  = this.calculerHauteurBloc(lstStrMethodes.size(), metrics.getHeight());
+        
+        int hauteurTotale = hTitre + hAtt + hMeth;
+
+        // --- ETAPE 3 : Dessin des Fonds et Contours ---
+        int yCourant = yDepart;
+
+        // Titre
+        this.dessinerFondBloc(g2, x, yCourant, largeurRect, hTitre, COL_TITRE);
+        yCourant += hTitre;
+
+        // Attributs
+        this.dessinerFondBloc(g2, x, yCourant, largeurRect, hAtt, COL_ATT);
+        yCourant += hAtt;
+
+        // Méthodes
+        this.dessinerFondBloc(g2, x, yCourant, largeurRect, hMeth, COL_METH);
+        
+        // Contour global
+        g2.setColor(Color.BLACK);
+        g2.drawRect(x, yDepart, largeurRect, hauteurTotale);
+
+
+        // --- ETAPE 4 : Dessin du Texte ---
+        yCourant = yDepart + PADDING_Y;
+
+        // Texte Titre
+        this.dessinerContenuTitre(g2, classe, x, yCourant, largeurRect, metrics.getHeight());
+        yCourant = yDepart + hTitre + PADDING_Y;
+
+        // Texte Attributs
+        this.dessinerContenuListeAttribut(g2, lstStrAttributs, lstAttAfficher, x, yCourant, metrics, plusDeTroisAtt);
+        yCourant = yDepart + hTitre + hAtt + PADDING_Y;
+
+        // Texte Méthodes
+        this.dessinerContenuListeMethodes(g2, lstStrMethodes, lstMethAfficher, x, yCourant, metrics, plusDeTroisMeth);
+
+        // --- ETAPE 5 : Mise à jour du modèle ---
+        rect.setTailleX(largeurRect);
+        rect.setTailleY(hauteurTotale);
+
+
+    }
+
+    // =========================================================================
+    //                        MÉTHODES DE DESSIN 
+    // =========================================================================
+
+    private void dessinerFondBloc(Graphics2D g2, int x, int y, int w, int h, Color c) 
+    {
+        Color old = g2.getColor();
+        g2.setColor(c);
+        g2.fillRect(x, y, w, h);
+        g2.setColor(Color.BLACK);
+        g2.drawRect(x, y, w, h);
+        g2.setColor(old);
+    }
+
+    private void dessinerContenuTitre(Graphics2D g2, Classe classe, int x, int y, int w, int hLigne) 
+    {
+        Font fontNormal = g2.getFont();
+        Font fontGras = fontNormal.deriveFont(Font.BOLD);
+
+        if (classe.isInterface()) 
+        {
+            dessinerStringCentre(g2, "<<Interface>>", x, y, w);
+            y += hLigne;
+        }
+        if (classe.isAbstract() && !classe.isInterface()) 
+        {
+            dessinerStringCentre(g2, "<<Abstract>>", x, y, w);
+            y += hLigne;
+        }
+
+        g2.setFont(fontGras);
+        dessinerStringCentre(g2, classe.getNom(), x, y, w);
+        g2.setFont(fontNormal);
+    }
+
+    private void dessinerContenuListeAttribut(Graphics2D g2, ArrayList<String> lstStrAtt, ArrayList<Attribut> lstAtt, int x, int y, FontMetrics fm, boolean plusDeTrois) 
+    {
+        int hLigne = fm.getHeight();
+        for (int i = 0; i < lstStrAtt.size(); i++) 
+        {
+            String s = lstStrAtt.get(i);
+            Attribut att = lstAtt.get(i);
+			
+            
+            g2.drawString(s, x + PADDING_X, y + fm.getAscent());
+            
+            if (att.isStatic()) 
+                souligner(g2, x + PADDING_X, y + fm.getAscent(), fm.stringWidth(s));
+			
+			y += hLigne + INTERLIGNE;
+
+			if ( i>= 2 && plusDeTrois) 
+			{
+				g2.drawString("...", x + PADDING_X, y + fm.getAscent());
+				y += hLigne + INTERLIGNE;
+				break;
+			}	
+
+			
+        }
+    }
+
+    private void dessinerContenuListeMethodes(Graphics2D g2, List<String> textes, List<Methode> lstMeth, int x, int y, FontMetrics fm, boolean plusDeTrois) 
+    {
+        int hLigne = fm.getHeight();
+        for (int i = 0; i < textes.size(); i++) 
+        {
+            String s = textes.get(i);
+            Methode meth = lstMeth.get(i);
+            
+            g2.drawString(s, x + PADDING_X, y + fm.getAscent());
+            
+            if (meth.isStatic()) 
+                souligner(g2, x + PADDING_X, y + fm.getAscent(), fm.stringWidth(s));
+            
+            y += hLigne + INTERLIGNE;
+
+			if ( i>= 2 && plusDeTrois) 
+			{
+				g2.drawString("...", x + PADDING_X, y + fm.getAscent());
+				y += hLigne + INTERLIGNE;
+				break;
+			}	
+        }
+    }
+	
+
+    private void souligner(Graphics2D g2, int x, int yBase, int largeur) 
+    {
+        g2.drawLine(x, yBase + 2, x + largeur, yBase + 2);
+    }
+
+    private void dessinerLiaison(Graphics2D g2, Liaison l) 
+    {
+		for (Arc arc : this.lstArcs) 
 		{
-		
-			Rectangle r1 = this.mapClasseRectangle.get(l.getFromClass());
-			Rectangle r2 = this.mapClasseRectangle.get(l.getToClass());
-			l.get
-			if (r1 != null && r2 != null) 
+			Rectangle r1 = null;
+			Rectangle r2 = null;
+			 r1 = this.mapClasseRectangle.get( this.getClasseByNom( arc.getFrom().keySet().iterator().next() ) );
+			 r2 = this.mapClasseRectangle.get( this.getClasseByNom( arc.getTo().keySet().iterator().next() ) );
+            if ( r1 != null && r2 != null )
+            {
+                this.dessinerFleche.dessinerLiaison(g2,arc.getX1(), arc.getY1(), arc.getX2(), arc.getY2(), "Association"); 
+            }
+		}
+
+        //if (r1 != null && r2 != null) 
+        //{
+        //    this.dessinerFleche.dessinerLiaison(g2, 
+        //                        r1.getCentreX(), r1.getCentreY(), 
+        //                        r2.getCentreX(), r2.getCentreY(), 
+        //                        "ASSOCIATION"); 
+        //}
+    }
+
+    // =========================================================================
+    //                        CALCULS & UTILITAIRES
+    // =========================================================================
+
+    private int calculerLargeurTitre(Classe c, FontMetrics fm) 
+    {
+        int largeur= fm.stringWidth(c.getNom());
+        if (c.isInterface() || c.isAbstract()) 
+            largeur = Math.max(largeur, fm.stringWidth("<<Interface>>"));
+        
+        return largeur;
+    }
+
+    private int calculerLargeurMax(List<String> lignes, FontMetrics fm) 
+    {
+        int max = 0;
+        for (String s : lignes) 
+            max = Math.max(max, fm.stringWidth(s));
+        
+        return max;
+    }
+
+    private int calculerHauteurTitre(Classe c, int hLigne) 
+    {
+        int h = PADDING_Y * 2 + hLigne; 
+        if (c.isInterface() || (c.isAbstract() && !c.isInterface())) 
+            h += hLigne; 
+        
+        return h;
+    }
+
+    private int calculerHauteurBloc(int nbLignes, int hLigne) 
+    {
+        if (nbLignes == 0) 
+            return PADDING_Y * 2 + INTERLIGNE; 
+        return (PADDING_Y * 2) + (nbLignes * hLigne) + ((nbLignes - 1) * INTERLIGNE);
+    }
+
+    private void dessinerStringCentre(Graphics g, String texte, int x, int y, int largeurConteneur) 
+    {
+        FontMetrics metrics = g.getFontMetrics();
+        int xCentre = x + (largeurConteneur - metrics.stringWidth(texte)) / 2;
+        g.drawString(texte, xCentre, y + metrics.getAscent());
+    }
+
+    private String getVisibiliteSymbole(String visibilite) 
+    {
+        if (visibilite == null) return " ";
+        switch (visibilite) 
+        {
+            case "public": return "+";
+            case "private": return "-";
+            case "protected": return "#";
+            default: return "~"; 
+        }
+    }
+
+    // --- Génération de chaînes alignées ---
+
+    private String getSignatureAttributAlignee(Attribut att, int largeurMaxGauche, FontMetrics fm) 
+    {
+        String gauche = this.getVisibiliteSymbole(att.getVisibilite()) + " " + att.getNom();
+        String droite = " : " + att.getType() + (att.isConstante() ? " {freeze}" : "");
+        
+        int largeurGauche = fm.stringWidth(gauche);
+        int espaceManquant = largeurMaxGauche - largeurGauche;
+        
+        int nbEspaces = Math.max(0, espaceManquant / fm.stringWidth(" "));
+        
+        String espaces = "";
+        for(int i=0; i<nbEspaces; i++) espaces += " ";
+        
+        return gauche + espaces + droite;
+    }
+
+    private String getDebutSignatureMethode(Methode meth) 
+    {
+        String s = getVisibiliteSymbole(meth.getVisibilite()) + " " + meth.getNom() + "(";
+        List<Parametre> params = meth.getLstParam();
+        for (int i = 0; i < params.size(); i++) 
+        {
+            s += params.get(i).getNom() + " : " + params.get(i).getType();
+            if (i < params.size() - 1) s += ", ";
+			if ( i >= 2 )
 			{
-				this.dessinerFleche.dessinerLiaison(g2, 
-									r1.getCentreX(), r1.getCentreY(), 
-									r2.getCentreX(), r2.getCentreY(), 
-									"DEPENDANCE"); // Remplacer par l.getType()
+				s+= " ...)";
+				return s;
+			}
+        }
+        s += ")";
+        return s;
+    }
+
+    private String getSignatureMethodeAlignee(Methode meth, int largeurMaxGauche, FontMetrics fm) 
+    {
+        String gauche = getDebutSignatureMethode(meth);
+        String droite = "";
+        
+        if (!meth.getType().equals("void") && !meth.getType().isEmpty() && !meth.getType().equals(meth.getNom())) 
+            droite = " : " + meth.getType();
+        
+        
+        int wGauche = fm.stringWidth(gauche);
+        int espaceManquant = largeurMaxGauche - wGauche;
+        int nbEspaces = Math.max(0, espaceManquant / fm.stringWidth(" "));
+        
+        String espaces = "";
+        for(int i=0; i<nbEspaces; i++) espaces += " ";
+        
+        return gauche + espaces + droite;
+    }
+
+	public Classe getClasseByNom(String nom) 
+	{
+		for (Classe c : this.lstClasse) 
+		{
+			if ( c.getNom().equals(nom) ) 
+				return c;
+		}
+		return null;
+	}
+
+	public char getZone(Rectangle source, Rectangle target) 
+	{
+		char zone = ' ';
+		double cx1 = source.getCentreX();
+		double cy1 = source.getCentreY();
+		
+		double cx2 = target.getCentreX();
+		double cy2 = target.getCentreY();
+
+		double dx = cx2 - cx1;
+		double dy = cy2 - cy1;
+
+		double xNormalized = dx / source.getTailleX();
+		double yNormalized = dy / source.getTailleY();
+
+		if (Math.abs(yNormalized) > Math.abs(xNormalized)) 
+		{
+			
+			if (yNormalized < 0) 
+			{
+				zone = 'H'; 
+			} else 
+			{
+				zone = 'B';
+			}
+		} else 
+		{
+			
+			if (xNormalized < 0) 
+			{
+				zone = 'G';
+			} else 
+			{
+				zone = 'D';
 			}
 		}
+		return zone;
 	}
-
-	// --- Méthodes utilitaires pour générer les chaînes ---
-
-	private String getSignatureAttribut(Attribut att, int largeurMax, FontMetrics metrics) 
+	private static final char zoneInverse(char zone) 
 	{
-		String freeze = "";
-		if (att.isConstante()) freeze = " {freeze}";
-		
-		String avant = this.getVisibiliteSymbole(att.getVisibilite()) + " " + att.getNom();
-		int largeurAvant = metrics.stringWidth(avant);
-		int espacesNecessaires = largeurMax - largeurAvant;
-		
-		// Calculer le nombre d'espaces à ajouter
-		int nbEspaces = espacesNecessaires / metrics.stringWidth(" ");
-		String espaces = " ".repeat(Math.max(0, nbEspaces));
-		
-		return avant + espaces + " : " + att.getType() + freeze;
-	}
-
-	private String getSignatureMethode(Methode meth, int largeurMax, FontMetrics metrics) 
-	{
-		if (meth.getNom().equals("main")) return ""; 
-
-		String avant = getVisibiliteSymbole(meth.getVisibilite()) + " " + meth.getNom() + "(";
-		
-		List<Parametre> params = meth.getLstParam();
-		for (int i = 0; i < params.size(); i++) 
+		switch (zone) 
 		{
-			avant += params.get(i).getNom() + " : " + params.get(i).getType();
-			if (i < params.size() - 1) 
-				avant += ", ";
+			case 'H': return 'B';
+			case 'B': return 'H';
+			case 'G': return 'D';
+			case 'D': return 'G';
+			default: return ' ';
 		}
-		avant += ")";
-		
-		if (meth.getType().equals("void") || meth.getType().isEmpty() || meth.getType().equals(meth.getNom())) 
-			return avant;
-		
-		// Calculer l'espacement pour aligner les types de retour
-		int largeurAvant = metrics.stringWidth(avant);
-		int espacesNecessaires = largeurMax - largeurAvant;
-		int nbEspaces = espacesNecessaires / metrics.stringWidth(" ");
-		String espaces = " ".repeat(Math.max(0, nbEspaces));
-		
-		return avant + espaces + "   : " + meth.getType();
-	}
-
-	public HashMap<Classe,Rectangle> getMap()
-	{
-		return this.mapClasseRectangle;
-	}
-
-
-	private String getVisibiliteSymbole(String visibilite) 
-	{
-		if (visibilite == null) return " ";
-		switch (visibilite) 
-		{
-			case "public": return "+";
-			case "private": return "-";
-			case "protected": return "#";
-			default: return "~"; 
-		}
-	}
-
-	private void RemplirRect(Graphics2D g2, int x, int y, int largeur, int hauteur, Color couleur)
-	{
-		Color couleurOriginale = g2.getColor();
-		g2.setColor(couleur);
-		g2.fillRect(x, y, largeur, hauteur);
-		g2.setColor(couleurOriginale);
-	}
-
-	private void dessinerStringCentre(Graphics g, String texte, int x, int y, int largeur) 
-	{
-		FontMetrics metrics = g.getFontMetrics();
-		int xCentre = x + (largeur - metrics.stringWidth(texte)) / 2;
-		// metrics.getAscent() Distance verticale entre la ligne de base et le sommet des caractères les plus hauts
-		g.drawString(texte, xCentre, y + metrics.getAscent());
-	}
-
-	// public HashMap<Point,Point> determinerPosLibre(Rectangle source, Rectangle target) 
-	// {
-	// 	char zone = ' ';
-	// 	int nbPoints = 0;
-	// 	double cx1 = source.getCentreX();
-	// 	double cy1 = source.getCentreY();
-		
-	// 	double cx2 = target.getCentreX();
-	// 	double cy2 = target.getCentreY();
-
-	// 	double dx = cx2 - cx1;
-	// 	double dy = cy2 - cy1;
-
-
-	// 	double xNormalized = dx / source.getTailleX();
-	// 	double yNormalized = dy / source.getTailleY();
-
-	// 	if (Math.abs(yNormalized) > Math.abs(xNormalized)) 
-	// 	{
-	// 		if (yNormalized < 0) 
-	// 			zone = 'H';
-	// 		else 
-	// 			zone ='B';
-	// 	} 
-		
-	// 	else 
-	// 	{
-	// 		if (xNormalized < 0)
-	// 			zone = 'G';
-	// 		else
-	// 			zone = 'D';
-	// 	}
-
-	// }
-
-	private void repartirPointsLiaison( char zone) 
-	{
-		// À implémenter plus tard
 	}
 }

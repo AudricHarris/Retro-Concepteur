@@ -1,6 +1,7 @@
 // Fichier : Animal.java
 public interface Animal {
     
+    
     // Une constante (public static final par défaut)
     public static final String ESPECE_GENERIQUE = "Vertébré";
     

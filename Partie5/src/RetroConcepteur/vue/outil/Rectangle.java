@@ -1,26 +1,34 @@
 package RetroConcepteur.vue.outil;
 
+import java.awt.List;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Map;
+import java.io.Serializable;
 
-public class Rectangle
+public class Rectangle implements Serializable
 {
+	private String id;
 	private int x;
 	private int y;
 	private int tailleX;
 	private int tailleY;
 	private HashMap<Character,ArrayList<Arc>> hashPosPrises;
 
-	public Rectangle ( int x, int y, int tailleX, int tailleY )
+	public Rectangle ( int x, int y, int tailleX, int tailleY, String id )
 	{
 		this.x = x;
 		this.y = y;
 
 		this.tailleX = tailleX;
 		this.tailleY = tailleY;
-		ArrayList<Arc> listeArcVide = new ArrayList<Arc>();
-		this.hashPosPrises = new HashMap<Character,ArrayList<Arc>>(Map.of('H', listeArcVide, 'B', listeArcVide, 'D', listeArcVide, 'G', listeArcVide));
+	
+        this.hashPosPrises = new HashMap<Character,ArrayList<Arc>>();
+        this.hashPosPrises.put('H', new ArrayList<Arc>());
+        this.hashPosPrises.put('B', new ArrayList<Arc>());
+        this.hashPosPrises.put('D', new ArrayList<Arc>());
+        this.hashPosPrises.put('G', new ArrayList<Arc>());	
 	}
 
 	public int getCentreX()       { return this.x + this.tailleX/2; }
@@ -38,23 +46,10 @@ public class Rectangle
 	public void setX( int x ) { this.x = x; }
 	public void setY( int y ) { this.y = y; }
 
-	public void addPos(char c, Arc arc)
+	public void ajoutArc(char c, Arc arc)
 	{
 		this.hashPosPrises.get(c).add(arc); 
-	}
-
-	public void supPos(char c)
-	{
-		ArrayList<Arc> listeArc = this.hashPosPrises.get(c);
-		if ( listeArc.size() > 0 )
-		{
-			listeArc.remove(listeArc.size() - 1);
-		}
-	}
-
-	public int getNbPoint(char c)
-	{
-		return this.hashPosPrises.get(c).size();
+		this.repartirPointsLiaison(c);
 	}
 
 
@@ -66,8 +61,52 @@ public class Rectangle
 
 	public void repartirPointsLiaison(char zone)
 	{
-		ArrayList<Arc> listeArc = this.hashPosPrises.get( zone );
-	
-	}
+        ArrayList<Arc> listeArc = this.hashPosPrises.get( zone );
+        int nbPoints = listeArc.size();
+        if ( nbPoints > 0 )
+        {
+            double step = 0;
+            
+            if (zone == 'H' || zone == 'B') 
+            {
+                step = (double) this.tailleX / (nbPoints + 1);
+                
+                for (int i = 0; i < nbPoints; i++) 
+                {
+                    Arc arc = listeArc.get(i);
+                    // Position = X départ + (i+1) * pas
+                    int positionX = this.x + (int)(step * (i + 1));
+                    
+                    if (zone == 'H') 
+                    {
+						arc.setPoint(this.id, positionX, this.y);
+                    } 
+                    else 
+                    {
+						arc.setPoint(this.id, positionX, this.y + this.tailleY);
+                    }
+                }
+            }
+            else if (zone == 'G' || zone == 'D') 
+            {
+                step = (double) this.tailleY / (nbPoints + 1);
+
+                for (int i = 0; i < nbPoints; i++) 
+                {
+                    Arc arc = listeArc.get(i);
+                    int positionY = this.y + (int)(step * (i + 1));
+                    
+                    if (zone == 'G') 
+                    {
+						arc.setPoint(this.id, this.x, positionY);
+                    } 
+                    else 
+                    {
+						arc.setPoint(this.id, this.x + this.tailleX, positionY);
+                    }
+                }
+            }
+        }
+    }
 
 }

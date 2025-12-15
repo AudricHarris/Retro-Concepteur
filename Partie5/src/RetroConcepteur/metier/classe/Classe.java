@@ -4,12 +4,13 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.io.Serializable;
 
 /**
  * Class classe est une instance qui permet de stocker les differents class de chaque fichier
  * Elle contient un nom, une list d'attribut et liste de methode pour les variables
  * */
-public class Classe
+public class Classe implements Serializable
 {
 	private String              nom;
 	private ArrayList<Attribut> lstAttribut;
@@ -114,6 +115,17 @@ public class Classe
 
 		return cpt;
 	}
+	/**
+	 * Retourne le nombre de méthode de la classe
+	 * @return int le nombre de méthode
+	 */
+	public int getNbMethode() { return this.lstMethode.size(); }
+
+	/**
+	 * Retourne le nombre d'attribut de la classe
+	 * @return int le nombre d'attribut
+	 */
+	public int getNbAttribut() { return this.lstAttribut.size(); }
 	
 	/**
 	* Retourne une liste ordonnée des attributs :

@@ -2,8 +2,9 @@ package RetroConcepteur.vue.outil;
 
 import java.awt.Point;
 import java.util.HashMap;
+import java.io.Serializable;
 
-public class Arc
+public class Arc implements Serializable
 {
 	private HashMap<String, Point> from;
 	private HashMap<String, Point> to;
@@ -22,7 +23,7 @@ public class Arc
 		this.x2   = x2;
 		this.y2   = y2;
 		this.from.put(classe1, new Point(x1,y1));
-		this.from.put(classe2, new Point(x2,y2));
+		this.to.put(classe2, new Point(x2,y2));
 
 	}
 
@@ -36,8 +37,40 @@ public class Arc
 
 	public void setX1(int x1)                
 	{ 
-		this.x1 = x1;      
+		this.x1 = x1;    
+		this.from.replace((String)this.from.keySet().toArray()[0], new Point(x1,this.y1));  
 	}
+	public void setY1(int y1)                
+	{ 
+		this.y1 = y1;    
+		this.from.replace((String)this.from.keySet().toArray()[0], new Point(this.x1,y1));  
+	}
+	public void setX2(int x2)
+	{ 
+		this.x2 = x2;    
+		this.from.replace((String)this.from.keySet().toArray()[1], new Point(x2,this.y2));  
+	}
+	public void setY2(int y2)
+	{ 
+		this.y2 = y2;    
+		this.from.replace((String)this.from.keySet().toArray()[1], new Point(this.x2,y2));  
+	}
+	
+	public void setPoint(String nomClasse, int x, int y)
+    {
+        if (this.from.containsKey(nomClasse))
+        {
+            this.x1 = x;
+            this.y1 = y;
+            this.from.put(nomClasse, new Point(x, y));
+        }
+        else if (this.to.containsKey(nomClasse))
+        {
+            this.x2 = x;
+            this.y2 = y;
+            this.to.put(nomClasse, new Point(x, y));
+        }
+    }
 	public void setType(String type)
 	{ 
 		if(type != null) 

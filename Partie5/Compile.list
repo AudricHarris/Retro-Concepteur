@@ -1,5 +1,6 @@
 src/RetroConcepteur/metier/AnalyseFichier.java
 src/RetroConcepteur/metier/LireFichier.java
+src/RetroConcepteur/metier/DiagramData.java
 
 src/RetroConcepteur/metier/classe/Liaison.java
 src/RetroConcepteur/metier/classe/Multiplicite.java
@@ -11,6 +12,7 @@ src/RetroConcepteur/metier/classe/Classe.java
 src/RetroConcepteur/vue/outil/GereSouris.java
 src/RetroConcepteur/vue/outil/Arc.java
 src/RetroConcepteur/vue/outil/Rectangle.java
+src/RetroConcepteur/vue/outil/Point.java
 
 src/RetroConcepteur/vue/Formateur.java
 src/RetroConcepteur/vue/FrameUML.java

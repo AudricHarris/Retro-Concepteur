@@ -2,7 +2,14 @@ import RetroConcepteur.vue.outil.Point;
 
 public class Disque 
 {
+	private boolean isAbszztract;
+    private boolean isAbstrac;
+    private boolean isAbstrt;
 
+
+    private boolean isAbact;
+    private boolean strazzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzct;
+    private boolean isAct;
 	
 	private double rayon;
 
