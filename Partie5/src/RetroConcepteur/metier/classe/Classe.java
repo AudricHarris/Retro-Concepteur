@@ -3,21 +3,26 @@ package RetroConcepteur.metier.classe;
 import java.util.ArrayList;
 import java.util.List;
 
-/*
+/**
  * Class classe est une instance qui permet de stocker les differents class de chaque fichier
  * Elle contient un nom, une list d'attribut et liste de methode pour les variables
  * */
 public class Classe
 {
-	private String nom;
+	private String              nom;
 	private ArrayList<Attribut> lstAttribut;
-	private ArrayList<Methode> lstMethode;
+	private ArrayList<Methode>  lstMethode;
 	
-	private Classe heritageClasse;
+	private Classe       heritageClasse;
 	private List<String> lstInterfaces;
 
 	private boolean isAbstract;
 	private boolean isInterface;
+	
+	/**
+	 * Constructeur de la classe
+	 * @param nom nom de la classe
+	 */
 
 	public Classe(String nom)
 	{
@@ -27,48 +32,38 @@ public class Classe
 		this.isAbstract = false;
 		this.isInterface = false;
 	}
-
-	// Getter
-	public String getNom()                      { return this.nom; }
-	public boolean isAbstract()                 { return this.isAbstract; }
-	public boolean isInterface()                { return this.isInterface; }
-	public Classe getHeritageClasse()           { return this.heritageClasse; }
-	public ArrayList<Attribut> getLstAttribut() { return new ArrayList<Attribut>(this.lstAttribut); }
-	public ArrayList<Methode> getLstMethode()   { return new ArrayList<Methode> (this.lstMethode); }
-	public ArrayList<String> getLstInterfaces() { return new ArrayList<String>  (this.lstInterfaces !=null ? this.lstInterfaces : new ArrayList<String>()); }
-
-	// Méthode modifcateur
-
-	public void setIsAbstract(boolean isAbstract) { this.isAbstract = isAbstract; }
-	public void setIsInterface(boolean isInterface) { this.isInterface = isInterface; }
-	public void setHeritageClasse(Classe cls) { this.heritageClasse = cls; }
 	
-	public void ajouterInterface(String nomInterface)
-	{
-		if (this.lstInterfaces == null)
-			this.lstInterfaces = new ArrayList<String>();
+	//---------------------------------------//
+	//              Getters                  //
+	//---------------------------------------//
 
-		this.lstInterfaces.add(nomInterface);
+	public String              getNom           (){ return this.nom;            }
+	public boolean             isAbstract       (){ return this.isAbstract;     }
+	public boolean             isInterface      (){ return this.isInterface;    }
+	public Classe              getHeritageClasse(){ return this.heritageClasse; }
+	
+	public ArrayList<Attribut> getLstAttribut()
+	{ 
+		return new ArrayList<Attribut>(this.lstAttribut);
 	}
 	
-	// Cette methode permet l'ajout de tache en fonction des paramètres données
-	public void ajouterAttribut(String nomAtt, boolean constante, String type, String visibilite, boolean isStatic)
+	public ArrayList<Methode>  getLstMethode()
 	{
-		int num = this.lstAttribut.size() + 1;
-		Attribut attribut = new Attribut(num, nomAtt, constante, type, visibilite, isStatic);
-		if (attribut != null)
-			this.lstAttribut.add(attribut);
+		return new ArrayList<Methode> (this.lstMethode);
 	}
 
-	// Cette methode permet L'ajout de méthodes pour une classe
-	public void ajouterMethode(String visibilite, String nomMeth, String type, ArrayList<Parametre> lstParam, boolean isStatic)
+	public ArrayList<String>   getLstInterfaces ()
 	{
-		Methode meth = new Methode(visibilite, nomMeth, type, lstParam, isStatic);
-		if ( meth != null)
-			this.lstMethode.add(meth);
+		if (this.lstInterfaces != null)
+			return new ArrayList<String>(this.lstInterfaces);
+		
+		return new ArrayList<String>();
 	}
 
-
+	/**
+	 * Retourne la taille du plus grand Attribut
+	 * @return int taille du plus frand Attribut
+	 */
 	public int getPlusGrandAttribut()
 	{
 		int grand = 0;
@@ -77,47 +72,103 @@ public class Classe
 			if(att.getNom().length() > grand)
 				grand = att.getNom().length();
 		
-
 		return grand;
 	}
 
+	/**
+	 * Retourne la taille du plus grand Methode
+	 * @return int taille du plus frand Methode
+	 */
 	public int getPlusGrandeMethode()
 	{
 		int grand = 0;
 		
 		for (Methode meth : this.lstMethode) 
 		{
-			if (meth.getNom().equals("main")) continue;
+			String nomMeth = meth.getNom();
+			if (nomMeth.equals("main")) continue;
 
-			int tailleActuelle = meth.getNom().length() + 2;
+			int tailleActuelle = nomMeth.length() + 2;
 
 			if (!meth.getLstParam().isEmpty())
 			{
 				for (Parametre p : meth.getLstParam())
-				{
 					tailleActuelle += p.getNom().length() + 1 + p.getType().length() + 1;
-				}
+				
 				tailleActuelle--;
 			}
-
-			if(tailleActuelle > grand)
-				grand = tailleActuelle;
+			grand = Math.max(grand, tailleActuelle);
 		}
-
 		return grand;
 	}
 
-
+	/**
+	 * Retourne le nombre de constante de la classe
+	 * @return int le nombre de constante
+	 */
 	public int getNbConstante()
 	{
 		int cpt=0;
-		for ( Attribut att : this.lstAttribut )
-		{
-			if ( att.isConstante() ) cpt++;
-		}
+		for ( Attribut att : this.lstAttribut ) if ( att.isConstante() ) cpt++;
+
 		return cpt;
 	}
 
+	//---------------------------------------//
+	//          Modificateur                 //
+	//---------------------------------------//
+
+	public void setIsAbstract    (boolean isAbstract ) { this.isAbstract     = isAbstract;  }
+	public void setIsInterface   (boolean isInterface) { this.isInterface    = isInterface; }
+	public void setHeritageClasse(Classe  cls        ) { this.heritageClasse = cls;         }
+	
+	/**
+	 * Ajoute l'interface passer en param
+	 * @param nomInterface nom de l'interface ajouter
+	 */
+	public void ajouterInterface(String nomInterface)
+	{
+		if (this.lstInterfaces == null) this.lstInterfaces = new ArrayList<String>();
+
+		this.lstInterfaces.add(nomInterface);
+	}
+
+	/**
+	 * Creer et ajoute un attribut par rapport au param passer
+	 * @param nomAtt     nom de l'attribut
+	 * @param constante  si l'attribut est constante
+	 * @param type       le type de l'attribut
+	 * @param visibilite Visibilite de l'attribut
+	 * @param isStatic   si l'attribut est static
+	 */
+	public void ajouterAttribut(String nomAtt    , boolean constante, String type,
+		                        String visibilite, boolean isStatic               )
+	{
+		int num = this.lstAttribut.size() + 1;
+		Attribut attribut = new Attribut(num, nomAtt, constante, type, visibilite, isStatic);
+		
+		if (attribut != null) this.lstAttribut.add(attribut);
+	}
+
+	/**
+	 * Creer et ajoute une methode par rapport au param passer
+	 * @param visibilite Visibilite de la methode
+	 * @param nomMeth    nom de la methode
+	 * @param type       le type de la methode
+	 * @param lstParam   la liste des param de la méthode
+	 * @param isStatic   si l'attribut est static
+	 */
+	public void ajouterMethode(String visibilite, String nomMeth, String type, 
+		                       ArrayList<Parametre> lstParam, boolean isStatic)
+	{
+		Methode meth = new Methode(visibilite, nomMeth, type, lstParam, isStatic);
+		
+		if ( meth != null) this.lstMethode.add(meth);
+	}
+
+	//---------------------------------------//
+	//         Methode instance              //
+	//---------------------------------------//
 
 	public String toString()
 	{
