@@ -4,6 +4,9 @@ import java.awt.BorderLayout;
 import java.awt.FlowLayout;
 import java.awt.event.*;
 import java.io.File;
+import java.awt.Dimension;
+import java.awt.Toolkit;
+
 
 import javax.swing.*;
 
@@ -30,8 +33,10 @@ public class FrameUML extends JFrame implements ActionListener
 
 		this.setLayout( new BorderLayout() );
 
+		Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+
 		this.setLocation(100, 100);
-		this.setSize(1000, 700);
+		this.setSize     ( screenSize.width, screenSize.height );
 		this.setTitle("Diagramme UML");
 		
 
