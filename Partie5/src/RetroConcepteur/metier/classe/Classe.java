@@ -15,7 +15,7 @@ public class Classe
 	private ArrayList<Attribut> lstAttribut;
 	private ArrayList<Methode>  lstMethode;
 	
-	private Classe       heritageClasse;
+	private String       nomHeritageClasse;
 	private List<String> lstInterfaces;
 
 	private boolean isAbstract;
@@ -39,10 +39,10 @@ public class Classe
 	//              Getters                  //
 	//---------------------------------------//
 
-	public String              getNom           (){ return this.nom;            }
-	public boolean             isAbstract       (){ return this.isAbstract;     }
-	public boolean             isInterface      (){ return this.isInterface;    }
-	public Classe              getHeritageClasse(){ return this.heritageClasse; }
+	public String              getNom           (){ return this.nom;              }
+	public boolean             isAbstract       (){ return this.isAbstract;       }
+	public boolean             isInterface      (){ return this.isInterface;      }
+	public String              getNomHeritageClasse(){ return this.nomHeritageClasse;}
 	
 	public ArrayList<Attribut> getLstAttribut()
 	{ 
@@ -228,9 +228,9 @@ public class Classe
 	//          Modificateur                 //
 	//---------------------------------------//
 
-	public void setIsAbstract    (boolean isAbstract ) { this.isAbstract     = isAbstract;  }
-	public void setIsInterface   (boolean isInterface) { this.isInterface    = isInterface; }
-	public void setHeritageClasse(Classe  cls        ) { this.heritageClasse = cls;         }
+	public void setIsAbstract       (boolean isAbstract ) { this.isAbstract        = isAbstract;  }
+	public void setIsInterface      (boolean isInterface) { this.isInterface       = isInterface; }
+	public void setNomHeritageClasse(String  nom        ) { this.nomHeritageClasse = nom;         }
 	
 	/**
 	 * Ajoute l'interface passer en param
@@ -289,8 +289,8 @@ public class Classe
 		for (Methode methode : this.lstMethode)
 			sRet+= methode.toString();
 
-		if (this.heritageClasse != null) 
-			sRet += " extends " + this.heritageClasse + "\n";
+		if (this.nomHeritageClasse != null) 
+			sRet += " extends " + this.nomHeritageClasse + "\n";
 		if (this.lstInterfaces != null && !this.lstInterfaces.isEmpty()) 
 		{
 			sRet += "\nimplements :";

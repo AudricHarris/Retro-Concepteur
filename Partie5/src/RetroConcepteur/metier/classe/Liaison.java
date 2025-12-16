@@ -47,8 +47,8 @@ public class Liaison
 				lstLiaisons.add(liaison);
 			}
 
-			if (classe1.getHeritageClasse() != null && 
-				classe1.getHeritageClasse().getNom().equals(classe2.getNom()))
+			if (classe1.getNomHeritageClasse() != null && 
+				classe1.getNomHeritageClasse().equals(classe2.getNom()))
 			{
 				lstLiaisons.add(new Liaison(classe1, classe2, null, analyseFichier));
 			}
@@ -131,8 +131,8 @@ public class Liaison
 		}
 
 		// Vérifier si c'est un héritage
-		if (this.fromClass.getHeritageClasse() != null &&
-		    this.fromClass.getHeritageClasse().getNom().equals(this.toClass.getNom()))
+		if (this.fromClass.getNomHeritageClasse() != null &&
+		    this.fromClass.getNomHeritageClasse().equals(this.toClass.getNom()))
 		{
 			sType = "Generalisation";
 		}

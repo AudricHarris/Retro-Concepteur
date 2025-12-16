@@ -163,7 +163,9 @@ public class AnalyseFichier
 	{
 		String trimmed = ligne.trim();
 		Classe c = this.lstClass.getLast();
-		if (trimmed.contains("{")) trimmed = trimmed.substring(0, trimmed.length()-1);
+		if (trimmed.contains("{")) 
+			trimmed = trimmed.substring(0, trimmed.length()-1);
+
 		if (trimmed.contains("abstract") && (trimmed.contains("class") || trimmed.contains("interface")))
 			c.setIsAbstract(true);
 
@@ -180,17 +182,9 @@ public class AnalyseFichier
 				indFin = trimmed.length();
 
 			String heritage = trimmed.substring(trimmed.indexOf("extends") + 7, indFin).trim();
-			c.setHeritageClasse(new Classe(heritage.trim()));
-			
-			for (Classe cls : this.lstClass)
-			{
-				if (cls.getNom().equals(heritage.trim()))
-				{
-					c.setHeritageClasse(cls);
-					break;
-				}
-			}
+			c.setNomHeritageClasse(trimmed);
 		}
+		
 		if (trimmed.contains("implements"))
 		{
 			int indFin = trimmed.length();
