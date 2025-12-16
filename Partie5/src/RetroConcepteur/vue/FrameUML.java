@@ -122,15 +122,15 @@ public class FrameUML extends JFrame
 	{
 		JFileChooser fileChooser = new JFileChooser();
 		fileChooser.setDialogTitle("Exporter le diagramme UML");
-		fileChooser.setSelectedFile(new File("diagramme.uml"));
+		fileChooser.setSelectedFile(new File("diagramme.xml"));
 		
 		int result = fileChooser.showSaveDialog(this);
 		if (result == JFileChooser.APPROVE_OPTION) 
 		{
 			File fichier = fileChooser.getSelectedFile();
-			if (!fichier.getName().endsWith(".uml")) 
+			if (!fichier.getName().endsWith(".xml")) 
 			{
-				fichier = new File(fichier.getAbsolutePath() + ".uml");
+				fichier = new File(fichier.getAbsolutePath() + ".xml");
 			}
 			try (FileOutputStream out = new FileOutputStream(fichier);
 				 ObjectOutputStream objtOut = new ObjectOutputStream(out)) 
@@ -155,7 +155,7 @@ public class FrameUML extends JFrame
 	{
 		JFileChooser fileChooser = new JFileChooser();
 		fileChooser.setDialogTitle("Importer le diagramme UML");
-		fileChooser.setFileFilter(new FileNameExtensionFilter("Fichiers UML", "uml"));
+		fileChooser.setFileFilter(new FileNameExtensionFilter("Fichiers UML", "xml"));
 		int result = fileChooser.showOpenDialog(this);
 		if (result == JFileChooser.APPROVE_OPTION) 
 		{
