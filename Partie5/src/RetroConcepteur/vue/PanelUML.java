@@ -125,8 +125,13 @@ public class PanelUML extends JPanel
 		}
 
         // 2. Ensuite on trace les fleches (maintenant que les rectangles ont leur taille finale)
-        for (Liaison l : this.lstLiaisons) 
-            this.dessinerLiaison(g2, l);
+        //for (Liaison l : this.lstLiaisons) 
+        //    this.dessinerLiaison(g2, l);
+        for (Chemin c : this.lstChemins) 
+        {
+            // On dessine directement le chemin intelligent calculé plus tôt
+            this.dessinerFleche.dessinerLiaison(g2, c);
+        }
         
     }
 
@@ -479,7 +484,7 @@ public class PanelUML extends JPanel
 				int y2 = r2.getCentreY();
                 Point p2 = new Point(x2,y2);
 				
-				Chemin chemin = new Chemin(p1, p2, "ASSOCIATION",this.mapClasseRectangle,l.getFromClass(), l.getToClass() );
+				Chemin chemin = new Chemin(p1, p2, l.getType(),this.mapClasseRectangle,l.getFromClass(), l.getToClass() );
 				char zone = this.getZone(r1, r2);
 				r1.addPos(zone, chemin);
 				char zoneInv = zoneInverse(zone);

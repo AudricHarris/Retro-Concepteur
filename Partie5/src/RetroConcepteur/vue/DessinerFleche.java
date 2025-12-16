@@ -4,6 +4,7 @@ import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.BasicStroke;
 import java.util.LinkedList;
+import java.awt.Stroke;
 
 import RetroConcepteur.vue.outil.*;
 
@@ -11,7 +12,7 @@ public class DessinerFleche
 {
 	public void dessinerLiaison(Graphics2D g2, Chemin chemin)
 	{
-		java.awt.Stroke strokeOriginal = g2.getStroke();
+		Stroke strokeOriginal = g2.getStroke();
 		String type = chemin.getType();
 
 		if (type.equals("Implementation"))

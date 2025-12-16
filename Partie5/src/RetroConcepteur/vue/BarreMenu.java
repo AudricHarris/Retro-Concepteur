@@ -22,9 +22,9 @@ public class BarreMenu extends JMenuBar implements ActionListener
 
 	private String[][] modeleBarre = {  { "M", "Fichier",                      "F"                    },
 										{ "I", "Ouvrir",                       "O", "control O"       },
-										{ "I", "Sauvegarder",                  "S", "control S"       },
-										{ "I", "Importer",                     "I", "control I"       },
+										{ "I", "Ouvrir Xml",                   "N", "control N"       },
 										{ "I", "Exporter",                     "E", "control E"       },
+										{ "I", "Sauvegarder",                  "S", "control S"       },
 										{ "S"                                                         },
 										{ "I", "Quitter",                      "Q", "alt F4"          },
 										{ "M", "Edition",                      "E"                    },
@@ -87,9 +87,9 @@ public class BarreMenu extends JMenuBar implements ActionListener
 		switch (cmd) 
 		{
 			case "Ouvrir"      -> this.frame.ouvrirFichier();
-			case "Sauvegarder" -> this.frame.sauverFichier();
-			case "Importer"    -> this.frame.importer();
-			case "Exporter"    -> this.frame.exporter();
+			case "ouvrir Xml"  -> this.frame.ouvrirXml();
+			case "Sauvegarder" -> this.frame.sauvegardeFichier();
+			case "Exporter"    -> this.frame.exporterFichier();
 			case "Quitter"     -> System.exit(0);
 
 			default        -> System.out.println("Aucune action associée à : " + cmd);

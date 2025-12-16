@@ -89,7 +89,7 @@ public class FrameUML extends JFrame
 		}
 	}
 
-	public void sauverFichier()
+	public void exporterFichier()
 	{
 		JFileChooser fileChooser = new JFileChooser();
 		fileChooser.setDialogTitle("Sauvegarder le diagramme");
@@ -118,61 +118,13 @@ public class FrameUML extends JFrame
 		}
 	}
 	
-	public void exporter()
+	public void sauvegardeFichier()
 	{
-		JFileChooser fileChooser = new JFileChooser();
-		fileChooser.setDialogTitle("Exporter le diagramme UML");
-		fileChooser.setSelectedFile(new File("diagramme.xml"));
-		
-		int result = fileChooser.showSaveDialog(this);
-		if (result == JFileChooser.APPROVE_OPTION) 
-		{
-			File fichier = fileChooser.getSelectedFile();
-			if (!fichier.getName().endsWith(".xml")) 
-			{
-				fichier = new File(fichier.getAbsolutePath() + ".xml");
-			}
-			try (FileOutputStream out = new FileOutputStream(fichier);
-				 ObjectOutputStream objtOut = new ObjectOutputStream(out)) 
-			{
-				/*DiagramData data = new DiagramData(
-					new ArrayList<Classe>(this.panelUml.getLstClasse()),
-					this.panelUml.getLstLiaisons(),
-					this.panelUml.getLstArcs(),
-					this.panelUml.getMap()
-				);
-				objtOut.writeObject(data);*/
-				JOptionPane.showMessageDialog(this, "Diagramme exporté avec succès!");
-			} 
-			catch (IOException e) 
-			{
-				JOptionPane.showMessageDialog(this, "Erreur lors de l'export: " + e.getMessage());
-			}
-		}
+		//a faire en xml
 	}
 
-	public void importer()
+	public void ouvrirXml()
 	{
-		JFileChooser fileChooser = new JFileChooser();
-		fileChooser.setDialogTitle("Importer le diagramme UML");
-		fileChooser.setFileFilter(new FileNameExtensionFilter("Fichiers UML", "xml"));
-		int result = fileChooser.showOpenDialog(this);
-		if (result == JFileChooser.APPROVE_OPTION) 
-		{
-			File file = fileChooser.getSelectedFile();
-			try (FileInputStream in = new FileInputStream(file);
-				 ObjectInputStream objtIn = new ObjectInputStream(in)) 
-			{
-				/*DiagramData data = (DiagramData) objtIn.readObject();
-				this.panelUml.chargerDiagramme(data);*/
-				this.repaint();
-				JOptionPane.showMessageDialog(this, "Diagramme importé avec succès!");
-			} 
-
-			catch (IOException e) 
-			{
-				JOptionPane.showMessageDialog(this, "Erreur lors de l'import: " + e.getMessage());
-			}
-		}
+		//a faire
 	}
 }

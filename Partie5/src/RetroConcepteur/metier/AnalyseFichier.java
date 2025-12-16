@@ -3,6 +3,7 @@ package RetroConcepteur.metier;
 // Import package extern
 import java.io.File;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Scanner;
@@ -161,6 +162,8 @@ public class AnalyseFichier
 
 	public void insererProprieteClass(String ligne)
 	{
+		HashSet<String>lstExtends = new HashSet<String>();
+		
 		String trimmed = ligne.trim();
 		Classe c = this.lstClass.getLast();
 		if (trimmed.contains("{")) 
@@ -182,6 +185,8 @@ public class AnalyseFichier
 				indFin = trimmed.length();
 
 			String heritage = trimmed.substring(trimmed.indexOf("extends") + 7, indFin).trim();
+			System.out.println(heritage);
+			lstExtends.add(heritage);
 			c.setNomHeritageClasse(heritage);
 		}
 
