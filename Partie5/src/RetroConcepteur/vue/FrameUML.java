@@ -135,13 +135,13 @@ public class FrameUML extends JFrame
 			try (FileOutputStream out = new FileOutputStream(fichier);
 				 ObjectOutputStream objtOut = new ObjectOutputStream(out)) 
 			{
-				DiagramData data = new DiagramData(
+				/*DiagramData data = new DiagramData(
 					new ArrayList<Classe>(this.panelUml.getLstClasse()),
 					this.panelUml.getLstLiaisons(),
-					this.panelUml.getLstChemin(),
+					this.panelUml.getLstArcs(),
 					this.panelUml.getMap()
 				);
-				objtOut.writeObject(data);
+				objtOut.writeObject(data);*/
 				JOptionPane.showMessageDialog(this, "Diagramme exporté avec succès!");
 			} 
 			catch (IOException e) 
@@ -156,18 +156,20 @@ public class FrameUML extends JFrame
 		JFileChooser fileChooser = new JFileChooser();
 		fileChooser.setDialogTitle("Importer le diagramme UML");
 		fileChooser.setFileFilter(new FileNameExtensionFilter("Fichiers UML", "uml"));
-		
 		int result = fileChooser.showOpenDialog(this);
 		if (result == JFileChooser.APPROVE_OPTION) 
 		{
 			File file = fileChooser.getSelectedFile();
 			try (FileInputStream in = new FileInputStream(file);
 				 ObjectInputStream objtIn = new ObjectInputStream(in)) 
-			{	
+			{
+				/*DiagramData data = (DiagramData) objtIn.readObject();
+				this.panelUml.chargerDiagramme(data);*/
 				this.repaint();
 				JOptionPane.showMessageDialog(this, "Diagramme importé avec succès!");
 			} 
-			catch (IOException e ) 
+
+			catch (IOException e) 
 			{
 				JOptionPane.showMessageDialog(this, "Erreur lors de l'import: " + e.getMessage());
 			}

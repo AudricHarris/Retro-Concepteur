@@ -70,25 +70,10 @@ public class Rectangle implements Serializable
 		this.y += y;
 	}
 
-	public void setTailleX(int x)
-	{
-		this.tailleX = x;
-	}
-
-	public void setTailleY(int y)
-	{
-		this.tailleY = y;
-	}
-
-	public void setX(int x)
-	{
-		this.x = x;
-	}
-
-	public void setY(int y)
-	{
-		this.y = y;
-	}
+	public void setTailleX(int x) { this.tailleX = x; mettreAJourToutesLesLiaisons(); }
+	public void setTailleY(int y) { this.tailleY = y; mettreAJourToutesLesLiaisons(); }
+	public void setX(int x) { this.x = x; mettreAJourToutesLesLiaisons(); }
+	public void setY(int y) { this.y = y; mettreAJourToutesLesLiaisons(); }
 
 	public void addPos(char c, Chemin chemin)
 	{
@@ -122,6 +107,7 @@ public class Rectangle implements Serializable
 	{
 		ArrayList<Chemin> listeChemins = this.hashPosPrises.get( zone );
 		int nbPoints = listeChemins.size();
+		
 		if ( nbPoints > 0 )
 		{
 			double step = 0;
@@ -133,19 +119,14 @@ public class Rectangle implements Serializable
 				for (int i = 0; i < nbPoints; i++) 
 				{
 					Chemin chemin = listeChemins.get(i);
-					// Position = X départ + (i+1) * pas
 					int positionX = this.x + (int)(step * (i + 1));
 					
-					if (zone == 'H') 
-					{
-						chemin.setPoint(positionX, this.y);
-					} 
-					else 
-					{
-						chemin.setPoint(positionX, this.y + this.tailleY);
-					}
+					int positionY = (zone == 'H') ? this.y : this.y + this.tailleY;
+
+					chemin.updatePoint(positionX, positionY);
 				}
 			}
+			// Cas Vertical (Gauche / Droite)
 			else if (zone == 'G' || zone == 'D') 
 			{
 				step = (double) this.tailleY / (nbPoints + 1);
@@ -155,17 +136,19 @@ public class Rectangle implements Serializable
 					Chemin chemin = listeChemins.get(i);
 					int positionY = this.y + (int)(step * (i + 1));
 					
-					if (zone == 'G') 
-					{
-						chemin.setPoint(this.x, positionY);
-					} 
-					else 
-					{
-						chemin.setPoint(this.x + this.tailleX, positionY);
-					}
+					int positionX = (zone == 'G') ? this.x : this.x + this.tailleX;
+
+					chemin.updatePoint(positionX, positionY);
 				}
 			}
 		}
+	}
+	public void mettreAJourToutesLesLiaisons() 
+	{
+		this.repartirPointsLiaison('H');
+		this.repartirPointsLiaison('B');
+		this.repartirPointsLiaison('G');
+		this.repartirPointsLiaison('D');
 	}
 
 }

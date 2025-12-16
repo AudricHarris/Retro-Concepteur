@@ -1,6 +1,5 @@
-import Disque;
+import java.util.ArrayList;
 
-package RetroConcepteur.vue.outil;
 public class Point 
 {
 
@@ -8,6 +7,10 @@ public class Point
 	private int x;
 	private int y;
 	private Disque test;
+	private Disque test1;
+	private Disque test12;
+	private ArrayList<Disque> test3;
+
 
 	
 	public Point(String nom, int x, int y) 

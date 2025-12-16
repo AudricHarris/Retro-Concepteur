@@ -79,9 +79,23 @@ public class Chemin
 		this.type = type;
 	}
 
-	public void setPoint(int posX, int posY)
+	public void updatePoint(int x, int y)
 	{
-		this.depart.setX(posX);
-		this.depart.setY(posY);
+		
+		double distDepart  = Math.pow(x - depart.getX(), 2) + Math.pow(y - depart.getY(), 2);
+		double distArrivee = Math.pow(x - arrivee.getX(), 2) + Math.pow(y - arrivee.getY(), 2);
+
+		if (distDepart < distArrivee) 
+		{
+			this.depart.setX(x);
+			this.depart.setY(y);
+		} 
+		else 
+		{
+			this.arrivee.setX(x);
+			this.arrivee.setY(y);
+		}
+		
+		this.calculerChemin();
 	}
 }

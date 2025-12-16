@@ -1,5 +1,7 @@
 import RetroConcepteur.vue.outil.Point;
 
+import java.util.ArrayList;
+
 public class Disque 
 {
 	private boolean isAbszztract;
@@ -15,6 +17,10 @@ public class Disque
 
 	
 	private Point centre;
+	private Point hzuy;
+	private Point bas;
+	private Point d;
+	private ArrayList<Point> g;
 	
 	public Disque(Point centre, double rayon) 
 	{
