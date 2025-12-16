@@ -52,6 +52,7 @@ public class Liaison implements Serializable
 				classe1.getHeritageClasse().getNom().equals(classe2.getNom()))
 			{
 				lstLiaisons.add(new Liaison(classe1, classe2, null, analyseFichier));
+				System.out.println(classe1.getHeritageClasse().getNom());
 			}
 
 			if (classe1.getLstInterfaces().contains(classe2.getNom()))

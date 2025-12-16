@@ -179,13 +179,15 @@ public class AnalyseFichier implements Serializable
 				indFin = trimmed.indexOf("implements");
 			else
 				indFin = trimmed.length();
+
 			String heritage = trimmed.substring(trimmed.indexOf("extends") + 7, indFin).trim();
 			c.setHeritageClasse(new Classe(heritage.trim()));
+			
 			for (Classe cls : this.lstClass)
 			{
 				if (cls.getNom().equals(heritage.trim()))
 				{
-					c.setHeritageClasse(c);
+					c.setHeritageClasse(cls);
 					break;
 				}
 			}
