@@ -47,6 +47,17 @@ public class Liaison implements Serializable
 				liaison = new Liaison( classe1, classe2, attribut1, analyseFichier);
 				lstLiaisons.add(liaison);
 			}
+
+			if (classe1.getHeritageClasse() != null && 
+				classe1.getHeritageClasse().getNom().equals(classe2.getNom()))
+			{
+				lstLiaisons.add(new Liaison(classe1, classe2, null, analyseFichier));
+			}
+
+			if (classe1.getLstInterfaces().contains(classe2.getNom()))
+			{
+				lstLiaisons.add(new Liaison(classe1, classe2, null, analyseFichier));
+			}
 		}
 
 		return lstLiaisons;
@@ -62,35 +73,40 @@ public class Liaison implements Serializable
 	private Liaison(Classe classe1 , Classe classe2, Attribut attribut,
 		            AnalyseFichier analyseFichier                      )
 	{
+		this.fromClass      = classe1;
+		this.toClass        = classe2;
+		this.analyseFichier = analyseFichier;
+		
+		this.toMultiplicity   = new Multiplicite("", ""); // Pas de multiplicité pour héritage/implémentaion
+		this.fromMultiplicity = new Multiplicite("", ""); 
+		this.nomVar           = "";
 
-		this.toMultiplicity   = new Multiplicite("1","temp");
-		this.fromMultiplicity = new Multiplicite("0", "*");
-		this.fromClass        = classe1;
-		this.toClass          = classe2;
-		this.nomVar           = attribut.getNom();
-		this.analyseFichier   = analyseFichier;
-
-		Methode constructeur =  classe1.getLstMethode().size() >= 1  ? 
-		                        classe1.getLstMethode().get(0) : 
-		                        null;
-
-		List<Parametre> params = constructeur != null       ?
-		                         constructeur.getLstParam() : 
-		                         new ArrayList<Parametre>();
-
-		for (Parametre parametre : params) 
+		if (attribut != null)
 		{
-			if (parametre.getType().contains(classe2.getNom()))
-			{
-				this.toMultiplicity = new Multiplicite("1","temp");
-				break;
-			}
-			
-		}
+			this.nomVar = attribut.getNom();
+			this.toMultiplicity = new Multiplicite("1", "1"); // Défaut
+			this.fromMultiplicity = new Multiplicite("0", "*");
 
-		if (Liaison.estCollection(attribut.getType())) this.toMultiplicity.setBorneSup("*");
-		else this.toMultiplicity.setBorneSup("1");
+			// Logique existante pour les paramètres du constructeur
+			Methode constructeur = classe1.getLstMethode().size() >= 1 ? classe1.getLstMethode().get(0) : null;
+			List<Parametre> params = constructeur != null ? constructeur.getLstParam() : new ArrayList<Parametre>();
+
+			for (Parametre parametre : params) 
+			{
+				if (parametre.getType().contains(classe2.getNom()))
+				{
+					this.toMultiplicity = new Multiplicite("1", "temp");
+					break;
+				}
+			}
+
+			if (Liaison.estCollection(attribut.getType())) 
+				this.toMultiplicity.setBorneSup("*");
+			else 
+				this.toMultiplicity.setBorneSup("1");
+		}
 	}
+	
 
 	
 
