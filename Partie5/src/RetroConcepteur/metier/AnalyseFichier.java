@@ -182,13 +182,13 @@ public class AnalyseFichier
 				indFin = trimmed.length();
 
 			String heritage = trimmed.substring(trimmed.indexOf("extends") + 7, indFin).trim();
-			c.setNomHeritageClasse(trimmed);
+			c.setNomHeritageClasse(heritage);
 		}
-		
+
 		if (trimmed.contains("implements"))
 		{
 			int indFin = trimmed.length();
-			String partImplement = trimmed.substring(trimmed.indexOf("implements")+10, indFin).trim();
+			String partImplement = trimmed.substring(trimmed.indexOf("implements")+10, indFin).trim();	
 			try
 			{
 				Scanner sc = new Scanner(partImplement);

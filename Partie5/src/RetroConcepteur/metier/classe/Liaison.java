@@ -46,18 +46,17 @@ public class Liaison
 				liaison = new Liaison( classe1, classe2, attribut1, analyseFichier);
 				lstLiaisons.add(liaison);
 			}
-
-			if (classe1.getNomHeritageClasse() != null && 
-				classe1.getNomHeritageClasse().equals(classe2.getNom()))
-			{
-				lstLiaisons.add(new Liaison(classe1, classe2, null, analyseFichier));
-			}
-
-			if (classe1.getLstInterfaces().contains(classe2.getNom()))
-			{
-				lstLiaisons.add(new Liaison(classe1, classe2, null, analyseFichier));
-			}
 		}
+
+		if(classe1.getNomHeritageClasse() != null && 
+			classe1.getNomHeritageClasse().equals(classe2.getNom()))
+		{
+			lstLiaisons.add(new Liaison(classe1, classe2, null, analyseFichier));
+		}
+
+		if (classe1.getLstInterfaces().contains(classe2.getNom()))
+			lstLiaisons.add(new Liaison(classe1, classe2, null, analyseFichier));
+		
 
 		return lstLiaisons;
 	}
