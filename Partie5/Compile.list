@@ -1,5 +1,6 @@
 src/RetroConcepteur/metier/AnalyseFichier.java
 src/RetroConcepteur/metier/LireFichier.java
+src/RetroConcepteur/metier/GereXml.java
 
 src/RetroConcepteur/metier/classe/Liaison.java
 src/RetroConcepteur/metier/classe/Multiplicite.java

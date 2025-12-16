@@ -116,10 +116,30 @@ public class FrameUML extends JFrame
 			}
 		}
 	}
-	
+
 	public void sauvegardeFichier()
 	{
-		//a faire en xml
+		JFileChooser fileChooser = new JFileChooser();
+		fileChooser.setDialogTitle("Sauvegarder le diagramme en XML");
+		fileChooser.setSelectedFile(new File("diagramme.xml"));
+		int valRet = fileChooser.showSaveDialog(this);
+		if (valRet == JFileChooser.APPROVE_OPTION)
+		{
+			File file = fileChooser.getSelectedFile();
+			if (!file.getName().endsWith(".xml")) 
+			{
+				file = new File(file.getAbsolutePath() + ".xml");
+			}
+			try 
+			{
+				this.ctrl.sauvegarderXml(file.getAbsolutePath());
+				JOptionPane.showMessageDialog(this, "Diagramme sauvegardé en XML avec succès!");
+			} 
+			catch (Exception e) 
+			{
+				JOptionPane.showMessageDialog(this, "Erreur lors de la sauvegarde en XML: " + e.getMessage());
+			}
+		}
 	}
 
 	public void ouvrirXml()

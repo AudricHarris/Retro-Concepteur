@@ -149,19 +149,22 @@ public class AnalyseFichier
 				LireFichier.lireFichier(file, this);
 			}
 
-			// Affichage des classes de la jdk extends (JFrame, Object, ...)
+			// Affichage des classes de la jdk extend
 			for ( String nom : this.lstExtends )
 				if ( ! this.estClasse(nom) )
 					this.lstClass.add( new Classe(nom) );
 
-			// Affichage des classes de la jdk extends (JFrame, Object)
+			// Affichage des classe de la jdk implement
 			for ( String nom : this.lstImplement )
-			{
 				if ( ! this.estClasse(nom) )
 				{
-					this.lstClass.add( new Classe(nom) );
+					Classe classe = new Classe(nom);
+					classe.setIsInterface(true);
+					this.lstClass.add( classe );
+
 				}
-			}
+
+				
 			
 			// Créer les liaisons après avoir ajouté toutes les classes
 			for (Classe classe1 : this.lstClass)

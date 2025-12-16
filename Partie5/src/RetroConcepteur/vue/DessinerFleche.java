@@ -35,7 +35,7 @@ public class DessinerFleche
 			Point avantDernier = parcours.get(parcours.size() - 2);
 
 			double angle = Math.atan2(arrivee.getY() - avantDernier.getY(),
-									arrivee.getX() - avantDernier.getX());
+									 arrivee.getX() - avantDernier.getX());
 			int tailleFleche = 12;
 
 			switch (type)

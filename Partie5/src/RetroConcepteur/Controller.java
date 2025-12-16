@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import RetroConcepteur.metier.AnalyseFichier;
+import RetroConcepteur.metier.GereXml;
 import RetroConcepteur.metier.classe.Classe;
 import RetroConcepteur.metier.classe.Liaison;
 import RetroConcepteur.vue.FrameUML;
@@ -70,9 +71,20 @@ public class Controller
 		this.analyseFichier.ouvrirDossier(dossier);
 	}
 
+	public void sauvegarderXml(String chemin)
+	{
+		GereXml.sauvegarderXml(chemin);
+	}
+
+	public void chargerXml(String chemin)
+	{
+		GereXml.chargerXml(chemin);	
+		//this.frameUML.mettreAJour();
+	}
+
 	public static void main(String[] args) 
 	{ 
-		String cheminRepertoire = (args.length > 0) ? args[0] : "./data";
+		String cheminRepertoire = (args.length > 0) ? args[0] : "./test";
         new Controller(cheminRepertoire);
 	}
 }

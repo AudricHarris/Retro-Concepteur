@@ -15,12 +15,9 @@ public class Disque
 	
 	private double rayon;
 
-	
 	private Point centre;
-	private Point hzuy;
-	private Point bas;
-	private Point d;
-	private ArrayList<Point> g;
+
+
 	
 	public Disque(Point centre, double rayon) 
 	{

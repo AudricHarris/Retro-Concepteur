@@ -193,7 +193,7 @@ public class PanelUML extends JPanel
             cpt++;
         }
 
-        // --- 2. CALCUL DES DIMENSIONS ---
+        //  2 CALCUL DES DIMENSIONS
         
         // Génération des chaînes alignées pour calcul de largeur
         List<String> strAtts = new ArrayList<String>();
@@ -202,11 +202,11 @@ public class PanelUML extends JPanel
         List<String> strMeths = new ArrayList<String>();
         for (Methode m : lstMeth) strMeths.add(getSignatureMethodeAlignee(m, maxLargeurGaucheMeth, metrics));
 
-        int wTitre = this.calculerLargeurTitre(classe, metrics);
-        int wAtt   = this.calculerLargeurMax(strAtts, metrics);
-        int wMeth  = this.calculerLargeurMax(strMeths, metrics);
+        int largTitre = this.calculerLargeurTitre(classe, metrics);
+        int larAtt   = this.calculerLargeurMax(strAtts, metrics);
+        int largMeth  = this.calculerLargeurMax(strMeths, metrics);
         
-        int largeurRect = Math.max(wTitre, Math.max(wAtt, wMeth)) + (PADDING_X * 2);
+        int largeurRect = Math.max(largTitre, Math.max(larAtt, largMeth)) + (PADDING_X * 2);
 
         int hTitre = this.calculerHauteurTitre(classe, metrics.getHeight());
         int hAtt   = this.calculerHauteurBloc(lstAtt.size(), metrics.getHeight(), tropAtt);
@@ -214,7 +214,7 @@ public class PanelUML extends JPanel
         
         int hauteurTotale = hTitre + hAtt + hMeth;
 
-        // --- 3. DESSIN DES BLOCS ---
+        //  3 DESSIN DES BLOCS 
         
         // Titre
         this.dessinerFondBloc(g2, x, y, largeurRect, hTitre, COL_TITRE);
@@ -226,13 +226,13 @@ public class PanelUML extends JPanel
         
         // Méthodes
         this.dessinerFondBloc(g2, x, y + hTitre + hAtt, largeurRect, hMeth, COL_METH);
-        this.dessinerContenuListe(g2, strMeths, lstMeth, x, y + hTitre + hAtt + PADDING_Y, metrics, tropMeth); // Cast générique simplifié
+        this.dessinerContenuListe(g2, strMeths, lstMeth, x, y + hTitre + hAtt + PADDING_Y, metrics, tropMeth); 
 
         // Contour Global
         g2.setColor(Color.BLACK);
         g2.drawRect(x, y, largeurRect, hauteurTotale);
 
-        // Mise à jour de l'objet métier
+        // Mise à jour du rectangle
         rect.setTailleX(largeurRect);
         rect.setTailleY(hauteurTotale);
     }
@@ -248,13 +248,11 @@ public class PanelUML extends JPanel
 
         if (r1 != null && r2 != null) 
         {
-            // Calcul mathématique du point d'intersection sur le bord (plus propre que les zones)
             Point pDepart = this.calculerPointBord(r1, r2);
             Point pArrivee = this.calculerPointBord(r2, r1);
 
             //this.dessinerMultiplicite(pDepart, pArrivee, multiplicite1, multiplicite2);
 
-            // TODO: Adapter le dernier paramètre selon l.getType() (ASSOCIATION, HERITAGE, etc.)
             this.dessinerFleche.dessinerLiaison(g2,new Chemin( pDepart, pArrivee, l.getType(),
 												 this.mapClasseRectangle, l.getFromClass(), l.getToClass() )
                                 );
@@ -271,12 +269,12 @@ public class PanelUML extends JPanel
     /**
      * Calcule le point d'intersection entre le segment reliant les centres et le bord du rectangle source.
      */
-    private Point calculerPointBord(Rectangle source, Rectangle cible)
+    private Point calculerPointBord(Rectangle rect1, Rectangle rect2)
     {
-        int cx1 = source.getCentreX();
-        int cy1 = source.getCentreY();
-        int cx2 = cible.getCentreX();
-        int cy2 = cible.getCentreY();
+        int cx1 = rect1.getCentreX();
+        int cy1 = rect1.getCentreY();
+        int cx2 = rect2.getCentreX();
+        int cy2 = rect2.getCentreY();
         
         int dx = cx2 - cx1;
         int dy = cy2 - cy1;
@@ -285,28 +283,28 @@ public class PanelUML extends JPanel
 
         // On détermine si on tape sur les bords horizontaux ou verticaux
         // en comparant les ratios
-        double halfW = source.getTailleX() / 2.0;
-        double halfH = source.getTailleY() / 2.0;
+        double largeurMoitie = rect1.getTailleX() / 2.0;
+        double hMoitie = rect1.getTailleY() / 2.0;
 
         // Évite la division par zéro
-        if (halfW == 0 || halfH == 0) return new Point(cx1, cy1);
+        if (largeurMoitie == 0 || hMoitie == 0) return new Point(cx1, cy1);
 
-        double ratioX = Math.abs(dx) / halfW;
-        double ratioY = Math.abs(dy) / halfH;
+        double ratioX = Math.abs(dx) / largeurMoitie;
+        double ratioY = Math.abs(dy) / hMoitie;
 
         if (ratioX > ratioY) 
 		{
             // Intersection gauche ou droite
             return dx > 0 
-                ? new Point(source.getX() + source.getTailleX(), cy1) // Droite
-                : new Point(source.getX(), cy1);                      // Gauche
+                ? new Point(rect1.getX() + rect1.getTailleX(), cy1) // Droite
+                : new Point(rect1.getX(), cy1);                      // Gauche
         } 
 		else 
 		{
             // Intersection haut ou bas
             return dy > 0 
-                ? new Point(cx1, source.getY() + source.getTailleY()) // Bas
-                : new Point(cx1, source.getY());                      // Haut
+                ? new Point(cx1, rect1.getY() + rect1.getTailleY()) // Bas
+                : new Point(cx1, rect1.getY());                      // Haut
         }
     }
 
@@ -314,35 +312,35 @@ public class PanelUML extends JPanel
     //                        OUTILS DE DESSIN 
     // =========================================================================
 
-    private void dessinerFondBloc(Graphics2D g2, int x, int y, int w, int h, Color c) 
+    private void dessinerFondBloc(Graphics2D g2, int x, int y, int largeur, int h, Color c) 
     {
         Color old = g2.getColor();
         g2.setColor(c);
-        g2.fillRect(x, y, w, h);
+        g2.fillRect(x, y, largeur, h);
         g2.setColor(Color.BLACK);
-        g2.drawRect(x, y, w, h);
+        g2.drawRect(x, y, largeur, h);
         g2.setColor(old);
     }
 
-    private void dessinerContenuTitre(Graphics2D g2, Classe classe, int x, int y, int w, int hLigne) 
+    private void dessinerContenuTitre(Graphics2D g2, Classe classe, int x, int y, int largeur, int hLigne) 
     {
         Font fontNormal = g2.getFont();
         Font fontGras = fontNormal.deriveFont(Font.BOLD);
 
         if (classe.isInterface()) 
 		{
-            dessinerStringCentre(g2, "<<Interface>>", x, y, w);
+            dessinerStringCentre(g2, "<<Interface>>", x, y, largeur);
             y += hLigne;
         }
 		
         if (classe.isAbstract() && !classe.isInterface()) 
 		{
-            dessinerStringCentre(g2, "<<Abstract>>", x, y, w);
+            dessinerStringCentre(g2, "<<Abstract>>", x, y, largeur);
             y += hLigne;
         }
 
         g2.setFont(fontGras);
-        dessinerStringCentre(g2, classe.getNom(), x, y, w);
+        dessinerStringCentre(g2, classe.getNom(), x, y, largeur);
         g2.setFont(fontNormal);
     }
 

@@ -6,11 +6,8 @@ public class Point extends Mois
 	
 	private int x;
 	private int y;
-	private Disque test;
-	private Disque test1;
-	private Disque test12;
-	private ArrayList<Disque> test3;
 
+	private Disque d;
 
 	
 	public Point(String nom, int x, int y) 

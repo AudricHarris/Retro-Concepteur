@@ -39,11 +39,47 @@ public class GereSouris extends MouseAdapter
 	{
 		if (this.classeActuel != null && this.decalage != null)
 		{
-			this.classeActuel.setX(e.getX() - this.decalage.getX());
-			this.classeActuel.setY(e.getY() - this.decalage.getY());
+			for ( Rectangle rect : this.panelUML.getMap().values() )
+			{
+				if ( ! this.collision(rect) )
+				{
+					this.classeActuel.setX(e.getX() - this.decalage.getX());
+					this.classeActuel.setY(e.getY() - this.decalage.getY());
+				}
+			}			
 
 			this.panelUML.repaint();
 		}
+	}
+
+	private boolean collision( Rectangle rect )
+	{
+		// if (this.classeActuel == null) return false;
+
+		// for ( Rectangle autreRect : this.panelUML.getMap().values() )
+		// {
+		// 	if (autreRect == this.classeActuel) continue;
+
+			
+		// 	int xDeb = this.classeActuel.getX();
+		// 	int xFin = this.classeActuel.getX() + this.classeActuel.getTailleX();
+		// 	int yDeb = this.classeActuel.getY();
+		// 	int yFin = this.classeActuel.getY() + this.classeActuel.getTailleY();
+
+		// 	for (int x = xDeb; x <= xFin; x++)
+		// 	{
+		// 		for (int y = yDeb; y <= yFin; y++)
+		// 		{
+		// 			Point p = new Point(x, y);
+		// 			if ( autreRect.possede(p) )
+		// 			{
+		// 				return true;
+		// 			}
+		// 		}
+		// 	}
+		// }
+
+		return false;
 	}
 
 	public void mouseReleased(MouseEvent e)
