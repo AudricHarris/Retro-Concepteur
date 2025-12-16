@@ -16,7 +16,6 @@ import javax.swing.*;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
 import RetroConcepteur.Controller;
-import RetroConcepteur.metier.DiagramData;
 import RetroConcepteur.metier.classe.Classe;
 import RetroConcepteur.vue.outil.Rectangle;
 

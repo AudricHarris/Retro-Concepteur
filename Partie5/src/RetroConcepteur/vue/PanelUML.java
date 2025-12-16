@@ -70,6 +70,7 @@ public class PanelUML extends JPanel
         this.lstChemins = new ArrayList<Chemin>();
 
         this.initialiserPositions();
+        this.determinerPositions();
         this.repaint();
     }
     
@@ -125,8 +126,7 @@ public class PanelUML extends JPanel
 		}
 
         // 2. Ensuite on trace les fleches (maintenant que les rectangles ont leur taille finale)
-        //for (Liaison l : this.lstLiaisons) 
-        //    this.dessinerLiaison(g2, l);
+        
         for (Chemin c : this.lstChemins) 
         {
             // On dessine directement le chemin intelligent calculé plus tôt
@@ -542,14 +542,15 @@ public class PanelUML extends JPanel
     
     public char getZone(Rectangle source, Rectangle target) 
     {
-        // Logique mathématique pour savoir si on sort par H, B, G ou D
+        // Calcul des deltas entre les centres
         double dx = target.getCentreX() - source.getCentreX();
         double dy = target.getCentreY() - source.getCentreY();
 
-        // Normalisation pour gérer les rectangles aplatis
+        // Normalisation par la taille du rectangle source
         double xNorm = dx / (double)source.getTailleX();
         double yNorm = dy / (double)source.getTailleY();
 
+        // Détermination de la zone
         if (Math.abs(yNorm) > Math.abs(xNorm)) 
         {
             return (yNorm < 0) ? 'H' : 'B';

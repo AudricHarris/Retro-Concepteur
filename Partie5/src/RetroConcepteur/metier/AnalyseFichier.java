@@ -19,6 +19,10 @@ public class AnalyseFichier
 	private ArrayList<Classe> lstClass;
 	private List<Liaison>     lstLiaisons;
 
+	private HashSet<String>   lstExtends;
+	private HashSet<String>   lstImplement;
+
+
 	/**
 	 * Construit l'instance AnalyseFichier et parcours le repo
 	 * @param repo chemin du repositoire avec programme java
@@ -27,6 +31,8 @@ public class AnalyseFichier
 	{
 		this.lstClass    = new ArrayList<Classe> ();
 		this.lstLiaisons = new ArrayList<Liaison>();
+		this.lstExtends  = new HashSet<String>();
+		this.lstImplement = new HashSet<String>();
 
 		this.ouvrirDossier(repo);
 	}
@@ -143,6 +149,20 @@ public class AnalyseFichier
 				LireFichier.lireFichier(file, this);
 			}
 
+			// Affichage des classes de la jdk extends (JFrame, Object, ...)
+			for ( String nom : this.lstExtends )
+				if ( ! this.estClasse(nom) )
+					this.lstClass.add( new Classe(nom) );
+
+			// Affichage des classes de la jdk extends (JFrame, Object)
+			for ( String nom : this.lstImplement )
+			{
+				if ( ! this.estClasse(nom) )
+				{
+					this.lstClass.add( new Classe(nom) );
+				}
+			}
+			
 			// Créer les liaisons après avoir ajouté toutes les classes
 			for (Classe classe1 : this.lstClass)
 			{
@@ -162,7 +182,6 @@ public class AnalyseFichier
 
 	public void insererProprieteClass(String ligne)
 	{
-		HashSet<String>lstExtends = new HashSet<String>();
 		
 		String trimmed = ligne.trim();
 		Classe c = this.lstClass.getLast();
@@ -185,7 +204,8 @@ public class AnalyseFichier
 				indFin = trimmed.length();
 
 			String heritage = trimmed.substring(trimmed.indexOf("extends") + 7, indFin).trim();
-			System.out.println(heritage);
+			
+			
 			lstExtends.add(heritage);
 			c.setNomHeritageClasse(heritage);
 		}
@@ -201,6 +221,10 @@ public class AnalyseFichier
 				while (sc.hasNext())
 				{
 					String nomInterface = sc.next().trim();
+
+					int ind = nomInterface.contains("<") ? nomInterface.indexOf("<") : nomInterface.length();
+					nomInterface = nomInterface.substring(0, ind);
+					this.lstImplement.add(nomInterface);
 					c.ajouterInterface(nomInterface);
 				}
 				sc.close();
