@@ -92,6 +92,8 @@ public class Liaison implements Serializable
 		else this.toMultiplicity.setBorneSup("1");
 	}
 
+	
+
 	//---------------------------------------//
 	//              Getters                  //
 	//---------------------------------------//
@@ -102,7 +104,41 @@ public class Liaison implements Serializable
 	public Multiplicite getToMultiplicity  () { return this.toMultiplicity;   }
 	public Multiplicite getFromMultiplicity() { return this.fromMultiplicity; }
 
-	public boolean estBinaire()
+	public String getType()
+	{
+		String  sType = "Association";
+		
+		// Vérifie si c'est une implémentation d'interface
+		if (this.fromClass.getLstInterfaces().contains(this.toClass.getNom()) &&
+			this.toClass.isInterface()) 
+		{
+			sType = "Implementation";
+		}
+
+		// Vérifier si c'est un héritage
+		if (this.fromClass.getHeritageClasse() != null &&
+		    this.fromClass.getHeritageClasse().getNom().equals(this.toClass.getNom()))
+		{
+			sType = "Generalisation";
+		}
+
+		// Si c'est une association, déterminer si elle est bidirectionnelle
+		if (sType.equals("Association")) 
+		{
+			if (this.estBidirectionel())
+			{
+				sType = "BIDIRECTIONNELLE";
+			}
+			else
+			{
+				sType = "UNI";
+			}
+		}
+		
+		return sType;
+	}
+
+	public boolean estBidirectionel()
 	{
 		for (Liaison l : this.analyseFichier.getListLiaison())
 			if (l.getToClass() == this.fromClass && l.getFromClass() == this.toClass)

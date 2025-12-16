@@ -1,6 +1,6 @@
 import java.util.ArrayList;
 
-public class Point 
+public class Point extends Mois
 {
 
 	

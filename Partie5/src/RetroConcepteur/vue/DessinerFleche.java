@@ -14,7 +14,7 @@ public class DessinerFleche
 		java.awt.Stroke strokeOriginal = g2.getStroke();
 		String type = chemin.getType();
 
-		if (type.equals("DEPENDANCE"))
+		if (type.equals("Implementation"))
 		{
 			float[] dash = {10.0f, 5.0f};
 			g2.setStroke(new BasicStroke(1.0f, BasicStroke.CAP_BUTT, 
@@ -39,21 +39,17 @@ public class DessinerFleche
 
 			switch (type)
 			{
-				case "ASSOCIATION":
-				case "DEPENDANCE":
+				case "UNI":
 					this.dessinerPointeOuverte(g2, arrivee.getX(), arrivee.getY(), 
 											angle, tailleFleche);
 					break;
 
-				case "HERITAGE":
+				case "Generalisation":
+				case "Implementation":
 					this.dessinerTriangle(g2, arrivee.getX(), arrivee.getY(), 
 										angle, tailleFleche);
 					break;
 
-				case "COMPOSITION":
-					this.dessinerLosange(g2, arrivee.getX(), arrivee.getY(), 
-										angle, tailleFleche);
-					break;
 
 				case "BIDIRECTIONNELLE":
 					break;

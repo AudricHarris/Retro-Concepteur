@@ -48,7 +48,7 @@ public class AnalyseFichier implements Serializable
 	{
 		List<Liaison> lstUnique = new ArrayList<Liaison>();
 		for (Liaison l : this.lstLiaisons)
-			if (!l.estBinaire())
+			if (!l.estBidirectionel())
 				lstUnique.add(l);
 		return lstUnique;
 	}
@@ -63,14 +63,14 @@ public class AnalyseFichier implements Serializable
 		
 		for (Liaison l : this.lstLiaisons)
 		{
-			if (l.estBinaire() && !lstBinaire.containsKey(l.getToClass()) &&
+			if (l.estBidirectionel() && !lstBinaire.containsKey(l.getToClass()) &&
 				!lstBinaire.containsKey(l.getFromClass()))
 			{
 				lstBinaire.put(l.getToClass(), l);
 			}
 			else
 			{
-				if (l.estBinaire()) 
+				if (l.estBidirectionel()) 
 				{
 					Liaison liaisonBinaire;
 
