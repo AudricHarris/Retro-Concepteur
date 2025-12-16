@@ -5,7 +5,6 @@ import java.awt.event.MouseEvent;
 
 import RetroConcepteur.vue.PanelUML;
 import RetroConcepteur.metier.classe.*;
-import RetroConcepteur.vue.outil.*;
 
 public class GereSouris extends MouseAdapter
 {
@@ -39,48 +38,46 @@ public class GereSouris extends MouseAdapter
 	{
 		if (this.classeActuel != null && this.decalage != null)
 		{
-			for ( Rectangle rect : this.panelUML.getMap().values() )
-			{
-				if ( ! this.collision(rect) )
-				{
-					this.classeActuel.setX(e.getX() - this.decalage.getX());
-					this.classeActuel.setY(e.getY() - this.decalage.getY());
-				}
-			}			
+			int futurX = e.getX() - this.decalage.getX();
+			int futurY = e.getY() - this.decalage.getY();
+
+			
+			if ( ! collision( futurX, this.classeActuel.getY() ) )
+				this.classeActuel.setX(futurX);
+
+			
+			if ( ! collision( this.classeActuel.getX(), futurY ) )
+				this.classeActuel.setY(futurY);
 
 			this.panelUML.repaint();
 		}
 	}
 
-	private boolean collision( Rectangle rect )
+
+
+	private boolean collision(int x1, int y1)
 	{
-		// if (this.classeActuel == null) return false;
+		int largeur = this.classeActuel.getTailleX();
+		int hauteur = this.classeActuel.getTailleY();
 
-		// for ( Rectangle autreRect : this.panelUML.getMap().values() )
-		// {
-		// 	if (autreRect == this.classeActuel) continue;
+		for (Rectangle rect : this.panelUML.getMap().values())
+		{
+			if (rect == this.classeActuel) continue;
 
-			
-		// 	int xDeb = this.classeActuel.getX();
-		// 	int xFin = this.classeActuel.getX() + this.classeActuel.getTailleX();
-		// 	int yDeb = this.classeActuel.getY();
-		// 	int yFin = this.classeActuel.getY() + this.classeActuel.getTailleY();
+			int x2 = rect.getX();
+			int y2 = rect.getY();
+			int autreLargeur = rect.getTailleX();
+			int autreHauteur = rect.getTailleY();
 
-		// 	for (int x = xDeb; x <= xFin; x++)
-		// 	{
-		// 		for (int y = yDeb; y <= yFin; y++)
-		// 		{
-		// 			Point p = new Point(x, y);
-		// 			if ( autreRect.possede(p) )
-		// 			{
-		// 				return true;
-		// 			}
-		// 		}
-		// 	}
-		// }
+			if ( ! (x1 + largeur <= x2-5 || x1 >= x2 + autreLargeur+5      ||
+				y1 + hauteur <= y2-5     || y1 >= y2 + autreHauteur+5         ) )
+				return true;
+		}
 
 		return false;
 	}
+
+
 
 	public void mouseReleased(MouseEvent e)
 	{
