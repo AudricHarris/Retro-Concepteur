@@ -1,6 +1,5 @@
 package RetroConcepteur;
 
-import RetroConcepteur.vue.Formateur;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -16,7 +15,6 @@ import RetroConcepteur.vue.FrameUML;
 public class Controller 
 {
 	private AnalyseFichier analyseFichier;
-	private Formateur   affichageCUI;
 
 	private FrameUML frameUML;
 	private String cheminDonnees;
@@ -25,9 +23,6 @@ public class Controller
 	{
 		this.cheminDonnees = cheminDonnees;
 		this.analyseFichier = new AnalyseFichier(this.cheminDonnees);
-
-		//affichage CUI désactivé pour l'instant
-		//this.affichageCUI   = new AffichageCUI(this);
 
 		this.frameUML = new FrameUML(this);
 	}
@@ -68,16 +63,6 @@ public class Controller
 	public Classe get(int ind)
 	{
 		return this.analyseFichier.getLstClasses().get(ind);
-	}
-
-	public void afficher ()
-	{
-		System.out.println(this.affichageCUI.afficherClasse());
-	}
-
-	public void afficherLiaison()
-	{
-		System.out.println(this.affichageCUI.afficherLiaison());
 	}
 
 	public void ouvrirDossier(String dossier)

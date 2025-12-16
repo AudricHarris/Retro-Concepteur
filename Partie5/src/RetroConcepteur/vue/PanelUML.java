@@ -501,6 +501,7 @@ public class PanelUML extends JPanel
 	{
         String s = getVisibiliteSymbole(meth.getVisibilite()) + " " + meth.getNom() + "(";
         List<Parametre> params = meth.getLstParam();
+
         for (int i = 0; i < params.size(); i++) 
 		{
             s += params.get(i).getNom() + " : " + params.get(i).getType();
@@ -517,7 +518,7 @@ public class PanelUML extends JPanel
         String gauche = getDebutSignatureMethode(meth);
         String droite = "";
 
-        if (!meth.getType().equals("void") && !meth.getType().isEmpty()) 
+        if (!meth.getType().equals("void") && !meth.getType().isEmpty() && !meth.getType().equals(meth.getNom())) 
             droite = " : " + meth.getType();
 
         return padding(gauche, droite, wGaucheMax, fm);

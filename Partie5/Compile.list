@@ -14,7 +14,6 @@ src/RetroConcepteur/vue/outil/Chemin.java
 src/RetroConcepteur/vue/outil/Rectangle.java
 src/RetroConcepteur/vue/outil/Point.java
 
-src/RetroConcepteur/vue/Formateur.java
 src/RetroConcepteur/vue/FrameUML.java
 src/RetroConcepteur/vue/PanelUML.java
 src/RetroConcepteur/vue/BarreMenu.java

@@ -1,8 +1,6 @@
 package RetroConcepteur.vue.outil;
 
-import java.io.Serializable;
-
-public class Point implements Serializable
+public class Point
 {	
 	private int x;
 	private int y;

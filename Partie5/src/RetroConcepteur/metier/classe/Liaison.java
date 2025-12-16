@@ -2,14 +2,13 @@ package RetroConcepteur.metier.classe;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
-import java.io.Serializable;
 
 import RetroConcepteur.metier.AnalyseFichier;
 
 /**
  * Determine les Liaison potentiel entre les classe et leur multiplicité.
  */
-public class Liaison implements Serializable
+public class Liaison
 {
 	public static final String[] LST_COLLECTIONS = {"List<","ArrayList<", "LinkedList<" ,
 	                                                "Set<" ,"HashSet<"  ,"Collection"   ,
@@ -52,7 +51,6 @@ public class Liaison implements Serializable
 				classe1.getHeritageClasse().getNom().equals(classe2.getNom()))
 			{
 				lstLiaisons.add(new Liaison(classe1, classe2, null, analyseFichier));
-				System.out.println(classe1.getHeritageClasse().getNom());
 			}
 
 			if (classe1.getLstInterfaces().contains(classe2.getNom()))

@@ -1,13 +1,12 @@
 package RetroConcepteur.vue.outil;
 
 import java.awt.List;
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashMap;
 import RetroConcepteur.vue.outil.*;
 
-public class Rectangle implements Serializable
+public class Rectangle
 {
 	private int x;
 	private int y;
