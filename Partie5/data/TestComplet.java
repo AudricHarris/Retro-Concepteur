@@ -1,6 +1,5 @@
 package tests;
 
-import java.io.Serializable;
 import java.util.List;
 import java.util.ArrayList;
 
@@ -8,7 +7,7 @@ import java.util.ArrayList;
  * Ce fichier sert à tester les limites de l'analyseur Retro-Concepteur.
  * Il contient des modificateurs variés et des structures complexes.
  */
-public abstract interface TestComplet extends Object implements Serializable, Cloneable{
+public abstract interface TestComplet extends Object implements Cloneable{
 
     // --- Attributs avec différents modificateurs ---
 

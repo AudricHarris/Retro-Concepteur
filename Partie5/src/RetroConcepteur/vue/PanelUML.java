@@ -13,7 +13,6 @@ import java.util.HashMap;
 import java.util.List;
 
 import RetroConcepteur.Controller;
-import RetroConcepteur.metier.DiagramData;
 import RetroConcepteur.metier.classe.*;
 import RetroConcepteur.vue.outil.*;
 
@@ -149,16 +148,7 @@ public class PanelUML extends JPanel
 
     public List<Classe> getLstClasse() { return this.lstClasse; }
     public List<Liaison> getLstLiaisons() { return this.lstLiaisons; }
-    public List<Arc> getLstArcs() { return this.lstArcs; }
-
-    public void chargerDiagramme(DiagramData data)
-    {
-        this.lstClasse = data.getLstClasse();
-        this.lstLiaisons = data.getLstLiaisons();
-        this.lstArcs = data.getLstArcs();
-        this.mapClasseRectangle = data.getMapClasseRectangle();
-        this.repaint();
-    }
+    public List<Arc> getLstArcs() { return this.lstArcs; }	
 
     // =========================================================================
     //                             DESSIN PRINCIPAL

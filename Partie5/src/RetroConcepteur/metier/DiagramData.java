@@ -3,7 +3,6 @@ package RetroConcepteur.metier;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.io.Serializable;
 
 import RetroConcepteur.metier.classe.Classe;
 import RetroConcepteur.metier.classe.Liaison;
@@ -13,7 +12,7 @@ import RetroConcepteur.vue.outil.Rectangle;
 /**
  * Classe pour stocker les données du diagramme UML pour la sérialisation.
  */
-public class DiagramData implements Serializable
+public class DiagramData
 {
     private ArrayList<Classe> lstClasse;
     private List<Liaison> lstLiaisons;

@@ -2,9 +2,8 @@ package RetroConcepteur.vue.outil;
 
 import java.awt.Point;
 import java.util.HashMap;
-import java.io.Serializable;
 
-public class Arc implements Serializable
+public class Arc
 {
 	private HashMap<String, Point> from;
 	private HashMap<String, Point> to;

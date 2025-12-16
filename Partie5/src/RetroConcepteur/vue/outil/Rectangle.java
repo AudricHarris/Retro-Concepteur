@@ -5,9 +5,8 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Map;
-import java.io.Serializable;
 
-public class Rectangle implements Serializable
+public class Rectangle 
 {
 	private String id;
 	private int x;

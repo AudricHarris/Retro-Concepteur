@@ -16,7 +16,6 @@ import javax.swing.*;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
 import RetroConcepteur.Controller;
-import RetroConcepteur.metier.DiagramData;
 import RetroConcepteur.metier.classe.Classe;
 import RetroConcepteur.vue.outil.Rectangle;
 
@@ -135,13 +134,8 @@ public class FrameUML extends JFrame
 			try (FileOutputStream out = new FileOutputStream(fichier);
 				 ObjectOutputStream objtOut = new ObjectOutputStream(out)) 
 			{
-				DiagramData data = new DiagramData(
-					new ArrayList<Classe>(this.panelUml.getLstClasse()),
-					this.panelUml.getLstLiaisons(),
-					this.panelUml.getLstArcs(),
-					this.panelUml.getMap()
-				);
-				objtOut.writeObject(data);
+				//a refaire 
+				//objtOut.writeObject();
 				JOptionPane.showMessageDialog(this, "Diagramme exporté avec succès!");
 			} 
 			catch (IOException e) 
@@ -164,12 +158,11 @@ public class FrameUML extends JFrame
 			try (FileInputStream in = new FileInputStream(file);
 				 ObjectInputStream objtIn = new ObjectInputStream(in)) 
 			{
-				DiagramData data = (DiagramData) objtIn.readObject();
-				this.panelUml.chargerDiagramme(data);
+				//refaire
 				this.repaint();
 				JOptionPane.showMessageDialog(this, "Diagramme importé avec succès!");
 			} 
-			catch (IOException | ClassNotFoundException e) 
+			catch (IOException e) 
 			{
 				JOptionPane.showMessageDialog(this, "Erreur lors de l'import: " + e.getMessage());
 			}

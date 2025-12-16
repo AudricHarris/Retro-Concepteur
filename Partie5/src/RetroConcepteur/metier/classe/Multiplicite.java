@@ -1,11 +1,9 @@
 package RetroConcepteur.metier.classe;
 
-import java.io.Serializable;
-
 /**
  * Instance qui stock la Multiplicite d'une Liaison
  */
-public class Multiplicite implements Serializable
+public class Multiplicite
 {
 	private String borneInf;
 	private String borneSup;

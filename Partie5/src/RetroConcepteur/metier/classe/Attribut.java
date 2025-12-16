@@ -1,12 +1,10 @@
 package RetroConcepteur.metier.classe;
 
-import java.io.Serializable;
-
 /**
  * Class Attribut est une instance qui permet de stocker les attribut d'un classe
  * Elle contient plus paramètres comme type, visibilite, isStatic, son nom et un num
  */
-public class Attribut implements Serializable
+public class Attribut
 {
 	private int     num;
 	private String  nom;
