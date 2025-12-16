@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Scanner;
+import java.io.Serializable;
 
 import RetroConcepteur.metier.classe.*;
 
@@ -13,7 +14,7 @@ import RetroConcepteur.metier.classe.*;
  * Permet la lecture d'un dossier et la creation de classe.
  * Une fois crée nous ajoutons les methode et attribut à cette classe
  */
-public class AnalyseFichier
+public class AnalyseFichier implements Serializable
 {
 	private ArrayList<Classe> lstClass;
 	private List<Liaison>     lstLiaisons;

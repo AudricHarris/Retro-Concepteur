@@ -1,9 +1,11 @@
 package RetroConcepteur.metier.classe;
 
+import java.io.Serializable;
+
 /**
  * Class paramètres stock les informations des paramètres d'une méthode
  * */
-public class Parametre
+public class Parametre implements Serializable
 {
 	private String nom;
 	private String type;

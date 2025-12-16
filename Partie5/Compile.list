@@ -10,7 +10,7 @@ src/RetroConcepteur/metier/classe/Attribut.java
 src/RetroConcepteur/metier/classe/Classe.java
 
 src/RetroConcepteur/vue/outil/GereSouris.java
-src/RetroConcepteur/vue/outil/Arc.java
+src/RetroConcepteur/vue/outil/Chemin.java
 src/RetroConcepteur/vue/outil/Rectangle.java
 src/RetroConcepteur/vue/outil/Point.java
 

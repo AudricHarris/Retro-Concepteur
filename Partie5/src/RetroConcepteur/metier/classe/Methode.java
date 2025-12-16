@@ -2,11 +2,12 @@ package RetroConcepteur.metier.classe;
 
 import java.lang.reflect.Constructor;
 import java.util.ArrayList;
+import java.io.Serializable;
 
 /**
  * Class methode stock le nom, visibilite, type, lstParam et isStatic d'une classe
  */
-public class Methode
+public class Methode implements Serializable
 {
 	private String               visibilite;
 	private String               nom;
