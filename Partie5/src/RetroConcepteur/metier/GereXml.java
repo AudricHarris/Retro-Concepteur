@@ -48,14 +48,6 @@ public class GereXml
 		Element classeElm;
 		Element attributElm;
 		Element methodeElm;
-		Element paramsElm;
-
-		//sous-sous element -> ajouter dans leur sous-element respectif
-
-		Element metElm;
-		Element prmElm;
-
-		Rectangle r;
 
 		try
 		{
@@ -83,14 +75,7 @@ public class GereXml
 					classeElm.appendChild(GereXml.classeInterface(doc,c));
 				}
 
-				r = mapRect.get(c);
-				if (r != null) 
-				{
-					classeElm.setAttribute("x", Integer.toString(r.getX()));
-					classeElm.setAttribute("y", Integer.toString(r.getY()));
-					classeElm.setAttribute("largeur", Integer.toString(r.getTailleX()));
-					classeElm.setAttribute("hauteur", Integer.toString(r.getTailleY()));
-				}
+				GereXml.ajouterPosition(classeElm, mapRect.get(c));
 
 				// gere Attributs
 				attributElm = doc.createElement("Attributs");
@@ -105,8 +90,8 @@ public class GereXml
 				for (Methode m : c.getLstMethode()) 
 				{
 					methodeElm.appendChild(GereXml.classeMethode(doc, m));
+					classeElm.appendChild(methodeElm);
 				}
-				classeElm.appendChild(methodeElm);
 
 				elmRacine.appendChild(classeElm);
 			}
@@ -127,7 +112,21 @@ public class GereXml
 		}
 	}
 
-	public static Element classeMethode(Document doc, Methode m)
+	//////////////////////////////////////////////////////
+	/// Methodes utiliser pour la sauvegarde /////////////
+	//////////////////////////////////////////////////////
+
+	private static void ajouterPosition(Element classeElm, Rectangle r)
+	{
+		if (r == null) return;
+
+		classeElm.setAttribute("x", String.valueOf(r.getX()));
+		classeElm.setAttribute("y", String.valueOf(r.getY()));
+		classeElm.setAttribute("largeur", String.valueOf(r.getTailleX()));
+		classeElm.setAttribute("hauteur", String.valueOf(r.getTailleY()));
+	}
+
+	private static Element classeMethode(Document doc, Methode m)
 	{
 		Element paramsElm;
 
@@ -157,7 +156,7 @@ public class GereXml
 		return metElm;
 	}
 
-	public static Element classeAttribut(Document doc, Attribut a)
+	private static Element classeAttribut(Document doc, Attribut a)
 	{
 		Element attElm;
 
@@ -172,7 +171,7 @@ public class GereXml
 		return attElm;
 	}
 
-	public static Element classeInterface(Document doc, Classe c)
+	private static Element classeInterface(Document doc, Classe c)
 	{
 		Element interfaceElm;
 		Element interElm;
@@ -189,7 +188,7 @@ public class GereXml
 		return interfaceElm;
 	}
 
-	public static Element sauvegarderLiaison(Document doc,List<Liaison>lstLiaisons)
+	private static Element sauvegarderLiaison(Document doc,List<Liaison>lstLiaisons)
 	{
 		Element liaisonsElm;
 		Element lienElm;
@@ -219,7 +218,7 @@ public class GereXml
 		return liaisonsElm;
 	}
 
-	public static void ecritXml(Document doc, String chemin)
+	private static void ecritXml(Document doc, String chemin)
 	{
 		TransformerFactory transformerFactory;
 		Transformer transformer;
@@ -249,7 +248,7 @@ public class GereXml
 
 	/////////////////////////////////////////////////
 	/////////Chargement//////////////////////////////
-	////////////////////////////////////////////////
+	/////////////////////////////////////////////////
 
 	public static ArrayList<Classe> chargerClassesXml(String chemin)
 	{
@@ -413,53 +412,75 @@ public class GereXml
 		}
 	}
 
+
+
+
 	public static HashMap<String, Rectangle> chargerPositionsXml(String chemin)
 	{
+		File fchXml;
+		DocumentBuilderFactory docFact;
+		DocumentBuilder docConstru;
+		Document doc;
+
+		NodeList lstNoeux;
+		HashMap<String, Rectangle> mapRect;
+
 		try
 		{
-			File fchXml = new File(chemin);
-			DocumentBuilderFactory docFact = DocumentBuilderFactory.newInstance();
-			DocumentBuilder docConstru = docFact.newDocumentBuilder();
-			Document doc = docConstru.parse(fchXml);
+			fchXml = new File(chemin);
+			docFact = DocumentBuilderFactory.newInstance();
+			docConstru = docFact.newDocumentBuilder();
+			doc = docConstru.parse(fchXml);
 			doc.getDocumentElement().normalize();
 
-			NodeList lstNoeux = doc.getElementsByTagName("Classe");
-			HashMap<String, Rectangle> mapRect = new HashMap<String, Rectangle>();
+			lstNoeux = doc.getElementsByTagName("Classe");
+			mapRect = new HashMap<String, Rectangle>();
 
 			for (int i = 0; i < lstNoeux.getLength(); i++)
 			{
-				Node node = lstNoeux.item(i);
-				if (node.getNodeType() == Node.ELEMENT_NODE)
-				{
-					Element elm = (Element) node;
-					String nom = elm.getAttribute("nom");
-
-					String sx = elm.getAttribute("x");
-					String sy = elm.getAttribute("y");
-					String sw = elm.getAttribute("largeur");
-					String sh = elm.getAttribute("hauteur");
-					if (!sx.isEmpty() && !sy.isEmpty() && !sw.isEmpty() && !sh.isEmpty())
-					{
-						try 
-						{
-							int x = Integer.parseInt(sx);
-							int y = Integer.parseInt(sy);
-							int w = Integer.parseInt(sw);
-							int h = Integer.parseInt(sh);
-							Rectangle r = new Rectangle(x, y, w, h);
-							mapRect.put(nom, r);
-						} 
-						catch (NumberFormatException ex) { }
-					}
-				}
+				GereXml.extrairePositionClasse(mapRect, lstNoeux, i);
 			}
-
-			return mapRect;
 		}
 		catch (Exception e)
 		{
 			e.printStackTrace();
 			throw new RuntimeException("Erreur lors du chargement des positions XML : " + e.getMessage());
+		}	
+		return mapRect;
+	}
+
+	private static void extrairePositionClasse(HashMap<String, Rectangle> mapRect, NodeList lstNoeux, int i)
+	{
+		Element elm;
+		String nom;
+
+		String x;
+		String y;
+		String w;
+		String h;
+
+		Node node = lstNoeux.item(i);
+		if (node.getNodeType() == Node.ELEMENT_NODE)
+		{
+			elm = (Element) node;
+			nom = elm.getAttribute("nom");
+
+			x = elm.getAttribute("x");
+			y = elm.getAttribute("y");
+			w = elm.getAttribute("largeur");
+			h = elm.getAttribute("hauteur");
+
+			if (!x.isEmpty() && !y.isEmpty() && !w.isEmpty() && !h.isEmpty())
+			{
+				try 
+				{
+					mapRect.put(nom, new Rectangle(Integer.parseInt(x), 
+					                               Integer.parseInt(y),
+												   Integer.parseInt(w), 
+												   Integer.parseInt(h)));
+				} 
+				catch (NumberFormatException ex) { }
+			}
 		}
 	}
 
