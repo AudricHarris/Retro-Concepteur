@@ -132,6 +132,8 @@ public class AnalyseFichier
 	{
 		this.lstClass.clear();
 		this.lstLiaisons.clear();
+		this.lstExtends.clear();
+		this.lstImplement.clear();
 
 		ArrayList<String> allFiles = new ArrayList<String>();
 		try

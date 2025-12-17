@@ -56,13 +56,13 @@ public class BarreMenu extends JMenuBar implements ActionListener
 				{
 					JMenuItem item = new JMenuItem(this.modeleBarre[i][1]);
 
-					if (this.modeleBarre[i].length > 2) {
+					if (this.modeleBarre[i].length > 2) 
 						item.setMnemonic(this.modeleBarre[i][2].charAt(0));
-					}
+					
 
-					if (this.modeleBarre[i].length == 4) {
+					if (this.modeleBarre[i].length == 4) 
 						item.setAccelerator(KeyStroke.getKeyStroke(this.modeleBarre[i][3]));
-					}
+					
 
 					item.addActionListener(this);
 					menuCourant.add(item);
