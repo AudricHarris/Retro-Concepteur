@@ -2,6 +2,7 @@ package RetroConcepteur;
 
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import RetroConcepteur.metier.AnalyseFichier;
@@ -9,6 +10,7 @@ import RetroConcepteur.metier.GereXml;
 import RetroConcepteur.metier.classe.Classe;
 import RetroConcepteur.metier.classe.Liaison;
 import RetroConcepteur.vue.FrameUML;
+import RetroConcepteur.vue.outil.Rectangle;
 
 /*
  * Controller est la pont entre notre logique et l'IHM
@@ -73,13 +75,36 @@ public class Controller
 
 	public void sauvegarderXml(String chemin)
 	{
-		GereXml.sauvegarderXml(chemin);
+		ArrayList<Classe> lst = this.getLstClasses();
+		HashMap<Classe, Rectangle> map = this.frameUML.getMapPanel();
+		GereXml.sauvegarderXml(chemin, lst, map, this.getListLiaison());
 	}
 
 	public void chargerXml(String chemin)
 	{
-		GereXml.chargerXml(chemin);	
-		//this.frameUML.mettreAJour();
+		ArrayList<Classe> classesLoaded = GereXml.chargerClassesXml(chemin);
+		if (classesLoaded == null || classesLoaded.isEmpty()) return;
+
+		HashMap<String, Rectangle> positionsLoaded = GereXml.chargerPositionsXml(chemin);
+
+		// Charger les liaisons (si présentes dans le fichier)
+		List<Liaison> liaisonsLoaded = GereXml.chargerLiaisonsXml(chemin, classesLoaded);
+
+		if (liaisonsLoaded != null && !liaisonsLoaded.isEmpty())
+			this.analyseFichier.remplacerClassesEtLiaisons(classesLoaded, liaisonsLoaded);
+		else
+			this.analyseFichier.remplacerClassesEtLiaisons(classesLoaded);
+
+		this.frameUML.reinitialiser();
+
+		HashMap<Classe, Rectangle> newMap = new HashMap<>();
+		for (Classe c : this.getLstClasses())
+		{
+			Rectangle r = positionsLoaded.get(c.getNom());
+			if (r != null) newMap.put(c, r);
+		}
+
+		this.frameUML.setMapPanel(newMap);
 	}
 
 	public static void main(String[] args) 

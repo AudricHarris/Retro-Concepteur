@@ -411,6 +411,57 @@ public class AnalyseFichier
 		return listeParams;
 	}
 
+	/**
+	 * Remplace la liste des classes par celle fournie et reconstruit les liaisons
+	 * (utilisé lors du chargement depuis un fichier XML)
+	 */
+	public void remplacerClassesEtLiaisons(ArrayList<Classe> nouvelles)
+	{
+		this.lstClass = new ArrayList<Classe>(nouvelles);
+		this.lstLiaisons.clear();
+
+		// Créer les liaisons après avoir ajouté toutes les classes
+		for (Classe classe1 : this.lstClass)
+		{
+			for (Classe classe2 : this.lstClass)
+			{
+				if (classe1 != classe2)
+				{
+					List<Liaison> liaisons = Liaison.creerLiaison(classe1, classe2, this);
+					for (Liaison liaison : liaisons)
+						if (liaison != null) this.lstLiaisons.add(liaison);
+				}
+			}
+		}
+	}
+	
+	/**
+	 * Remplace la liste des classes par celle fournie et utilise la liste de liaisons fournie
+	 * (utilisé lors du chargement depuis un fichier XML contenant des liaisons explicites)
+	 */
+	public void remplacerClassesEtLiaisons(ArrayList<Classe> nouvelles, List<Liaison> liaisons)
+	{
+		this.lstClass = new ArrayList<Classe>(nouvelles);
+		this.lstLiaisons = new ArrayList<Liaison>();
+
+		// Associer les liaisons fournies aux instances de Classe correctes
+		for (Liaison l : liaisons)
+		{
+			// Assurer que la liaison référence les objets Classe chargés
+			Classe cFrom = null, cTo = null;
+			for (Classe c : this.lstClass)
+			{
+				if (c.getNom().equals(l.getFromClass().getNom())) cFrom = c;
+				if (c.getNom().equals(l.getToClass().getNom())) cTo = c;
+			}
+			if (cFrom != null && cTo != null)
+			{
+				Liaison nl = new Liaison(cFrom, cTo, l.getFromMultiplicity(), l.getToMultiplicity(), l.getNomVar(), this);
+				this.lstLiaisons.add(nl);
+			}
+		}
+	}
+
 	//---------------------------------------//
 	//           methode static              //
 	//---------------------------------------//

@@ -104,9 +104,20 @@ public class Liaison
 				this.toMultiplicity.setBorneSup("1");
 		}
 	}
-	
 
-	
+	/**
+	 * Constructeur public pour créer une liaison manuellement (ex: via XML)
+	 */
+	public Liaison(Classe from, Classe to, Multiplicite fromMultiplicity,
+	               Multiplicite toMultiplicity, String nomVar, AnalyseFichier analyseFichier)
+	{
+		this.fromClass = from;
+		this.toClass = to;
+		this.fromMultiplicity = fromMultiplicity == null ? new Multiplicite("","") : fromMultiplicity;
+		this.toMultiplicity   = toMultiplicity == null   ? new Multiplicite("","") : toMultiplicity;
+		this.nomVar = nomVar == null ? "" : nomVar;
+		this.analyseFichier = analyseFichier;
+	}
 
 	//---------------------------------------//
 	//              Getters                  //
@@ -117,6 +128,8 @@ public class Liaison
 
 	public Multiplicite getToMultiplicity  () { return this.toMultiplicity;   }
 	public Multiplicite getFromMultiplicity() { return this.fromMultiplicity; }
+
+	public String getNomVar() { return this.nomVar; }
 
 	public String getType()
 	{

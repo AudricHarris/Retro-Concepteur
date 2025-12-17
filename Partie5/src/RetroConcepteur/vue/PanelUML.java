@@ -99,6 +99,48 @@ public class PanelUML extends JPanel
 
     public HashMap<Classe,Rectangle> getMap() { return this.mapClasseRectangle; }
 
+	/**
+     * Applique une map de positions (Classe -> Rectangle) pré-calculée.
+     * Utile pour restaurer les positions après chargement XML.
+     */
+    public void setMap(HashMap<Classe,Rectangle> map)
+    {
+        this.mapClasseRectangle = map;
+        this.positionDeterminee = true;
+
+        // Reconstruire les chemins en utilisant la map fournie
+        this.lstChemins.clear();
+        for (Liaison l : this.lstLiaisons)
+        {
+            Rectangle r1 = this.mapClasseRectangle.get(l.getFromClass());
+            Rectangle r2 = this.mapClasseRectangle.get(l.getToClass());
+
+            if (r1 != null && r2 != null)
+            {
+                int x1 = r1.getCentreX();
+                int y1 = r1.getCentreY();
+                Point p1 = new Point(x1,y1);
+
+                int x2 = r2.getCentreX();
+                int y2 = r2.getCentreY();
+                Point p2 = new Point(x2,y2);
+
+                Chemin chemin = new Chemin(p1, p2, l.getType(), this.mapClasseRectangle, l.getFromClass(), l.getToClass());
+                char zone = this.getZone(r1, r2);
+                r1.addPos(zone, chemin);
+                char zoneInv = zoneInverse(zone);
+                r2.addPos(zoneInv, chemin);
+
+                r1.repartirPointsLiaison(zone);
+                r2.repartirPointsLiaison(zoneInv);
+
+                this.lstChemins.add(chemin);
+            }
+        }
+
+        this.repaint();
+    }
+
     // =========================================================================
     //                             DESSIN PRINCIPAL
     // =========================================================================
@@ -570,4 +612,6 @@ public class PanelUML extends JPanel
             default: return ' ';
         }
     }
+
+
 }

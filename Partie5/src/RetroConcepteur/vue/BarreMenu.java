@@ -87,7 +87,7 @@ public class BarreMenu extends JMenuBar implements ActionListener
 		switch (cmd) 
 		{
 			case "Ouvrir"      -> this.frame.ouvrirFichier();
-			case "ouvrir Xml"  -> this.frame.ouvrirXml();
+			case "Ouvrir Xml"  -> this.frame.ouvrirXml();
 			case "Sauvegarder" -> this.frame.sauvegardeFichier();
 			case "Exporter"    -> this.frame.exporterFichier();
 			case "Quitter"     -> System.exit(0);

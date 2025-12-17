@@ -6,6 +6,7 @@ import java.awt.event.*;
 import java.awt.image.BufferedImage;
 import java.io.*;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Map;
 import java.awt.Dimension;
 import java.awt.Toolkit;
@@ -71,6 +72,24 @@ public class FrameUML extends JFrame
 
 		this.setVisible(true);
 		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+	}
+
+	// Expose la map de positions du Panel pour la sauvegarde
+	public HashMap<Classe,Rectangle> getMapPanel()
+	{
+		return this.panelUml.getMap();
+	}
+
+	// Applique une map de positions au Panel (utilisé après chargement XML)
+	public void setMapPanel(HashMap<Classe,Rectangle> map)
+	{
+		this.panelUml.setMap(map);
+	}
+
+	// Réinitialise le panel (recharge les classes depuis le Controller)
+	public void reinitialiser()
+	{
+		this.panelUml.reinitialiser();
 	}
 
 	public void ouvrirFichier()
@@ -144,6 +163,35 @@ public class FrameUML extends JFrame
 
 	public void ouvrirXml()
 	{
-		//a faire
+		JFileChooser fileChooser = new JFileChooser();
+		fileChooser.setDialogTitle("Ouvrir un diagramme XML");
+
+		FileNameExtensionFilter filter =
+				new FileNameExtensionFilter("Fichiers XML", "xml");
+		fileChooser.setFileFilter(filter);
+
+		int valRet = fileChooser.showOpenDialog(this);
+
+		if (valRet == JFileChooser.APPROVE_OPTION)
+		{
+			File file = fileChooser.getSelectedFile();
+			try
+			{
+				this.ctrl.chargerXml(file.getAbsolutePath());
+				JOptionPane.showMessageDialog(
+						this,
+						"Diagramme XML chargé avec succès !"
+				);
+			}
+			catch (Exception e)
+			{
+				JOptionPane.showMessageDialog(
+						this,
+						"Erreur lors du chargement du XML : " + e.getMessage(),
+						"Erreur",
+						JOptionPane.ERROR_MESSAGE
+				);
+			}
+		}
 	}
 }
