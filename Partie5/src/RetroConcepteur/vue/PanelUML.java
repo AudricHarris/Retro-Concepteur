@@ -136,6 +136,7 @@ public class PanelUML extends JPanel
                 this.lstChemins.add(chemin);
             }
         }
+		this.recalculerChemins();
 
         this.repaint();
     }
