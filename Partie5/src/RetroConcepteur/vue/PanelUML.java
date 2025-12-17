@@ -167,14 +167,17 @@ public class PanelUML extends JPanel
 			return;
 		}
 
-        // 2. Ensuite on trace les fleches (maintenant que les rectangles ont leur taille finale)
-        
+        // 2. On recalcule et trace les fleches pointant vers les centres (mise à jour dynamique)
+        this.recalculerChemins();
         for (Chemin c : this.lstChemins) 
         {
             // On dessine directement le chemin intelligent calculé plus tôt
             this.dessinerFleche.dessinerLiaison(g2, c);
         }
         
+        // 3. Ensuite on redessine les classes au dessus des flèches
+        for (Classe classe : this.lstClasse)
+            this.dessinerClasse(g2, classe);
     }
 
     // =========================================================================
@@ -507,7 +510,23 @@ public class PanelUML extends JPanel
 				hauteurLigneMax = rect.getTailleY();
 		}
 
-		// Recalculer les arcs après repositionnement
+		// Initialisation des chemins - ils seront recalculés à chaque repaint
+		this.recalculerChemins();
+	}
+
+	/**
+	 * Recalcule tous les chemins en fonction des positions actuelles des rectangles
+	 * Cette méthode est appelée à chaque repaint pour mettre à jour les flèches dynamiquement
+	 */
+	private void recalculerChemins()
+	{
+		// Nettoyer les anciennes liaisons des rectangles
+		for (Rectangle rect : this.mapClasseRectangle.values()) 
+		{
+			rect.nettoyerLiaisons();
+		}
+
+		// Recalculer les chemins avec les positions actuelles
 		this.lstChemins.clear();
 		for (Liaison l : this.lstLiaisons) 
 		{
@@ -516,6 +535,7 @@ public class PanelUML extends JPanel
 			
 			if (r1 != null && r2 != null) 
 			{
+				// Les flèches partent et arrivent aux centres des rectangles
 				int x1 = r1.getCentreX();
 				int y1 = r1.getCentreY();
                 Point p1 = new Point(x1,y1);

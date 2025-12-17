@@ -150,4 +150,12 @@ public class Rectangle
 		this.repartirPointsLiaison('D');
 	}
 
+	public void nettoyerLiaisons()
+	{
+		this.hashPosPrises.get('H').clear();
+		this.hashPosPrises.get('B').clear();
+		this.hashPosPrises.get('G').clear();
+		this.hashPosPrises.get('D').clear();
+	}
+
 }
