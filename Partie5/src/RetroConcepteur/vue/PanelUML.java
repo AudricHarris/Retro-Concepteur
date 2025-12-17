@@ -30,7 +30,7 @@ public class PanelUML extends JPanel
     private HashMap<Classe, Rectangle> mapClasseRectangle;
     private DessinerFleche dessinerFleche;
 
-	private boolean   positionDeterminee = false;
+    private boolean   positionDeterminee = false;
 
 
     // --- CONSTANTES DE STYLE ---
@@ -66,7 +66,7 @@ public class PanelUML extends JPanel
         this.lstClasse = this.ctrl.getLstClasses();
         this.lstLiaisons = new ArrayList<Liaison>(this.ctrl.getListLiaison());
         this.mapClasseRectangle = new HashMap<Classe,Rectangle>();
-		this.positionDeterminee = false;
+        this.positionDeterminee = false;
         this.lstChemins = new ArrayList<Chemin>();
 
         this.initialiserPositions();
@@ -86,7 +86,7 @@ public class PanelUML extends JPanel
             Rectangle rect = new Rectangle(x, y, 0, 0);
             this.mapClasseRectangle.put(c, rect);
 
-			
+            
             // Gestion simple du retour a la ligne si on depasse l'ecran
             x += 350;
             if (x > screenSize.width - 200) 
@@ -99,7 +99,7 @@ public class PanelUML extends JPanel
 
     public HashMap<Classe,Rectangle> getMap() { return this.mapClasseRectangle; }
 
-	/**
+    /**
      * Applique une map de positions (Classe -> Rectangle) pré-calculée.
      * Utile pour restaurer les positions après chargement XML.
      */
@@ -160,46 +160,44 @@ public class PanelUML extends JPanel
         for (Classe classe : this.lstClasse)
             this.dessinerClasse(g2, classe);
         
-		if (!this.positionDeterminee) 
-		{
-			this.determinerPositions();
-			this.positionDeterminee = true;
-			this.repaint();
-			return;
-		}
+        if (!this.positionDeterminee) 
+        {
+            this.determinerPositions();
+            this.positionDeterminee = true;
+            this.repaint();
+            return;
+        }
 
-        
-        this.recalculerChemins();
         for (Chemin c : this.lstChemins) 
         {
-            
-            this.dessinerFleche.dessinerLiaison(g2, c);            
+            System.out.println(c);
+            this.dessinerFleche.dessinerLiaison(g2, c);
         }
         
-		for (Classe classe : this.lstClasse)
-			this.dessinerClasse(g2, classe);
+        for (Classe classe : this.lstClasse)
+            this.dessinerClasse(g2, classe);
 
-				
-		for ( Liaison l : this.lstLiaisons )
-		{
-			for ( Chemin c : this.lstChemins )
-			{
-				if ( l.getFromClass() == c.getClasseDep() && l.getToClass() == c.getClasseArr() )
-				{
-					String multiplicite1 = l.getToMultiplicity().getBorneInf()+"."+l.getToMultiplicity().getBorneSup();
-					String multiplicite2 = l.getFromMultiplicity().getBorneInf()+"."+l.getFromMultiplicity().getBorneSup();
+                
+        for ( Liaison l : this.lstLiaisons )
+        {
+            for ( Chemin c : this.lstChemins )
+            {
+                if ( l.getFromClass() == c.getClasseDep() && l.getToClass() == c.getClasseArr() )
+                {
+                    String multiplicite1 = l.getToMultiplicity().getBorneInf()+"."+l.getToMultiplicity().getBorneSup();
+                    String multiplicite2 = l.getFromMultiplicity().getBorneInf()+"."+l.getFromMultiplicity().getBorneSup();
 
-					if ( multiplicite1.equals(".") ) multiplicite1 = "";
-					if ( multiplicite2.equals(".") ) multiplicite2 = "";
+                    if ( multiplicite1.equals(".") ) multiplicite1 = "";
+                    if ( multiplicite2.equals(".") ) multiplicite2 = "";
 
-					if ( multiplicite1.equals("1.1")) multiplicite1 = "1";
-					if ( multiplicite2.equals("1.1")) multiplicite2 = "1";
+                    if ( multiplicite1.equals("1.1")) multiplicite1 = "1";
+                    if ( multiplicite2.equals("1.1")) multiplicite2 = "1";
 
-					this.dessinerMultiplicite(	g2, c.getDepart(), c.getArrivee(), 
-												multiplicite1, multiplicite2       );
-					}
-				}
-		}
+                    this.dessinerMultiplicite(g2, c.getDepart(), c.getArrivee(), 
+                                              multiplicite1, multiplicite2);
+                }
+            }
+        }
     }
 
     // =========================================================================
@@ -222,14 +220,14 @@ public class PanelUML extends JPanel
         boolean tropAtt = false;
 
         for (Attribut att : classe.getListOrdonneeAttribut()) 
-		{
+        {
             if (this.ctrl.estClasseProjet(att.getType())) continue; // On ignore les attributs qui sont des liens
             
             if (cpt >= 3) 
-			{ 
-				tropAtt = true;
-				break; 
-			} // Limite a 3 elements
+            { 
+                tropAtt = true;
+                break; 
+            } // Limite a 3 elements
             
             String gauche = this.getVisibiliteSymbole(att.getVisibilite()) + " " + att.getNom();
             maxLargeurGaucheAtt = Math.max(maxLargeurGaucheAtt, metrics.stringWidth(gauche));
@@ -244,16 +242,16 @@ public class PanelUML extends JPanel
         boolean tropMeth = false;
 
         for (Methode meth : classe.getListOrdonneeMethode()) 
-		{
+        {
             if (meth.getNom().equals("main")) 
-				continue;
+                continue;
 
             if (cpt >= 3) 
-			{ 
-				tropMeth = true;
-				break; // Limite a 3 elements
-			} 
-			
+            { 
+                tropMeth = true;
+                break; // Limite a 3 elements
+            } 
+            
             String gauche = this.getDebutSignatureMethode(meth);
             maxLargeurGaucheMeth = Math.max(maxLargeurGaucheMeth, metrics.stringWidth(gauche));
             lstMeth.add(meth);
@@ -319,35 +317,69 @@ public class PanelUML extends JPanel
             Point pArrivee = this.calculerPointBord(r2, r1);
 
             this.dessinerFleche.dessinerLiaison(g2,new Chemin( pDepart, pArrivee, l.getType(),
-												 this.mapClasseRectangle, l.getFromClass(), l.getToClass() )
+                                                 this.mapClasseRectangle, l.getFromClass(), l.getToClass() )
                                 );
         }
     }
 
-    private void dessinerMultiplicite(Graphics2D g2, Point p1, Point p2, String multiplicite1, String multiplicite2 )
+    private void dessinerMultiplicite(Graphics2D g2, Point p1, Point p2, String multiplicite1, String multiplicite2)
     {
-		int decalageX1 = -10;
-		int decalageX2 = 10;
+        FontMetrics fm = g2.getFontMetrics();
+        int width1 = fm.stringWidth(multiplicite1);
+        int width2 = fm.stringWidth(multiplicite2);
+        int height = fm.getHeight();
+        
+        // Calculate the direction vector from p1 to p2
+        int dx = p2.getX() - p1.getX();
+        int dy = p2.getY() - p1.getY();
+        double length = Math.sqrt(dx * dx + dy * dy);
+        
+        if (length < 1) return; // Avoid division by zero
+        
+        // Normalize the direction vector
+        double dirX = dx / length;
+        double dirY = dy / length;
+        
+        // Perpendicular vector (rotated 90 degrees)
+        double perpX = -dirY;
+        double perpY = dirX;
+        
+        // Offset distance from the line
+        int offsetDistance = 15;
+        
+        // Position multiplicite1 near p1
+        // Move slightly along the line and perpendicular to avoid overlap
+        int x1 = p1.getX() + (int)(dirX * 10 + perpX * offsetDistance);
+        int y1 = p1.getY() + (int)(dirY * 10 + perpY * offsetDistance);
+        
+        // Adjust to prevent text going off-screen or overlapping with rectangle
+        if (x1 < 5) x1 = 5;
+        if (y1 < height) y1 = height;
+        
+        // Position multiplicite2 near p2
+        // Move slightly back along the line and perpendicular
+        int x2 = p2.getX() - (int)(dirX * 10 + perpX * offsetDistance);
+        int y2 = p2.getY() - (int)(dirY * 10 + perpY * offsetDistance);
+        
+        // Adjust to prevent text going off-screen
+        if (x2 < 5) x2 = 5;
+        if (y2 < height) y2 = height;
+        
 
-		int decalageY1 = -10;
-		int decalageY2 = 10;
+        
+        // Draw multiplicite1
+        if (!multiplicite1.isEmpty())
+        {
+            g2.setColor(g2.getColor());
+            g2.drawString(multiplicite1, x1, y1);
+        }
 
-		if ( p1.getX() < p2.getX() ) 
-		{
-			decalageX1 = 10;
-			decalageX2 = -10;
-		}
-
-		if ( p1.getY() < p2.getY() ) 
-		{
-			decalageY1 = 10;
-			decalageY2 = -10;
-		}
-
-
-        g2.drawString(multiplicite1, p1.getX()+decalageX1, p1.getY()+decalageY1);
-		g2.drawString(multiplicite2, p2.getX()+decalageX1, p2.getY()+decalageY2);
-	}
+        if (!multiplicite2.isEmpty())
+        {
+            g2.setColor(g2.getColor());
+            g2.drawString(multiplicite2, x2, y2);
+        }
+    }
 
     /**
      * Calcule le point d'intersection entre le segment reliant les centres et le bord du rectangle source.
@@ -376,14 +408,14 @@ public class PanelUML extends JPanel
         double ratioY = Math.abs(dy) / hMoitie;
 
         if (ratioX > ratioY) 
-		{
+        {
             // Intersection gauche ou droite
             return dx > 0 
                 ? new Point(rect1.getX() + rect1.getTailleX(), cy1) // Droite
                 : new Point(rect1.getX(), cy1);                      // Gauche
         } 
-		else 
-		{
+        else 
+        {
             // Intersection haut ou bas
             return dy > 0 
                 ? new Point(cx1, rect1.getY() + rect1.getTailleY()) // Bas
@@ -411,13 +443,13 @@ public class PanelUML extends JPanel
         Font fontGras = fontNormal.deriveFont(Font.BOLD);
 
         if (classe.isInterface()) 
-		{
+        {
             dessinerStringCentre(g2, "<<Interface>>", x, y, largeur);
             y += hLigne;
         }
-		
+        
         if (classe.isAbstract() && !classe.isInterface()) 
-		{
+        {
             dessinerStringCentre(g2, "<<Abstract>>", x, y, largeur);
             y += hLigne;
         }
@@ -475,7 +507,7 @@ public class PanelUML extends JPanel
     // =========================================================================
 
     private int calculerLargeurTitre(Classe c, FontMetrics fm) 
-	{
+    {
         int w = fm.stringWidth(c.getNom());
         if (c.isInterface() || c.isAbstract()) 
             w = Math.max(w, fm.stringWidth("<<Interface>>"));
@@ -483,7 +515,7 @@ public class PanelUML extends JPanel
     }
 
     private int calculerLargeurMax(List<String> lignes, FontMetrics fm) 
-	{
+    {
         int max = 0;
         for (String s : lignes) 
             max = Math.max(max, fm.stringWidth(s));
@@ -491,7 +523,7 @@ public class PanelUML extends JPanel
     }
 
     private int calculerHauteurTitre(Classe c, int hLigne) 
-	{
+    {
         int h = PADDING_Y * 2 + hLigne; 
         if (c.isInterface() || (c.isAbstract() && !c.isInterface())) 
             h += hLigne; 
@@ -499,7 +531,7 @@ public class PanelUML extends JPanel
     }
 
     private int calculerHauteurBloc(int nbLignes, int hLigne, boolean avecPoints) 
-	{
+    {
         int nbLignesReelles = avecPoints ? nbLignes + 1 : nbLignes;
         if (nbLignesReelles == 0) 
             return PADDING_Y * 2 + INTERLIGNE;
@@ -509,7 +541,7 @@ public class PanelUML extends JPanel
     // --- Generation de chaines ---
 
     private String getVisibiliteSymbole(String visibilite) 
-	{
+    {
         if (visibilite == null) return " ";
         switch (visibilite) 
         {
@@ -520,82 +552,82 @@ public class PanelUML extends JPanel
         }
     }
 
-	private void determinerPositions()
-	{
-		Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
-		int xCourant = 50;
-		int yCourant = 50;
-		int hauteurLigneMax = 0;
+    private void determinerPositions()
+    {
+        Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+        int xCourant = 50;
+        int yCourant = 50;
+        int hauteurLigneMax = 0;
 
-		for (Rectangle rect : this.mapClasseRectangle.values()) 
-		{
-			// Vérifier si on dépasse la largeur de l'écran
-			if (xCourant + rect.getTailleX() > screenSize.width - 100 && xCourant > 50) 
-			{
-				// Passer à la ligne suivante
-				xCourant = 50;
-				yCourant += hauteurLigneMax + 50;
-				hauteurLigneMax = 0;
-			}
+        for (Rectangle rect : this.mapClasseRectangle.values()) 
+        {
+            // Vérifier si on dépasse la largeur de l'écran
+            if (xCourant + rect.getTailleX() > screenSize.width - 100 && xCourant > 50) 
+            {
+                // Passer à la ligne suivante
+                xCourant = 50;
+                yCourant += hauteurLigneMax + 50;
+                hauteurLigneMax = 0;
+            }
 
-			// Positionner le rectangle
-			rect.setX(xCourant);
-			rect.setY(yCourant);
+            // Positionner le rectangle
+            rect.setX(xCourant);
+            rect.setY(yCourant);
 
-			// Mettre à jour pour le prochain rectangle
-			xCourant += rect.getTailleX() + 50; // Espacement horizontal
-			if (rect.getTailleY() > hauteurLigneMax) 
-				hauteurLigneMax = rect.getTailleY();
-		}
+            // Mettre à jour pour le prochain rectangle
+            xCourant += rect.getTailleX() + 50; // Espacement horizontal
+            if (rect.getTailleY() > hauteurLigneMax) 
+                hauteurLigneMax = rect.getTailleY();
+        }
 
-		// Initialisation des chemins - ils seront recalculés à chaque repaint
-		this.recalculerChemins();
-	}
+        // Initialisation des chemins - ils seront recalculés à chaque repaint
+        this.recalculerChemins();
+    }
 
-	/**
-	 * Recalcule tous les chemins en fonction des positions actuelles des rectangles
-	 * Cette méthode est appelée à chaque repaint pour mettre à jour les flèches dynamiquement
-	 */
-	private void recalculerChemins()
-	{
-		// Nettoyer les anciennes liaisons des rectangles
-		for (Rectangle rect : this.mapClasseRectangle.values()) 
-		{
-			rect.nettoyerLiaisons();
-		}
+    /**
+     * Recalcule tous les chemins en fonction des positions actuelles des rectangles
+     * Cette méthode est appelée à chaque repaint pour mettre à jour les flèches dynamiquement
+     */
+    private void recalculerChemins()
+    {
+        // Nettoyer les anciennes liaisons des rectangles
+        for (Rectangle rect : this.mapClasseRectangle.values()) 
+        {
+            rect.nettoyerLiaisons();
+        }
 
-		// Recalculer les chemins avec les positions actuelles
-		this.lstChemins.clear();
-		for (Liaison l : this.lstLiaisons) 
-		{
-			Rectangle r1 = this.mapClasseRectangle.get(l.getFromClass());
-			Rectangle r2 = this.mapClasseRectangle.get(l.getToClass());
-			
-			if (r1 != null && r2 != null) 
-			{
-				// Les flèches partent et arrivent aux centres des rectangles
-				int x1 = r1.getCentreX();
-				int y1 = r1.getCentreY();
+        // Recalculer les chemins avec les positions actuelles
+        this.lstChemins.clear();
+        for (Liaison l : this.lstLiaisons) 
+        {
+            Rectangle r1 = this.mapClasseRectangle.get(l.getFromClass());
+            Rectangle r2 = this.mapClasseRectangle.get(l.getToClass());
+            
+            if (r1 != null && r2 != null) 
+            {
+                // Les flèches partent et arrivent aux centres des rectangles
+                int x1 = r1.getCentreX();
+                int y1 = r1.getCentreY();
                 Point p1 = new Point(x1,y1);
 
-				int x2 = r2.getCentreX();
-				int y2 = r2.getCentreY();
+                int x2 = r2.getCentreX();
+                int y2 = r2.getCentreY();
                 Point p2 = new Point(x2,y2);
-				
-				Chemin chemin = new Chemin(p1, p2, l.getType(),this.mapClasseRectangle,l.getFromClass(), l.getToClass() );
-				char zone = this.getZone(r1, r2);
-				char zoneInv = zoneInverse(zone);
-				
+                
+                Chemin chemin = new Chemin(p1, p2, l.getType(),this.mapClasseRectangle,l.getFromClass(), l.getToClass() );
+                char zone = this.getZone(r1, r2);
+                char zoneInv = zoneInverse(zone);
+                
                 // On définit la zone AVANT de mettre à jour le chemin
-				chemin.setZoneArrivee(zoneInv);
-				
-				r1.addPos(zone, chemin);
-				r2.addPos(zoneInv, chemin);
+                chemin.setZoneArrivee(zoneInv);
+                
+                r1.addPos(zone, chemin);
+                r2.addPos(zoneInv, chemin);
 
                 r1.repartirPointsLiaison(zone);
                 r2.repartirPointsLiaison(zoneInv);
-				
-				chemin.setRectangleArrivee(r2);
+                
+                chemin.setRectangleArrivee(r2);
                 
                 // --- AJOUT IMPORTANT ---
                 // Maintenant que repartirPointsLiaison a déplacé p1 et p2 sur les bords,
@@ -603,25 +635,25 @@ public class PanelUML extends JPanel
                 chemin.updateChemin();
                 // -----------------------
 
-				this.lstChemins.add(chemin);
-			}
-		}
-	}
+                this.lstChemins.add(chemin);
+            }
+        }
+    }
 
     private String getSignatureAttributAlignee(Attribut att, int wGaucheMax, FontMetrics fm) 
-	{
+    {
         String gauche = this.getVisibiliteSymbole(att.getVisibilite()) + " " + att.getNom();
         String droite = " : " + att.getType() + (att.isConstante() ? " {freeze}" : "");
         return padding(gauche, droite, wGaucheMax, fm);
     }
 
     private String getDebutSignatureMethode(Methode meth) 
-	{
+    {
         String s = getVisibiliteSymbole(meth.getVisibilite()) + " " + meth.getNom() + "(";
         List<Parametre> params = meth.getLstParam();
 
         for (int i = 0; i < params.size(); i++) 
-		{
+        {
             s += params.get(i).getNom() + " : " + params.get(i).getType();
             if (i < params.size() - 1) 
                 s += ", ";
@@ -632,7 +664,7 @@ public class PanelUML extends JPanel
     }
 
     private String getSignatureMethodeAlignee(Methode meth, int wGaucheMax, FontMetrics fm) 
-	{
+    {
         String gauche = getDebutSignatureMethode(meth);
         String droite = "";
 
@@ -643,7 +675,7 @@ public class PanelUML extends JPanel
     }
 
     private String padding(String gauche, String droite, int wMax, FontMetrics fm) 
-	{
+    {
         int wActuel = fm.stringWidth(gauche);
         int espace = Math.max(0, (wMax - wActuel) / fm.stringWidth(" "));
 
@@ -682,6 +714,4 @@ public class PanelUML extends JPanel
             default: return ' ';
         }
     }
-
-
 }

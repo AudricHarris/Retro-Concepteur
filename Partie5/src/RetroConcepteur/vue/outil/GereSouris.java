@@ -2,7 +2,6 @@ package RetroConcepteur.vue.outil;
 
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.util.ArrayList;
 
 import RetroConcepteur.vue.PanelUML;
 import RetroConcepteur.metier.classe.*;
@@ -39,29 +38,15 @@ public class GereSouris extends MouseAdapter
 	{
 		if (this.classeActuel != null && this.decalage != null)
 		{
-
-			ArrayList<Chemin> listeChemin = this.classeActuel.getListeChemin();
 			int futurX = e.getX() - this.decalage.getX();
 			int futurY = e.getY() - this.decalage.getY();
 
-	
 			this.classeActuel.setX(futurX);
-			for (Chemin chemin : listeChemin)
-			{
-				chemin.updatePoint((chemin.getArrivee().getX() - this.decalage.getX()), chemin.getArrivee().getY() - this.decalage.getY());
-			}
-			
 			this.classeActuel.setY(futurY);
-			for (Chemin chemin : listeChemin)
-			{
-				chemin.updatePoint((chemin.getArrivee().getX() - this.decalage.getX()), chemin.getArrivee().getY() - this.decalage.getY());
-			}
 
 			this.panelUML.repaint();
 		}
 	}
-
-
 
 	public void mouseReleased(MouseEvent e)
 	{
@@ -69,4 +54,3 @@ public class GereSouris extends MouseAdapter
 		this.decalage = null;
 	}
 }
-
