@@ -43,7 +43,8 @@ public class GereSouris extends MouseAdapter
 
 			this.classeActuel.setX(futurX);
 			this.classeActuel.setY(futurY);
-
+			
+			this.panelUML.recalculerChemins();
 			this.panelUML.repaint();
 		}
 	}

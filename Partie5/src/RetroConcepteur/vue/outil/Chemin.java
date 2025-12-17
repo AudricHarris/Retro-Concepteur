@@ -28,10 +28,16 @@ public class Chemin
 		this.type = type;
 		this.parcours = new LinkedList<Point>();
 		this.zoneArrivee = ' ';
-		this.calculerChemin();
+		
 		this.classeDep = classeDep;
 		this.classeArr = classeArr;
-	}
+
+    	if (hashMap != null) 
+        	this.rectangleArrivee = hashMap.get(classeArr);
+
+		this.calculerChemin();
+    }
+	
 
 	public void setIndexLiaison(int index, int total) 
 	{
@@ -109,20 +115,23 @@ public class Chemin
 	public char getZoneArrivee() 			{ return this.zoneArrivee; }
 	public void setZoneArrivee(char zone) 	{ this.zoneArrivee = zone; }
 
-	public void updatePoint(int x, int y)
+	public void updatePoint(Rectangle rectOrigine, int x, int y)
 	{
-		double distDepart  = Math.pow(x - depart.getX(), 2) + Math.pow(y - depart.getY(), 2);
-		double distArrivee = Math.pow(x - arrivee.getX(), 2) + Math.pow(y - arrivee.getY(), 2);
-
-		if (distDepart < distArrivee) {
-			this.depart.setX(x);
-			this.depart.setY(y);
-		} else {
+		// On compare l'identité des objets pour savoir qui appelle
+		if (this.rectangleArrivee != null && rectOrigine == this.rectangleArrivee) 
+		{
 			this.arrivee.setX(x);
 			this.arrivee.setY(y);
+		} 
+		else 
+		{
+			this.depart.setX(x);
+			this.depart.setY(y);
 		}
 		this.calculerChemin();
+		this.calculerChemin();
 	}
+	
 
 	public void setRectangleArrivee(Rectangle rect) { this.rectangleArrivee = rect; }
 	public Rectangle getRectangleArrivee() { return this.rectangleArrivee; }

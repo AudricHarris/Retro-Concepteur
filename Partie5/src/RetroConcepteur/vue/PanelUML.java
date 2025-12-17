@@ -581,7 +581,7 @@ public class PanelUML extends JPanel
         this.recalculerChemins();
     }
 
-	private void recalculerChemins()
+	public void recalculerChemins()
     {
         // 1. Nettoyer les anciennes liaisons des rectangles
         for (Rectangle rect : this.mapClasseRectangle.values()) 
@@ -590,9 +590,6 @@ public class PanelUML extends JPanel
         }
         this.lstChemins.clear();
 
-        // 2. Regrouper les chemins par paire de classes pour gérer les doublons
-        // Clé = "ID_Classe1-ID_Classe2" (trié par ordre alphabétique ou hashCode pour unicité)
-        // Valeur = Liste des chemins entre ces deux classes
         HashMap<String, List<Chemin>> mapGroupes = new HashMap<>();
 
         for (Liaison l : this.lstLiaisons) 

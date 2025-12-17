@@ -133,7 +133,7 @@ public class Rectangle
 					
 					int positionY = (zone == 'H') ? this.y : this.y + this.tailleY;
 
-					chemin.updatePoint(positionX, positionY);
+					chemin.updatePoint(this, positionX, positionY);						
 				}
 			}
 			// Cas Vertical (Gauche / Droite)
@@ -148,7 +148,7 @@ public class Rectangle
 					
 					int positionX = (zone == 'G') ? this.x : this.x + this.tailleX;
 
-					chemin.updatePoint(positionX, positionY);
+					chemin.updatePoint(this, positionX, positionY);				
 				}
 			}
 		}
