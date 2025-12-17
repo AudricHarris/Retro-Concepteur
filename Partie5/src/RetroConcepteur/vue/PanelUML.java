@@ -1,6 +1,8 @@
 package RetroConcepteur.vue;
 
-import javax.swing.*;
+import RetroConcepteur.Controller;
+import RetroConcepteur.metier.classe.*;
+import RetroConcepteur.vue.outil.*;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
@@ -10,11 +12,9 @@ import java.awt.Graphics2D;
 import java.awt.Toolkit;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
-
-import RetroConcepteur.Controller;
-import RetroConcepteur.metier.classe.*;
-import RetroConcepteur.vue.outil.*;
+import javax.swing.*;
 
 public class PanelUML extends JPanel
 {
@@ -156,7 +156,7 @@ public class PanelUML extends JPanel
 		g2.setFont(font);
 		
 		
-		for (Classe classe : this.lstClasse)
+		for (Classe classe : this.lstClasse)	// calcul des dimensions des rectangles
 			this.dessinerClasse(g2, classe);
 		
 		if (!this.positionDeterminee) 
@@ -173,6 +173,11 @@ public class PanelUML extends JPanel
 		}
 
 				
+		
+		
+		for (Classe classe : this.lstClasse)	// Affichage des classes au premier plan
+			this.dessinerClasse(g2, classe);
+			
 		for ( Liaison l : this.lstLiaisons )
 		{
 			for ( Chemin c : this.lstChemins )
@@ -188,15 +193,11 @@ public class PanelUML extends JPanel
 					if ( multiplicite1.equals("1.1")) multiplicite1 = "1";
 					if ( multiplicite2.equals("1.1")) multiplicite2 = "1";
 
-					this.dessinerMultiplicite(g2, c.getDepart(), c.getArrivee(), 
+					this.dessinerMultiplicite(g2, c, 
 											multiplicite1, multiplicite2);
 				}
 			}
 		}
-		
-		for (Classe classe : this.lstClasse)
-			this.dessinerClasse(g2, classe);
-
 		
 	}
 
@@ -322,62 +323,72 @@ public class PanelUML extends JPanel
 		}
 	}
 
-	private void dessinerMultiplicite(Graphics2D g2, Point p1, Point p2, String multiplicite1, String multiplicite2)
-	{
-		FontMetrics fm = g2.getFontMetrics();
-		int width1 = fm.stringWidth(multiplicite1);
-		int width2 = fm.stringWidth(multiplicite2);
-		int height = fm.getHeight();
-		
-		// Calculate the direction vector from p1 to p2
-		int dx = p2.getX() - p1.getX();
-		int dy = p2.getY() - p1.getY();
-		double length = Math.sqrt(dx * dx + dy * dy);
-		
-		if (length < 1) return; // Avoid division by zero
-		
-		// Normalize the direction vector
-		double dirX = dx / length;
-		double dirY = dy / length;
-		
-		// Perpendicular vector (rotated 90 degrees)
-		double perpX = -dirY;
-		double perpY = dirX;
-		
-		// Offset distance from the line
-		int offsetDistance = 15;
-		
-		// Position multiplicite1 near p1
-		// Move slightly along the line and perpendicular to avoid overlap
-		int x1 = p1.getX() + (int)(dirX * 10 + perpX * offsetDistance);
-		int y1 = p1.getY() + (int)(dirY * 10 + perpY * offsetDistance);
-		
-		// Adjust to prevent text going off-screen or overlapping with rectangle
-		if (x1 < 5) x1 = 5;
-		if (y1 < height) y1 = height;
-		
-		// Position multiplicite2 near p2
-		// Move slightly back along the line and perpendicular
-		int x2 = p2.getX() - (int)(dirX * 10 + perpX * offsetDistance);
-		int y2 = p2.getY() - (int)(dirY * 10 + perpY * offsetDistance);
-		
-		// Adjust to prevent text going off-screen
-		if (x2 < 5) x2 = 5;
-		if (y2 < height) y2 = height;
-		
 
-		
-		// Draw multiplicite1
-		if (!multiplicite1.isEmpty())
+	private void dessinerMultiplicite(Graphics2D g2, Chemin chemin, String multDepart, String multArrivee)
+	{
+		LinkedList<Point> points = chemin.getParcours();
+
+		int distClasse = 10; 
+		int distTrait  = 5;  
+
+		if (!multDepart.isEmpty())
 		{
-			g2.setColor(g2.getColor());
-			g2.drawString(multiplicite1, x1, y1);
+			Point pDep = points.getFirst();            // Le point collé à la classe de départ
+			Point pSvt = points.get(1);        // Le point suivant
+
+			int x = pDep.getX();
+			int y = pDep.getY();
+
+			// Si le trait part à l'HORIZONTAL
+			if (pDep.getY() == pSvt.getY())
+			{
+				y -= distTrait; 
+					// Si on part vers la droite 
+				if (pSvt.getX() > pDep.getX()) 
+					x += distClasse;                                     
+				else // Si on part vers la gauche
+					x -= (distClasse + 15); 
+			}                                      
+			else  // Si le trait part à la VERTICALE
+			{
+				x += distTrait;      
+					// Si on part vers le bas
+				if (pSvt.getY() > pDep.getY())  
+					y += (distClasse + 10);                       
+				else  // Si on part vers le haut
+					y -= distClasse;
+			}
+			g2.drawString(multDepart, x, y);
 		}
 
-		if (!multiplicite2.isEmpty())
+		if (!multArrivee.isEmpty())
 		{
-			g2.setColor(g2.getColor());
-			g2.drawString(multiplicite2, x2, y2);
+			Point pArr = points.getLast();             // Le point collé à la classe d'arrivée
+			Point pPrc = points.get(points.size() - 2); // Le point d'avant 
+
+			int x = pArr.getX();
+			int y = pArr.getY();
+
+			// Horizontal
+			if (pArr.getY() == pPrc.getY())
+			{
+				y -= distTrait;
+				// Si on arrive depuis la gauche
+				if (pArr.getX() > pPrc.getX()) 
+					x -= (distClasse + 15);
+				else 
+					x += distClasse;
+			}
+			else // Vertical
+			{
+				x += distTrait;
+				// Si on arrive depuis le haut
+				if (pArr.getY() > pPrc.getY()) 
+					y -= distClasse;
+				else 
+					y += (distClasse + 10);
+			}
+			g2.drawString(multArrivee, x, y);
 		}
 	}
 
