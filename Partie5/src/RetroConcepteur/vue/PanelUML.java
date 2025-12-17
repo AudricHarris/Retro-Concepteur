@@ -65,7 +65,7 @@ public class PanelUML extends JPanel
     {
         this.lstClasse = this.ctrl.getLstClasses();
         this.lstLiaisons = new ArrayList<Liaison>(this.ctrl.getListLiaison());
-        this.mapClasseRectangle = new HashMap<Classe,Rectangle>();
+        this.mapClasseRectangle = new HashMap<Classe,Rectangle>();F
         this.positionDeterminee = false;
         this.lstChemins = new ArrayList<Chemin>();
 
@@ -170,7 +170,6 @@ public class PanelUML extends JPanel
 
         for (Chemin c : this.lstChemins) 
         {
-            System.out.println(c);
             this.dessinerFleche.dessinerLiaison(g2, c);
         }
         
