@@ -1,5 +1,3 @@
-import java.util.ArrayList;
-
 public class Point extends Mois
 {
 
@@ -12,9 +10,8 @@ public class Point extends Mois
 	
 	public Point(String nom, int x, int y) 
 	{
-		
-		this.x = x;
-		this.y = y;
+		super(x,y);
+		this.d = new Disque(null, y);
 	}
 
 	

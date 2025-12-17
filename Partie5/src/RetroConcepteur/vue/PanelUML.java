@@ -62,7 +62,8 @@ public class PanelUML extends JPanel
     public void reinitialiser()
     {
         this.lstClasse = this.ctrl.getLstClasses();
-        this.lstLiaisons = new ArrayList<Liaison>(this.ctrl.getListLiaison());
+        this.lstLiaisons = new ArrayList<Liaison>(this.ctrl.getListLiaisonBinaire());
+
         this.mapClasseRectangle = new HashMap<Classe,Rectangle>();
         this.positionDeterminee = false;
         this.lstChemins = new ArrayList<Chemin>();
@@ -85,12 +86,11 @@ public class PanelUML extends JPanel
             this.mapClasseRectangle.put(c, rect);
 
             
-            // Gestion simple du retour a la ligne si on depasse l'ecran
             x += 350;
             if (x > screenSize.width - 200) 
             { 
                 x = 50;
-                y += 350; // Saut de ligne arbitraire, sera affine dynamiquement si besoin
+                y += 350; 
             }
         }
     }
@@ -600,7 +600,7 @@ public class PanelUML extends JPanel
             
             if (r1 != null && r2 != null) 
             {
-                // Points de départ temporaires (centres)
+                // Points de départ (centres)
                 Point p1 = new Point(r1.getCentreX(), r1.getCentreY());
                 Point p2 = new Point(r2.getCentreX(), r2.getCentreY());
                 
@@ -613,47 +613,42 @@ public class PanelUML extends JPanel
                 
                 r1.addPos(zone, chemin);
                 r2.addPos(zoneInv, chemin);
-
-                r1.repartirPointsLiaison(zone);
+				
+				// Pour que les points d'encrage ne se confondent pas
+				r1.repartirPointsLiaison(zone); 
                 r2.repartirPointsLiaison(zoneInv);
                 
                 chemin.setRectangleArrivee(r2);
 
-					// --- SIMPLIFICATION : GESTION DU REGROUPEMENT ---
-				// On récupère juste les noms
 				String nom1 = l.getFromClass().getNom();
 				String nom2 = l.getToClass().getNom();
 
 				// On crée une clé unique en mettant les noms par ordre alphabétique
-				// Ex: que ce soit "Chien"->"Chat" ou "Chat"->"Chien", la clé sera "Chat-Chien"
-				String key;
-				if (nom1.compareTo(nom2) < 0) {
-					key = nom1 + "-" + nom2;
-				} else {
-					key = nom2 + "-" + nom1;
-				}
-
+				String cle;
+				if (nom1.compareTo(nom2) < 0) 
+					cle = nom1 + "-" + nom2;
+				else
+					cle = nom2 + "-" + nom1;
+				
 				// On ajoute ce chemin au groupe correspondant
-				if (!mapGroupes.containsKey(key)) {
-					mapGroupes.put(key, new ArrayList<Chemin>());
-				}
-				mapGroupes.get(key).add(chemin);
+				if (!mapGroupes.containsKey(cle)) 
+					mapGroupes.put(cle, new ArrayList<Chemin>());
+				
+				mapGroupes.get(cle).add(chemin);
 
 				this.lstChemins.add(chemin);
         	}
    	 	}
 
-    // 3. Appliquer les décalages (Inchangé)
+        //Appliquer les décalages
 		for (List<Chemin> groupe : mapGroupes.values()) 
 		{
 			int total = groupe.size();
 			for (int i = 0; i < total; i++) 
 			{
 				Chemin c = groupe.get(i);
-				// On dit au chemin : "Tu es le numéro i sur un total de x flèches"
-				// Le chemin calculera son décalage tout seul grâce à ça.
+				// On donne un numero a chaque chemins
 				c.setIndexLiaison(i, total); 
-				c.updateChemin();
 			}
     	}
     }

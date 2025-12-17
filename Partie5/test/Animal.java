@@ -1,4 +1,3 @@
-// Fichier : Animal.java
 public class Animal implements IAnimal
 {
     
@@ -39,5 +38,11 @@ public class Animal implements IAnimal
     public void manger() {
         // TODO Auto-generated method stub
         throw new UnsupportedOperationException("Unimplemented method 'manger'");
+    }
+
+    @Override
+    public int age() {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'age'");
     }
 }

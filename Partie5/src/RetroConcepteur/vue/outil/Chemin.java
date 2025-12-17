@@ -75,27 +75,26 @@ public class Chemin
 		int decalage = 0;
 		if (this.totalLiaisons > 1) 
 		{
-			decalage = ((this.indexLiaison - (this.totalLiaisons - 1) / 2) * 20);
+			int numeroMilieu = (this.totalLiaisons - 1) / 2;
+			int placesDeDifference = this.indexLiaison - numeroMilieu;
+			decalage = placesDeDifference * 20;
 		}
 
 		if (horizontalDominant)
 		{
-			// On décale le "xMilieu" pour que les traits verticaux ne se superposent pas
 			int xMilieu = x1 + dx / 2 + decalage;
 			this.parcours.add(new Point(xMilieu, y1));
 			this.parcours.add(new Point(xMilieu, y2));
 		}
 		else
 		{
-			// On décale le "yMilieu" pour que les traits horizontaux ne se superposent pas
+			
 			int yMilieu = y1 + dy / 2 + decalage;
 			this.parcours.add(new Point(x1, yMilieu));
 			this.parcours.add(new Point(x2, yMilieu));
 		}
 		this.parcours.add(this.arrivee);
 	}
-	
-	// ... (Le reste des méthodes getters/setters reste inchangé) ...
 	
 	public void recalculer(Point nouveauDepart, Point nouvelleArrivee)
 	{
@@ -104,8 +103,8 @@ public class Chemin
 		this.calculerChemin();
 	}
 	
-	public Point getDepart() { return this.depart; }
-	public Point getArrivee() { return this.arrivee; }
+	public Point  getDepart() 	 { return this.depart;    }
+	public Point  getArrivee()   { return this.arrivee;   }
 	public Classe getClasseDep() { return this.classeDep; }
 	public Classe getClasseArr() { return this.classeArr; }
 	
@@ -117,7 +116,6 @@ public class Chemin
 
 	public void updatePoint(Rectangle rectOrigine, int x, int y)
 	{
-		// On compare l'identité des objets pour savoir qui appelle
 		if (this.rectangleArrivee != null && rectOrigine == this.rectangleArrivee) 
 		{
 			this.arrivee.setX(x);

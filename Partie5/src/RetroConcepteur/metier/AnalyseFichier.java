@@ -60,42 +60,49 @@ public class AnalyseFichier
 	}
 
 	/**
-	 * Retourne la liste de tout les liaison bi-directionelle
-	 * @return lstBinaire la liste des liaison binaire
+	 * Retourne la liste des liaisons optimisée pour l'affichage.
+	 * Les liaisons bidirectionnelles (A->B et B->A) sont fusionnées en une seule (A<->B).
+	 * Les liaisons simples sont conservées.
 	 */
 	public List<Liaison> getListLiaisonBinaire()
 	{
-		HashMap<Classe, Liaison> lstBinaire = new HashMap<Classe, Liaison>();
-		
+		List<Liaison> lstFinale = new ArrayList<>();
+		List<Liaison> aIgnorer = new ArrayList<>(); // Pour stocker les doublons inverses à ne pas ajouter
+
 		for (Liaison l : this.lstLiaisons)
 		{
-			if (l.estBidirectionel() && !lstBinaire.containsKey(l.getToClass()) &&
-				!lstBinaire.containsKey(l.getFromClass()))
-			{
-				lstBinaire.put(l.getToClass(), l);
-			}
-			else
-			{
-				if (l.estBidirectionel()) 
-				{
-					Liaison liaisonBinaire;
+			if (aIgnorer.contains(l)) continue;
 
-					if (lstBinaire.get(l.getToClass()) != null)
+			if (l.estBidirectionel())
+			{
+				Liaison inverse = null;
+				for (Liaison candidate : this.lstLiaisons) 
+				{
+					if (candidate != l && 
+						candidate.getFromClass() == l.getToClass() && 
+						candidate.getToClass() == l.getFromClass()) 
 					{
-						liaisonBinaire = lstBinaire.get(l.getToClass());
-						liaisonBinaire.setFromMultiplicte( l.getFromMultiplicity());
-					}
-					
-					if (lstBinaire.get(l.getFromClass()) != null)
-					{
-						liaisonBinaire = lstBinaire.get(l.getFromClass());
-						liaisonBinaire.setFromMultiplicte(l.getToMultiplicity());
+						inverse = candidate;
+						break;
 					}
 				}
-			}
-		}
 
-		return new ArrayList<Liaison>(lstBinaire.values());
+				if (inverse != null) 
+				{
+					l.setFromMultiplicte(inverse.getToMultiplicity());
+					
+					lstFinale.add(l);
+					aIgnorer.add(inverse); 
+				}
+				else
+					lstFinale.add(l);
+				
+			}
+			else
+				lstFinale.add(l);
+			
+		}
+		return lstFinale;
 	}
 
 	/**

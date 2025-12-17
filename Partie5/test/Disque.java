@@ -1,6 +1,4 @@
-import RetroConcepteur.vue.outil.Point;
 
-import java.util.ArrayList;
 
 public class Disque 
 {
