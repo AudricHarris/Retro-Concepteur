@@ -143,7 +143,7 @@ public class AnalyseFichier
 
 			for (String file : allFiles)
 			{
-				String nomClasse = file.substring(file.lastIndexOf("/") + 1,
+				String nomClasse = file.substring(file.lastIndexOf(File.separator) + 1,
 				                                    file.lastIndexOf("."));
 
 				this.lstClass.add(new Classe(nomClasse));
