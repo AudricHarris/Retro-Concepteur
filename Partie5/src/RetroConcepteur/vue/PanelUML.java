@@ -127,8 +127,9 @@ public class PanelUML extends JPanel
 
                 Chemin chemin = new Chemin(p1, p2, l.getType(), this.mapClasseRectangle, l.getFromClass(), l.getToClass());
                 char zone = this.getZone(r1, r2);
-                r1.addPos(zone, chemin);
                 char zoneInv = zoneInverse(zone);
+                chemin.setZoneArrivee(zoneInv);
+                r1.addPos(zone, chemin);
                 r2.addPos(zoneInv, chemin);
 
                 r1.repartirPointsLiaison(zone);
@@ -151,11 +152,11 @@ public class PanelUML extends JPanel
         super.paintComponent(g);
         Graphics2D g2 = (Graphics2D) g;
         
-        // Configuration globale de la police
+        
         Font font = new Font("SansSerif", Font.PLAIN, 12);
         g2.setFont(font);
         
-        // 1. D'abord on dessine et calcule la taille de toutes les classes
+        
         for (Classe classe : this.lstClasse)
             this.dessinerClasse(g2, classe);
         
@@ -167,17 +168,38 @@ public class PanelUML extends JPanel
 			return;
 		}
 
-        // 2. On recalcule et trace les fleches pointant vers les centres (mise à jour dynamique)
+        
         this.recalculerChemins();
         for (Chemin c : this.lstChemins) 
         {
-            // On dessine directement le chemin intelligent calculé plus tôt
-            this.dessinerFleche.dessinerLiaison(g2, c);
+            
+            this.dessinerFleche.dessinerLiaison(g2, c);            
         }
         
-        // 3. Ensuite on redessine les classes au dessus des flèches
-        for (Classe classe : this.lstClasse)
-            this.dessinerClasse(g2, classe);
+		for (Classe classe : this.lstClasse)
+			this.dessinerClasse(g2, classe);
+
+				
+		for ( Liaison l : this.lstLiaisons )
+		{
+			for ( Chemin c : this.lstChemins )
+			{
+				if ( l.getFromClass() == c.getClasseDep() && l.getToClass() == c.getClasseArr() )
+				{
+					String multiplicite1 = l.getToMultiplicity().getBorneInf()+"."+l.getToMultiplicity().getBorneSup();
+					String multiplicite2 = l.getFromMultiplicity().getBorneInf()+"."+l.getFromMultiplicity().getBorneSup();
+
+					if ( multiplicite1.equals(".") ) multiplicite1 = "";
+					if ( multiplicite2.equals(".") ) multiplicite2 = "";
+
+					if ( multiplicite1.equals("1.1")) multiplicite1 = "1";
+					if ( multiplicite2.equals("1.1")) multiplicite2 = "1";
+
+					this.dessinerMultiplicite(	g2, c.getDepart(), c.getArrivee(), 
+												multiplicite1, multiplicite2       );
+					}
+				}
+		}
     }
 
     // =========================================================================
@@ -296,20 +318,36 @@ public class PanelUML extends JPanel
             Point pDepart = this.calculerPointBord(r1, r2);
             Point pArrivee = this.calculerPointBord(r2, r1);
 
-            //this.dessinerMultiplicite(pDepart, pArrivee, multiplicite1, multiplicite2);
-
             this.dessinerFleche.dessinerLiaison(g2,new Chemin( pDepart, pArrivee, l.getType(),
 												 this.mapClasseRectangle, l.getFromClass(), l.getToClass() )
                                 );
-            String multiplicite1;
-            String multiplicite2;
         }
     }
 
-    private void dessinerMultiplicite(Point p1, Point p2, String multiplicite1, String multiplicite2 )
+    private void dessinerMultiplicite(Graphics2D g2, Point p1, Point p2, String multiplicite1, String multiplicite2 )
     {
-        
-    }
+		int decalageX1 = -10;
+		int decalageX2 = 10;
+
+		int decalageY1 = -10;
+		int decalageY2 = 10;
+
+		if ( p1.getX() < p2.getX() ) 
+		{
+			decalageX1 = 10;
+			decalageX2 = -10;
+		}
+
+		if ( p1.getY() < p2.getY() ) 
+		{
+			decalageY1 = 10;
+			decalageY2 = -10;
+		}
+
+
+        g2.drawString(multiplicite1, p1.getX()+decalageX1, p1.getY()+decalageY1);
+		g2.drawString(multiplicite2, p2.getX()+decalageX1, p2.getY()+decalageY2);
+	}
 
     /**
      * Calcule le point d'intersection entre le segment reliant les centres et le bord du rectangle source.
@@ -546,13 +584,15 @@ public class PanelUML extends JPanel
 				
 				Chemin chemin = new Chemin(p1, p2, l.getType(),this.mapClasseRectangle,l.getFromClass(), l.getToClass() );
 				char zone = this.getZone(r1, r2);
-				r1.addPos(zone, chemin);
 				char zoneInv = zoneInverse(zone);
+				chemin.setZoneArrivee(zoneInv);
+				r1.addPos(zone, chemin);
 				r2.addPos(zoneInv, chemin);
 
                 r1.repartirPointsLiaison(zone);
                 r2.repartirPointsLiaison(zoneInv);
 				
+				chemin.setRectangleArrivee(r2);
 				this.lstChemins.add(chemin);
 			}
 		}

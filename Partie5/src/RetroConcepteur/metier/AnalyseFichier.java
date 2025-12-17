@@ -478,12 +478,8 @@ public class AnalyseFichier
 		{
 			for (File f : list)
 			{
-				if (f.isDirectory())
-				{
-					listeRepertoire(f, allFiles);
-				}
-				else
-				{
+				if (! f.isDirectory())
+				{				
 					String currentFilePath = f.getAbsolutePath();
 					int lastDotIndex = currentFilePath.lastIndexOf('.');
 					if (lastDotIndex > 0 && currentFilePath.substring(lastDotIndex + 1).equals("java"))

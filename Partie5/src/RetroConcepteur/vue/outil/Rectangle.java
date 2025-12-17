@@ -59,6 +59,17 @@ public class Rectangle
 		return this.y;
 	}
 
+	public ArrayList<Chemin> getListeChemin()
+	{
+		ArrayList<Chemin> liste = new ArrayList<Chemin>();
+		for (ArrayList<Chemin> lst : this.hashPosPrises.values())
+		{
+			liste.addAll(lst);
+		}
+		return liste;
+	}
+
+
 	public void deplacerX(int x)
 	{
 		this.x += x;

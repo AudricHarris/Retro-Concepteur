@@ -2,6 +2,7 @@ package RetroConcepteur.vue.outil;
 
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.util.ArrayList;
 
 import RetroConcepteur.vue.PanelUML;
 import RetroConcepteur.metier.classe.*;
@@ -38,43 +39,26 @@ public class GereSouris extends MouseAdapter
 	{
 		if (this.classeActuel != null && this.decalage != null)
 		{
+
+			ArrayList<Chemin> listeChemin = this.classeActuel.getListeChemin();
 			int futurX = e.getX() - this.decalage.getX();
 			int futurY = e.getY() - this.decalage.getY();
 
+	
+			this.classeActuel.setX(futurX);
+			for (Chemin chemin : listeChemin)
+			{
+				chemin.updatePoint((chemin.getArrivee().getX() - this.decalage.getX()), chemin.getArrivee().getY() - this.decalage.getY());
+			}
 			
-			if ( ! collision( futurX, this.classeActuel.getY() ) )
-				this.classeActuel.setX(futurX);
-
-			
-			if ( ! collision( this.classeActuel.getX(), futurY ) )
-				this.classeActuel.setY(futurY);
+			this.classeActuel.setY(futurY);
+			for (Chemin chemin : listeChemin)
+			{
+				chemin.updatePoint((chemin.getArrivee().getX() - this.decalage.getX()), chemin.getArrivee().getY() - this.decalage.getY());
+			}
 
 			this.panelUML.repaint();
 		}
-	}
-
-
-
-	private boolean collision(int x1, int y1)
-	{
-		int largeur = this.classeActuel.getTailleX();
-		int hauteur = this.classeActuel.getTailleY();
-
-		for (Rectangle rect : this.panelUML.getMap().values())
-		{
-			if (rect == this.classeActuel) continue;
-
-			int x2 = rect.getX();
-			int y2 = rect.getY();
-			int autreLargeur = rect.getTailleX();
-			int autreHauteur = rect.getTailleY();
-
-			if ( ! (x1 + largeur <= x2-5 || x1 >= x2 + autreLargeur+5      ||
-				y1 + hauteur <= y2-5     || y1 >= y2 + autreHauteur+5         ) )
-				return true;
-		}
-
-		return false;
 	}
 
 

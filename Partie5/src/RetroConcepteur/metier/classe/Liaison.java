@@ -85,7 +85,6 @@ public class Liaison
 			this.toMultiplicity = new Multiplicite("1", "1"); // Défaut
 			this.fromMultiplicity = new Multiplicite("0", "*");
 
-			// Logique existante pour les paramètres du constructeur
 			Methode constructeur = classe1.getLstMethode().size() >= 1 ? classe1.getLstMethode().get(0) : null;
 			List<Parametre> params = constructeur != null ? constructeur.getLstParam() : new ArrayList<Parametre>();
 

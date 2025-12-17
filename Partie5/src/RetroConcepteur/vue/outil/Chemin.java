@@ -11,14 +11,22 @@ public class Chemin
 	private Point arrivee;
 	private LinkedList<Point> parcours;
 	private String type;
+
+	private Classe classeDep;
+	private Classe classeArr;
+	private char zoneArrivee;
+	private Rectangle rectangleArrivee;
 	
-	public Chemin(Point depart, Point arrivee, String type, HashMap<Classe,Rectangle> hashMap, Classe dep, Classe arriv)
+	public Chemin(Point depart, Point arrivee, String type, HashMap<Classe,Rectangle> hashMap, Classe classeDep, Classe classeArr)
 	{
 		this.depart = depart;
 		this.arrivee = arrivee;
 		this.type = type;
 		this.parcours = new LinkedList<Point>();
 		this.calculerChemin();
+		this.classeDep = classeDep;
+		this.classeArr = classeArr;
+		this.zoneArrivee = ' ';
 	}
 	
 	private void calculerChemin()
@@ -63,6 +71,9 @@ public class Chemin
 	{
 		return this.arrivee;
 	}
+
+	public Classe getClasseDep() { return this.classeDep; }
+	public Classe getClasseArr() { return this.classeArr; }
 	
 	public LinkedList<Point> getParcours()
 	{
@@ -77,6 +88,16 @@ public class Chemin
 	public void setType(String type)
 	{
 		this.type = type;
+	}
+
+	public char getZoneArrivee()
+	{
+		return this.zoneArrivee;
+	}
+
+	public void setZoneArrivee(char zone)
+	{
+		this.zoneArrivee = zone;
 	}
 
 	public void updatePoint(int x, int y)
@@ -97,5 +118,15 @@ public class Chemin
 		}
 		
 		this.calculerChemin();
+	}
+
+	public void setRectangleArrivee(Rectangle rect)
+	{
+	    this.rectangleArrivee = rect;
+	}
+
+	public Rectangle getRectangleArrivee()
+	{
+	    return this.rectangleArrivee;
 	}
 }

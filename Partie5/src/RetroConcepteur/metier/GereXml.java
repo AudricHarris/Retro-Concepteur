@@ -36,124 +36,89 @@ public class GereXml
 									  HashMap<Classe, Rectangle> mapRect,
 									  List<Liaison> lstLiaisons)
 	{
+		//variable
+		DocumentBuilderFactory docFac;
+		DocumentBuilder docConstru;
+		Document doc;
+
+		//element Racine
+		Element elmRacine;
+
+		//sous element -> ajouter dans racine
+		Element classeElm;
+		Element attributElm;
+		Element methodeElm;
+		Element paramsElm;
+
+		//sous-sous element -> ajouter dans leur sous-element respectif
+
+		Element metElm;
+		Element prmElm;
+
+		Rectangle r;
+
 		try
 		{
-			DocumentBuilderFactory docFactory = DocumentBuilderFactory.newInstance();
-			DocumentBuilder docBuilder = docFactory.newDocumentBuilder();
+			docFac = DocumentBuilderFactory.newInstance();
+			docConstru = docFac.newDocumentBuilder();
 
-			Document doc = docBuilder.newDocument();
-			Element rootElement = doc.createElement("Diagramme");
-			doc.appendChild(rootElement);
+			doc = docConstru.newDocument();
+			elmRacine = doc.createElement("Diagramme");
+			doc.appendChild(elmRacine);
 
 			for (Classe c : lstClasses)
 			{
-				Element classEl = doc.createElement("Classe");
-				classEl.setAttribute("nom", c.getNom());
-				classEl.setAttribute("isAbstract", Boolean.toString(c.isAbstract()));
-				classEl.setAttribute("isInterface", Boolean.toString(c.isInterface()));
+				classeElm = doc.createElement("Classe");
+
+				classeElm.setAttribute("nom", c.getNom());
+				classeElm.setAttribute("isAbstract", Boolean.toString(c.isAbstract()));
+				classeElm.setAttribute("isInterface", Boolean.toString(c.isInterface()));
+
 				if (c.getNomHeritageClasse() != null)
-					classEl.setAttribute("extends", c.getNomHeritageClasse());
+					classeElm.setAttribute("extends", c.getNomHeritageClasse());
+
 				// gere interfaces
 				if (c.getLstInterfaces() != null && !c.getLstInterfaces().isEmpty())
 				{
-					Element interfacesEl = doc.createElement("Interfaces");
-					for (String inter : c.getLstInterfaces())
-					{
-						Element iEl = doc.createElement("Interface");
-						iEl.setAttribute("nom", inter);
-						interfacesEl.appendChild(iEl);
-					}
-					classEl.appendChild(interfacesEl);
+					classeElm.appendChild(GereXml.classeInterface(doc,c));
 				}
 
-				Rectangle r = mapRect.get(c);
+				r = mapRect.get(c);
 				if (r != null) 
 				{
-					classEl.setAttribute("x", Integer.toString(r.getX()));
-					classEl.setAttribute("y", Integer.toString(r.getY()));
-					classEl.setAttribute("width", Integer.toString(r.getTailleX()));
-					classEl.setAttribute("height", Integer.toString(r.getTailleY()));
+					classeElm.setAttribute("x", Integer.toString(r.getX()));
+					classeElm.setAttribute("y", Integer.toString(r.getY()));
+					classeElm.setAttribute("largeur", Integer.toString(r.getTailleX()));
+					classeElm.setAttribute("hauteur", Integer.toString(r.getTailleY()));
 				}
 
 				// gere Attributs
-				Element attsEl = doc.createElement("Attributs");
+				attributElm = doc.createElement("Attributs");
 				for (Attribut a : c.getLstAttribut()) 
 				{
-					Element attEl = doc.createElement("Attribut");
-					attEl.setAttribute("nom", a.getNom());
-					attEl.setAttribute("type", a.getType());
-					attEl.setAttribute("visibilite", a.getVisibilite() == null ? "" : a.getVisibilite());
-					attEl.setAttribute("constante", Boolean.toString(a.isConstante()));
-					attEl.setAttribute("static", Boolean.toString(a.isStatic()));
-					attsEl.appendChild(attEl);
+					attributElm.appendChild(GereXml.classeAttribut(doc, a));
 				}
-				classEl.appendChild(attsEl);
+				classeElm.appendChild(attributElm);
 
 				// gere Methodes
-				Element methsEl = doc.createElement("Methodes");
-				for (Methode m : c.getLstMethode()) {
-					Element mEl = doc.createElement("Methode");
-					mEl.setAttribute("nom", m.getNom());
-					mEl.setAttribute("type", m.getType());
-					mEl.setAttribute("visibilite", m.getVisibilite() == null ? "" : m.getVisibilite());
-					mEl.setAttribute("static", Boolean.toString(m.isStatic()));
-
-					// gere Parametres
-					Element paramsEl = doc.createElement("Parametres");
-					for (Parametre p : m.getLstParam()) 
-					{
-						Element pEl = doc.createElement("Parametre");
-						pEl.setAttribute("nom", p.getNom());
-						pEl.setAttribute("type", p.getType());
-						paramsEl.appendChild(pEl);
-					}
-					mEl.appendChild(paramsEl);
-
-					methsEl.appendChild(mEl);
+				methodeElm = doc.createElement("Methodes");
+				for (Methode m : c.getLstMethode()) 
+				{
+					methodeElm.appendChild(GereXml.classeMethode(doc, m));
 				}
-				classEl.appendChild(methsEl);
+				classeElm.appendChild(methodeElm);
 
-
-				rootElement.appendChild(classEl);
+				elmRacine.appendChild(classeElm);
 			}
 
-				// Sauvegarde des liaisons si fournies
-				if (lstLiaisons != null && !lstLiaisons.isEmpty())
-				{
-					Element liaisonsEl = doc.createElement("Liaisons");
-					for (Liaison l : lstLiaisons)
-					{
-						Element lEl = doc.createElement("Liaison");
-						lEl.setAttribute("from", l.getFromClass().getNom());
-						lEl.setAttribute("to", l.getToClass().getNom());
-						lEl.setAttribute("type", l.getType());
-						lEl.setAttribute("nomVar", l.getNomVar() == null ? "" : l.getNomVar());
-						// multiplicites
-						if (l.getFromMultiplicity() != null)
-						{
-							lEl.setAttribute("fromMin", l.getFromMultiplicity().getBorneInf());
-							lEl.setAttribute("fromMax", l.getFromMultiplicity().getBorneSup());
-						}
-						if (l.getToMultiplicity() != null)
-						{
-							lEl.setAttribute("toMin", l.getToMultiplicity().getBorneInf());
-							lEl.setAttribute("toMax", l.getToMultiplicity().getBorneSup());
-						}
-						liaisonsEl.appendChild(lEl);
-					}
-					rootElement.appendChild(liaisonsEl);
-				}
+			// Sauvegarde des liaisons si fournies
+			if (lstLiaisons != null && !lstLiaisons.isEmpty())
+			{
+				elmRacine.appendChild(sauvegarderLiaison(doc,lstLiaisons));
+			}
 
 			// ecrit dans doc xml
-			TransformerFactory transformerFactory = TransformerFactory.newInstance();
-			Transformer transformer = transformerFactory.newTransformer();
-			transformer.setOutputProperty(OutputKeys.INDENT, "yes");
-			transformer.setOutputProperty("{http://xml.apache.org/xslt}indent-amount", "2");
-			DOMSource source = new DOMSource(doc);
-			StreamResult result = new StreamResult(new File(chemin));
-
-			transformer.transform(source, result);
-
+			GereXml.ecritXml(doc,chemin);
 		} 
 		catch (Exception e)
 		{
@@ -162,85 +127,271 @@ public class GereXml
 		}
 	}
 
+	public static Element classeMethode(Document doc, Methode m)
+	{
+		Element paramsElm;
+
+		Element metElm;
+		Element prmElm;
+
+		metElm = doc.createElement("Methode");
+
+		metElm.setAttribute("nom", m.getNom());
+		metElm.setAttribute("type", m.getType());
+		metElm.setAttribute("visibilite", m.getVisibilite() == null ? "" : m.getVisibilite());
+		metElm.setAttribute("static", Boolean.toString(m.isStatic()));
+
+		// gere Parametres
+		paramsElm = doc.createElement("Parametres");
+		for (Parametre p : m.getLstParam()) 
+		{
+			prmElm = doc.createElement("Parametre");
+
+			prmElm.setAttribute("nom", p.getNom());
+			prmElm.setAttribute("type", p.getType());
+
+			paramsElm.appendChild(prmElm);
+		}
+		metElm.appendChild(paramsElm);
+
+		return metElm;
+	}
+
+	public static Element classeAttribut(Document doc, Attribut a)
+	{
+		Element attElm;
+
+		attElm = doc.createElement("Attribut");
+
+		attElm.setAttribute("nom", a.getNom());
+		attElm.setAttribute("type", a.getType());
+		attElm.setAttribute("visibilite", a.getVisibilite() == null ? "" : a.getVisibilite());
+		attElm.setAttribute("constante", Boolean.toString(a.isConstante()));
+		attElm.setAttribute("static", Boolean.toString(a.isStatic()));
+
+		return attElm;
+	}
+
+	public static Element classeInterface(Document doc, Classe c)
+	{
+		Element interfaceElm;
+		Element interElm;
+
+		interfaceElm = doc.createElement("Interfaces");
+		for (String inter : c.getLstInterfaces())
+		{
+			interElm = doc.createElement("Interface");
+
+			interElm.setAttribute("nom", inter);
+
+			interfaceElm.appendChild(interElm);
+		}
+		return interfaceElm;
+	}
+
+	public static Element sauvegarderLiaison(Document doc,List<Liaison>lstLiaisons)
+	{
+		Element liaisonsElm;
+		Element lienElm;
+
+		liaisonsElm = doc.createElement("Liaisons");
+		for (Liaison l : lstLiaisons)
+		{
+			lienElm = doc.createElement("Liaison");
+
+			lienElm.setAttribute("from", l.getFromClass().getNom());
+			lienElm.setAttribute("to", l.getToClass().getNom());
+			lienElm.setAttribute("type", l.getType());
+			lienElm.setAttribute("nomVar", l.getNomVar() == null ? "" : l.getNomVar());
+
+			if (l.getFromMultiplicity() != null)
+			{
+				lienElm.setAttribute("fromMin", l.getFromMultiplicity().getBorneInf());
+				lienElm.setAttribute("fromMax", l.getFromMultiplicity().getBorneSup());
+			}
+			if (l.getToMultiplicity() != null)
+			{
+				lienElm.setAttribute("toMin", l.getToMultiplicity().getBorneInf());
+				lienElm.setAttribute("toMax", l.getToMultiplicity().getBorneSup());
+			}
+			liaisonsElm.appendChild(lienElm);
+		}
+		return liaisonsElm;
+	}
+
+	public static void ecritXml(Document doc, String chemin)
+	{
+		TransformerFactory transformerFactory;
+		Transformer transformer;
+
+		DOMSource source;
+
+		StreamResult result;
+
+		try 
+		{
+			transformerFactory = TransformerFactory.newInstance();
+			transformer = transformerFactory.newTransformer();
+			transformer.setOutputProperty(OutputKeys.INDENT, "yes");
+			transformer.setOutputProperty("{http://xml.apache.org/xslt}indent-amount", "2");
+			source = new DOMSource(doc);
+			result = new StreamResult(new File(chemin));
+
+			transformer.transform(source, result);
+		} 
+		catch (Exception e) 
+		{
+			e.printStackTrace();
+			throw new RuntimeException("Erreur lors de la sauvegarde XML : " + e.getMessage());
+		}
+	}
+	
+
+	/////////////////////////////////////////////////
+	/////////Chargement//////////////////////////////
+	////////////////////////////////////////////////
+
 	public static ArrayList<Classe> chargerClassesXml(String chemin)
 	{
+		File fichierXml;
+		DocumentBuilderFactory docFact;
+		DocumentBuilder docConstru;
+		Document doc;
+
+		NodeList lstNoeux;
+		Node noeux;
+
+		ArrayList<Classe> classes;
+
+		String sAbstract;
+		String sInterface;
+		String sExtends;
+
+		Element elm;
+		String nom;
+		Classe c;
+
+		NodeList interfacesNodes;
+		Node in;
+								
+		Element interElm;
+		String iname;
+
+		NodeList atts;
+		Node attNode;
+
+		Element aEl;
+
+		String anom;
+		String atype;
+		String avis;
+		boolean aconst;
+		boolean astatic;
+
+		NodeList meths;
+
+		Node mNode;
+
+		Element mEl;
+	
+		String mnom;
+		String mtype;
+		String mvis;
+		boolean mstatic;
+
+		ArrayList<Parametre> params;
+		NodeList paramsList;
+
+		Node pNode;
+
+		Element prmElm;
+		String pnom;
+		String ptype;
+
 		try
 		{
-			File fXmlFile = new File(chemin);
-			DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
-			DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
-			Document doc = dBuilder.parse(fXmlFile);
+			fichierXml = new File(chemin);
+			docFact = DocumentBuilderFactory.newInstance();
+			docConstru = docFact.newDocumentBuilder();
+			doc = docConstru.parse(fichierXml);
 			doc.getDocumentElement().normalize();
 
-			NodeList nList = doc.getElementsByTagName("Classe");
-			ArrayList<Classe> classes = new ArrayList<Classe>();
+			lstNoeux = doc.getElementsByTagName("Classe");
+			classes = new ArrayList<Classe>();
 
-			for (int i = 0; i < nList.getLength(); i++)
+			for (int i = 0; i < lstNoeux.getLength(); i++)
 			{
-				Node node = nList.item(i);
-				if (node.getNodeType() == Node.ELEMENT_NODE)
+				noeux = lstNoeux.item(i);
+				if (noeux.getNodeType() == Node.ELEMENT_NODE)
 				{
-					Element eElement = (Element) node;
-					String nom = eElement.getAttribute("nom");
-					Classe c = new Classe(nom);
+					elm = (Element) noeux;
+					nom = elm.getAttribute("nom");
+					c = new Classe(nom);
 
-					String sAbstract = eElement.getAttribute("isAbstract");
-					if (sAbstract != null && !sAbstract.isEmpty()) c.setIsAbstract(Boolean.parseBoolean(sAbstract));
-					String sInterface = eElement.getAttribute("isInterface");
-					if (sInterface != null && !sInterface.isEmpty()) c.setIsInterface(Boolean.parseBoolean(sInterface));
-					String sExtends = eElement.getAttribute("extends");
-					if (sExtends != null && !sExtends.isEmpty()) c.setNomHeritageClasse(sExtends);
+					sAbstract = elm.getAttribute("isAbstract");
+					if (sAbstract != null && !sAbstract.isEmpty()) 
+						c.setIsAbstract(Boolean.parseBoolean(sAbstract));
 
-					NodeList interfacesNodes = eElement.getElementsByTagName("Interface");
-					for (int ii = 0; ii < interfacesNodes.getLength(); ii++) 
+					sInterface = elm.getAttribute("isInterface");
+					if (sInterface != null && !sInterface.isEmpty()) 
+						c.setIsInterface(Boolean.parseBoolean(sInterface));
+					
+					sExtends = elm.getAttribute("extends");
+					if (sExtends != null && !sExtends.isEmpty()) 
+						c.setNomHeritageClasse(sExtends);
+
+					interfacesNodes = elm.getElementsByTagName("Interface");
+
+					for (int cpt = 0; cpt < interfacesNodes.getLength(); cpt++) 
 					{
-						Node in = interfacesNodes.item(ii);
+						in = interfacesNodes.item(cpt);
 						if (in.getNodeType() == Node.ELEMENT_NODE) 
 						{
-							Element iEl = (Element) in;
-							String iname = iEl.getAttribute("nom");
-							if (iname != null && !iname.isEmpty()) c.ajouterInterface(iname);
+							interElm = (Element) in;
+							iname = interElm.getAttribute("nom");
+							if (iname != null && !iname.isEmpty()) 
+								c.ajouterInterface(iname);
 						}
 					}
 
-					NodeList atts = eElement.getElementsByTagName("Attribut");
+					atts = elm.getElementsByTagName("Attribut");
 					for (int j = 0; j < atts.getLength(); j++)
 					{
-						Node attNode = atts.item(j);
+						attNode = atts.item(j);
 						if (attNode.getNodeType() == Node.ELEMENT_NODE)
 						{
-							Element aEl = (Element) attNode;
-							String anom = aEl.getAttribute("nom");
-							String atype = aEl.getAttribute("type");
-							String avis = aEl.getAttribute("visibilite");
-							boolean aconst = Boolean.parseBoolean(aEl.getAttribute("constante"));
-							boolean astatic = Boolean.parseBoolean(aEl.getAttribute("static"));
+							aEl = (Element) attNode;
+							anom = aEl.getAttribute("nom");
+							atype = aEl.getAttribute("type");
+							avis = aEl.getAttribute("visibilite");
+							aconst = Boolean.parseBoolean(aEl.getAttribute("constante"));
+							astatic = Boolean.parseBoolean(aEl.getAttribute("static"));
 							c.ajouterAttribut(anom, aconst, atype, avis, astatic);
 						}
 					}
 
-					NodeList meths = eElement.getElementsByTagName("Methode");
+					meths = elm.getElementsByTagName("Methode");
 					for (int j = 0; j < meths.getLength(); j++)
 					{
-						Node mNode = meths.item(j);
+						mNode = meths.item(j);
 						if (mNode.getNodeType() == Node.ELEMENT_NODE)
 						{
-							Element mEl = (Element) mNode;
-							String mnom = mEl.getAttribute("nom");
-							String mtype = mEl.getAttribute("type");
-							String mvis = mEl.getAttribute("visibilite");
-							boolean mstatic = Boolean.parseBoolean(mEl.getAttribute("static"));
+							mEl = (Element) mNode;
+							mnom = mEl.getAttribute("nom");
+							mtype = mEl.getAttribute("type");
+							mvis = mEl.getAttribute("visibilite");
+							mstatic = Boolean.parseBoolean(mEl.getAttribute("static"));
 
-							ArrayList<Parametre> params = new ArrayList<>();
-							NodeList paramsList = mEl.getElementsByTagName("Parametre");
+							params = new ArrayList<>();
+							paramsList = mEl.getElementsByTagName("Parametre");
 							for (int k = 0; k < paramsList.getLength(); k++)
 							{
-								Node pNode = paramsList.item(k);
+								pNode = paramsList.item(k);
 								if (pNode.getNodeType() == Node.ELEMENT_NODE)
 								{
-									Element pEl = (Element) pNode;
-									String pnom = pEl.getAttribute("nom");
-									String ptype = pEl.getAttribute("type");
+									prmElm = (Element) pNode;
+									pnom = prmElm.getAttribute("nom");
+									ptype = prmElm.getAttribute("type");
 									params.add(new Parametre(pnom, ptype));
 								}
 							}
@@ -266,27 +417,27 @@ public class GereXml
 	{
 		try
 		{
-			File fXmlFile = new File(chemin);
-			DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
-			DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
-			Document doc = dBuilder.parse(fXmlFile);
+			File fchXml = new File(chemin);
+			DocumentBuilderFactory docFact = DocumentBuilderFactory.newInstance();
+			DocumentBuilder docConstru = docFact.newDocumentBuilder();
+			Document doc = docConstru.parse(fchXml);
 			doc.getDocumentElement().normalize();
 
-			NodeList nList = doc.getElementsByTagName("Classe");
+			NodeList lstNoeux = doc.getElementsByTagName("Classe");
 			HashMap<String, Rectangle> mapRect = new HashMap<String, Rectangle>();
 
-			for (int i = 0; i < nList.getLength(); i++)
+			for (int i = 0; i < lstNoeux.getLength(); i++)
 			{
-				Node node = nList.item(i);
+				Node node = lstNoeux.item(i);
 				if (node.getNodeType() == Node.ELEMENT_NODE)
 				{
-					Element eElement = (Element) node;
-					String nom = eElement.getAttribute("nom");
+					Element elm = (Element) node;
+					String nom = elm.getAttribute("nom");
 
-					String sx = eElement.getAttribute("x");
-					String sy = eElement.getAttribute("y");
-					String sw = eElement.getAttribute("width");
-					String sh = eElement.getAttribute("height");
+					String sx = elm.getAttribute("x");
+					String sy = elm.getAttribute("y");
+					String sw = elm.getAttribute("largeur");
+					String sh = elm.getAttribute("hauteur");
 					if (!sx.isEmpty() && !sy.isEmpty() && !sw.isEmpty() && !sh.isEmpty())
 					{
 						try 
@@ -316,30 +467,30 @@ public class GereXml
 	{
 		try
 		{
-			File fXmlFile = new File(chemin);
-			DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
-			DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
-			Document doc = dBuilder.parse(fXmlFile);
+			File fchXml = new File(chemin);
+			DocumentBuilderFactory docFact = DocumentBuilderFactory.newInstance();
+			DocumentBuilder docConstru = docFact.newDocumentBuilder();
+			Document doc = docConstru.parse(fchXml);
 			doc.getDocumentElement().normalize();
 
 			ArrayList<Liaison> liaisons = new ArrayList<>();
 
-			NodeList nList = doc.getElementsByTagName("Liaison");
+			NodeList lstNoeux = doc.getElementsByTagName("Liaison");
 
-			for (int i = 0; i < nList.getLength(); i++)
+			for (int i = 0; i < lstNoeux.getLength(); i++)
 			{
-				Node node = nList.item(i);
+				Node node = lstNoeux.item(i);
 				if (node.getNodeType() == Node.ELEMENT_NODE)
 				{
-					Element eElement = (Element) node;
-					String from = eElement.getAttribute("from");
-					String to = eElement.getAttribute("to");
-					String nomVar = eElement.getAttribute("nomVar");
+					Element elm = (Element) node;
+					String from = elm.getAttribute("from");
+					String to = elm.getAttribute("to");
+					String nomVar = elm.getAttribute("nomVar");
 
-					String fmin = eElement.getAttribute("fromMin");
-					String fmax = eElement.getAttribute("fromMax");
-					String tmin = eElement.getAttribute("toMin");
-					String tmax = eElement.getAttribute("toMax");
+					String fmin = elm.getAttribute("fromMin");
+					String fmax = elm.getAttribute("fromMax");
+					String tmin = elm.getAttribute("toMin");
+					String tmax = elm.getAttribute("toMax");
 
 					Classe cFrom = null; Classe cTo = null;
 					for (Classe c : classes)
