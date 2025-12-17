@@ -18,5 +18,6 @@ src/RetroConcepteur/vue/FrameUML.java
 src/RetroConcepteur/vue/PanelUML.java
 src/RetroConcepteur/vue/BarreMenu.java
 src/RetroConcepteur/vue/DessinerFleche.java
+src/RetroConcepteur/vue/DessinerMultiplicite.java
 
 src/RetroConcepteur/Controller.java

@@ -31,8 +31,15 @@ public class Multiplicite
 	//            Modificateur               //
 	//---------------------------------------//
 	
-	public void setBorneInf(String borneInf) { this.borneInf = borneInf; }
-	public void setBorneSup(String borneSup) { this.borneSup = borneSup; }
+	public void setBorneInf(String borneInf) 
+	{ 
+		this.borneInf = borneInf;
+	}
+
+	public void setBorneSup(String borneSup) 
+	{ 
+		this.borneSup = borneSup;
+	}
 
 	//---------------------------------------//
 	//            Methode instance           //
