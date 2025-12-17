@@ -65,7 +65,7 @@ public class PanelUML extends JPanel
     {
         this.lstClasse = this.ctrl.getLstClasses();
         this.lstLiaisons = new ArrayList<Liaison>(this.ctrl.getListLiaison());
-        this.mapClasseRectangle = new HashMap<Classe,Rectangle>();F
+        this.mapClasseRectangle = new HashMap<Classe,Rectangle>();
         this.positionDeterminee = false;
         this.lstChemins = new ArrayList<Chemin>();
 

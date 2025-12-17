@@ -68,6 +68,11 @@ public class DessinerFleche
 
     private double calculerAnglePerpendiculaire(Point intersection, Rectangle rect)
     {
+        
+        if (rect == null) 
+        {
+            return intersection != null ? 0 : 0;
+        }
         int x = intersection.getX();
         int y = intersection.getY();
         
@@ -108,6 +113,11 @@ public class DessinerFleche
 
     private Point calculerIntersection(Point p1, Point p2, Rectangle rect)
     {
+        if (rect == null)
+        {
+            
+            return p2;
+        }
         int x1 = p1.getX();
         int y1 = p1.getY();
         int x2 = p2.getX();
