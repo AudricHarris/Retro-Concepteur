@@ -96,6 +96,7 @@ public class Chemin
 		this.parcours.add(this.arrivee);
 	}
 	
+	
 	public void recalculer(Point nouveauDepart, Point nouvelleArrivee)
 	{
 		this.depart = nouveauDepart;
@@ -126,7 +127,6 @@ public class Chemin
 			this.depart.setX(x);
 			this.depart.setY(y);
 		}
-		this.calculerChemin();
 		this.calculerChemin();
 	}
 	

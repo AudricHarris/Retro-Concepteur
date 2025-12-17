@@ -167,17 +167,6 @@ public class PanelUML extends JPanel
 			return;
 		}
 
-		for (Chemin c : this.lstChemins) 
-		{
-			this.dessinerFleche.dessinerLiaison(g2, c);
-		}
-
-				
-		
-		
-		for (Classe classe : this.lstClasse)	// Affichage des classes au premier plan
-			this.dessinerClasse(g2, classe);
-			
 		for ( Liaison l : this.lstLiaisons )
 		{
 			for ( Chemin c : this.lstChemins )
@@ -198,6 +187,17 @@ public class PanelUML extends JPanel
 				}
 			}
 		}
+
+		for (Chemin c : this.lstChemins) 
+		{
+			this.dessinerFleche.dessinerLiaison(g2, c);
+		}
+		
+		
+		for (Classe classe : this.lstClasse)	// Affichage des classes au premier plan
+			this.dessinerClasse(g2, classe);
+			
+	
 		
 	}
 
