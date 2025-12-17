@@ -28,6 +28,11 @@ public class Chemin
 		this.classeArr = classeArr;
 		this.zoneArrivee = ' ';
 	}
+
+	public void updateChemin()
+    {
+        this.calculerChemin();
+    }
 	
 	private void calculerChemin()
 	{
@@ -40,7 +45,35 @@ public class Chemin
 		int dx = x2 - x1;
 		int dy = y2 - y1;
 		
-		if (Math.abs(dx) > Math.abs(dy))
+		// if (Math.abs(dx) > Math.abs(dy))
+		// {
+		// 	int xMilieu = x1 + dx / 2;
+		// 	this.parcours.add(new Point(xMilieu, y1));
+		// 	this.parcours.add(new Point(xMilieu, y2));
+		// }
+		// else
+		// {
+		// 	int yMilieu = y1 + dy / 2;
+		// 	this.parcours.add(new Point(x1, yMilieu));
+		// 	this.parcours.add(new Point(x2, yMilieu));
+		// }
+		// this.parcours.add(this.arrivee);
+
+		// MODIFICATION : On privilégie la zone d'arrivée pour décider du sens du tracé
+        // Si on arrive sur les côtés (Gauche/Droite), on veut un tracé à dominante Horizontale (Coupure en X)
+        // Sinon (Haut/Bas), on veut un tracé à dominante Verticale (Coupure en Y)
+        boolean horizontalDominant;
+
+        if (this.zoneArrivee == 'G' || this.zoneArrivee == 'D') 
+            horizontalDominant = true;
+        else if (this.zoneArrivee == 'H' || this.zoneArrivee == 'B') 
+            horizontalDominant = false;
+        else 
+            // Fallback sur l'ancienne logique si la zone n'est pas définie
+            horizontalDominant = Math.abs(dx) > Math.abs(dy);
+        
+
+		if (horizontalDominant)
 		{
 			int xMilieu = x1 + dx / 2;
 			this.parcours.add(new Point(xMilieu, y1));
@@ -54,6 +87,8 @@ public class Chemin
 		}
 		this.parcours.add(this.arrivee);
 	}
+
+	
 	
 	public void recalculer(Point nouveauDepart, Point nouvelleArrivee)
 	{

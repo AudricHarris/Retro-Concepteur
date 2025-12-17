@@ -585,7 +585,10 @@ public class PanelUML extends JPanel
 				Chemin chemin = new Chemin(p1, p2, l.getType(),this.mapClasseRectangle,l.getFromClass(), l.getToClass() );
 				char zone = this.getZone(r1, r2);
 				char zoneInv = zoneInverse(zone);
+				
+                // On définit la zone AVANT de mettre à jour le chemin
 				chemin.setZoneArrivee(zoneInv);
+				
 				r1.addPos(zone, chemin);
 				r2.addPos(zoneInv, chemin);
 
@@ -593,6 +596,13 @@ public class PanelUML extends JPanel
                 r2.repartirPointsLiaison(zoneInv);
 				
 				chemin.setRectangleArrivee(r2);
+                
+                // --- AJOUT IMPORTANT ---
+                // Maintenant que repartirPointsLiaison a déplacé p1 et p2 sur les bords,
+                // et que la zoneArrivee est connue, on recalcul le tracé "propre".
+                chemin.updateChemin();
+                // -----------------------
+
 				this.lstChemins.add(chemin);
 			}
 		}
