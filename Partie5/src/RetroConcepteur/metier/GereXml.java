@@ -244,7 +244,6 @@ public class GereXml
 			throw new RuntimeException("Erreur lors de la sauvegarde XML : " + e.getMessage());
 		}
 	}
-	
 
 	/////////////////////////////////////////////////
 	/////////Chargement//////////////////////////////
@@ -252,60 +251,14 @@ public class GereXml
 
 	public static ArrayList<Classe> chargerClassesXml(String chemin)
 	{
+		// Variables
 		File fichierXml;
 		DocumentBuilderFactory docFact;
 		DocumentBuilder docConstru;
 		Document doc;
 
 		NodeList lstNoeux;
-		Node noeux;
-
 		ArrayList<Classe> classes;
-
-		String sAbstract;
-		String sInterface;
-		String sExtends;
-
-		Element elm;
-		String nom;
-		Classe c;
-
-		NodeList interfacesNodes;
-		Node in;
-								
-		Element interElm;
-		String iname;
-
-		NodeList atts;
-		Node attNode;
-
-		Element aEl;
-
-		String anom;
-		String atype;
-		String avis;
-		boolean aconst;
-		boolean astatic;
-
-		NodeList meths;
-
-		Node mNode;
-
-		Element mEl;
-	
-		String mnom;
-		String mtype;
-		String mvis;
-		boolean mstatic;
-
-		ArrayList<Parametre> params;
-		NodeList paramsList;
-
-		Node pNode;
-
-		Element prmElm;
-		String pnom;
-		String ptype;
 
 		try
 		{
@@ -316,91 +269,13 @@ public class GereXml
 			doc.getDocumentElement().normalize();
 
 			lstNoeux = doc.getElementsByTagName("Classe");
-			classes = new ArrayList<Classe>();
+			classes = new ArrayList<>();
 
 			for (int i = 0; i < lstNoeux.getLength(); i++)
 			{
-				noeux = lstNoeux.item(i);
-				if (noeux.getNodeType() == Node.ELEMENT_NODE)
-				{
-					elm = (Element) noeux;
-					nom = elm.getAttribute("nom");
-					c = new Classe(nom);
-
-					sAbstract = elm.getAttribute("isAbstract");
-					if (sAbstract != null && !sAbstract.isEmpty()) 
-						c.setIsAbstract(Boolean.parseBoolean(sAbstract));
-
-					sInterface = elm.getAttribute("isInterface");
-					if (sInterface != null && !sInterface.isEmpty()) 
-						c.setIsInterface(Boolean.parseBoolean(sInterface));
-					
-					sExtends = elm.getAttribute("extends");
-					if (sExtends != null && !sExtends.isEmpty()) 
-						c.setNomHeritageClasse(sExtends);
-
-					interfacesNodes = elm.getElementsByTagName("Interface");
-
-					for (int cpt = 0; cpt < interfacesNodes.getLength(); cpt++) 
-					{
-						in = interfacesNodes.item(cpt);
-						if (in.getNodeType() == Node.ELEMENT_NODE) 
-						{
-							interElm = (Element) in;
-							iname = interElm.getAttribute("nom");
-							if (iname != null && !iname.isEmpty()) 
-								c.ajouterInterface(iname);
-						}
-					}
-
-					atts = elm.getElementsByTagName("Attribut");
-					for (int j = 0; j < atts.getLength(); j++)
-					{
-						attNode = atts.item(j);
-						if (attNode.getNodeType() == Node.ELEMENT_NODE)
-						{
-							aEl = (Element) attNode;
-							anom = aEl.getAttribute("nom");
-							atype = aEl.getAttribute("type");
-							avis = aEl.getAttribute("visibilite");
-							aconst = Boolean.parseBoolean(aEl.getAttribute("constante"));
-							astatic = Boolean.parseBoolean(aEl.getAttribute("static"));
-							c.ajouterAttribut(anom, aconst, atype, avis, astatic);
-						}
-					}
-
-					meths = elm.getElementsByTagName("Methode");
-					for (int j = 0; j < meths.getLength(); j++)
-					{
-						mNode = meths.item(j);
-						if (mNode.getNodeType() == Node.ELEMENT_NODE)
-						{
-							mEl = (Element) mNode;
-							mnom = mEl.getAttribute("nom");
-							mtype = mEl.getAttribute("type");
-							mvis = mEl.getAttribute("visibilite");
-							mstatic = Boolean.parseBoolean(mEl.getAttribute("static"));
-
-							params = new ArrayList<>();
-							paramsList = mEl.getElementsByTagName("Parametre");
-							for (int k = 0; k < paramsList.getLength(); k++)
-							{
-								pNode = paramsList.item(k);
-								if (pNode.getNodeType() == Node.ELEMENT_NODE)
-								{
-									prmElm = (Element) pNode;
-									pnom = prmElm.getAttribute("nom");
-									ptype = prmElm.getAttribute("type");
-									params.add(new Parametre(pnom, ptype));
-								}
-							}
-
-							c.ajouterMethode(mvis, mnom, mtype, params, mstatic);
-						}
-					}
-
+				Classe c = lireClasseXml(lstNoeux.item(i));
+				if (c != null)
 					classes.add(c);
-				}
 			}
 
 			return classes;
@@ -412,7 +287,162 @@ public class GereXml
 		}
 	}
 
+	private static Classe lireClasseXml(Node node)
+	{
+		Element elm;
+		String nom;
 
+		Classe c;
+
+		if (node.getNodeType() != Node.ELEMENT_NODE)
+			return null;
+
+		elm = (Element) node;
+		nom = elm.getAttribute("nom");
+		c = new Classe(nom);
+
+		lireProprietesClasse(elm, c);
+		lireInterfaces(elm, c);
+		lireAttributs(elm, c);
+		lireMethodes(elm, c);
+
+		return c;
+	}
+
+	private static void lireProprietesClasse(Element elm, Classe c)
+	{
+		String sAbstract;
+		String sInterface;
+		String sExtends;
+
+		sAbstract = elm.getAttribute("isAbstract");
+		if (!sAbstract.isEmpty())
+			c.setIsAbstract(Boolean.parseBoolean(sAbstract));
+
+		sInterface = elm.getAttribute("isInterface");
+		if (!sInterface.isEmpty())
+			c.setIsInterface(Boolean.parseBoolean(sInterface));
+
+		sExtends = elm.getAttribute("extends");
+		if (!sExtends.isEmpty())
+			c.setNomHeritageClasse(sExtends);
+	}
+
+	private static void lireInterfaces(Element elm, Classe c)
+	{
+		NodeList interfacesNodes;
+		Node in;
+		Element interElm;
+		String nom;
+
+		interfacesNodes = elm.getElementsByTagName("Interface");
+
+		for (int i = 0; i < interfacesNodes.getLength(); i++)
+		{
+			in = interfacesNodes.item(i);
+			if (in.getNodeType() == Node.ELEMENT_NODE)
+			{
+				interElm = (Element) in;
+				nom = interElm.getAttribute("nom");
+				if (!nom.isEmpty())
+					c.ajouterInterface(nom);
+			}
+		}
+	}
+
+	private static void lireAttributs(Element elm, Classe c)
+	{
+		NodeList atts;
+		Node attNode;
+		Element aEl;
+
+		String nom;
+		String type;
+		String vis;
+		boolean constante;
+		boolean statique;
+
+		atts = elm.getElementsByTagName("Attribut");
+
+		for (int i = 0; i < atts.getLength(); i++)
+		{
+			attNode = atts.item(i);
+			if (attNode.getNodeType() == Node.ELEMENT_NODE)
+			{
+				aEl = (Element) attNode;
+
+				nom = aEl.getAttribute("nom");
+				type = aEl.getAttribute("type");
+				vis = aEl.getAttribute("visibilite");
+				constante = Boolean.parseBoolean(aEl.getAttribute("constante"));
+				statique = Boolean.parseBoolean(aEl.getAttribute("static"));
+
+				c.ajouterAttribut(nom, constante, type, vis, statique);
+			}
+		}
+	}
+
+	private static void lireMethodes(Element elm, Classe c)
+	{
+		NodeList meths;
+		Node mNode;
+		Element mEl;
+
+		String nom;
+		String type;
+		String vis;
+		boolean statique;
+
+		meths = elm.getElementsByTagName("Methode");
+
+		for (int i = 0; i < meths.getLength(); i++)
+		{
+			mNode = meths.item(i);
+			if (mNode.getNodeType() == Node.ELEMENT_NODE)
+			{
+				mEl = (Element) mNode;
+
+				nom = mEl.getAttribute("nom");
+				type = mEl.getAttribute("type");
+				vis = mEl.getAttribute("visibilite");
+				statique = Boolean.parseBoolean(mEl.getAttribute("static"));
+
+				c.ajouterMethode(vis, nom, type, lireParametres(mEl), statique);
+			}
+		}
+	}
+
+	private static ArrayList<Parametre> lireParametres(Element mEl)
+	{
+		ArrayList<Parametre> params;
+		NodeList paramsList;
+		Node pNode;
+		Element prmElm;
+
+		String nom;
+		String type;
+
+		params = new ArrayList<>();
+		paramsList = mEl.getElementsByTagName("Parametre");
+
+		for (int i = 0; i < paramsList.getLength(); i++)
+		{
+			pNode = paramsList.item(i);
+			if (pNode.getNodeType() == Node.ELEMENT_NODE)
+			{
+				prmElm = (Element) pNode;
+				nom = prmElm.getAttribute("nom");
+				type = prmElm.getAttribute("type");
+				params.add(new Parametre(nom, type));
+			}
+		}
+
+		return params;
+	}
+
+	//////////////////////////////////////////////////
+	/// Chargement des positions et liaisons /////////////
+	///////////////////////////////////////////////////
 
 
 	public static HashMap<String, Rectangle> chargerPositionsXml(String chemin)

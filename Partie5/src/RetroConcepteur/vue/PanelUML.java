@@ -38,9 +38,7 @@ public class PanelUML extends JPanel
     private final int PADDING_Y = 5;  
     private final int INTERLIGNE = 2; 
 
-    private final Color COL_TITRE = Color.LIGHT_GRAY; 
-    private final Color COL_ATT   = new Color(240, 240, 240); 
-    private final Color COL_METH  = Color.WHITE;      
+  
 
     public PanelUML(FrameUML frame, Controller ctrl)
     {
@@ -281,15 +279,15 @@ public class PanelUML extends JPanel
         //  3 DESSIN DES BLOCS 
         
         // Titre
-        this.dessinerFondBloc(g2, x, y, largeurRect, hTitre, COL_TITRE);
+        this.dessinerFondBloc(g2, x, y, largeurRect, hTitre);
         this.dessinerContenuTitre(g2, classe, x, y + PADDING_Y, largeurRect, metrics.getHeight());
         
         // Attributs
-        this.dessinerFondBloc(g2, x, y + hTitre, largeurRect, hAtt, COL_ATT);
+        this.dessinerFondBloc(g2, x, y + hTitre, largeurRect, hAtt);
         this.dessinerContenuListe(g2, strAtts, lstAtt, x, y + hTitre + PADDING_Y, metrics, tropAtt);
         
         // Méthodes
-        this.dessinerFondBloc(g2, x, y + hTitre + hAtt, largeurRect, hMeth, COL_METH);
+        this.dessinerFondBloc(g2, x, y + hTitre + hAtt, largeurRect, hMeth);
         this.dessinerContenuListe(g2, strMeths, lstMeth, x, y + hTitre + hAtt + PADDING_Y, metrics, tropMeth); 
 
         // Contour Global
@@ -426,14 +424,13 @@ public class PanelUML extends JPanel
     //                        OUTILS DE DESSIN 
     // =========================================================================
 
-    private void dessinerFondBloc(Graphics2D g2, int x, int y, int largeur, int h, Color c) 
+    private void dessinerFondBloc(Graphics2D g2, int x, int y, int largeur, int h) 
     {
-        Color old = g2.getColor();
-        g2.setColor(c);
-        g2.fillRect(x, y, largeur, h);
+        g2.setColor(Color.WHITE);
+		g2.fillRect(x, y, largeur, h);
         g2.setColor(Color.BLACK);
         g2.drawRect(x, y, largeur, h);
-        g2.setColor(old);
+		g2.setColor(Color.black);
     }
 
     private void dessinerContenuTitre(Graphics2D g2, Classe classe, int x, int y, int largeur, int hLigne) 
@@ -583,20 +580,20 @@ public class PanelUML extends JPanel
         this.recalculerChemins();
     }
 
-    /**
-     * Recalcule tous les chemins en fonction des positions actuelles des rectangles
-     * Cette méthode est appelée à chaque repaint pour mettre à jour les flèches dynamiquement
-     */
-    private void recalculerChemins()
+	private void recalculerChemins()
     {
-        // Nettoyer les anciennes liaisons des rectangles
+        // 1. Nettoyer les anciennes liaisons des rectangles
         for (Rectangle rect : this.mapClasseRectangle.values()) 
         {
             rect.nettoyerLiaisons();
         }
-
-        // Recalculer les chemins avec les positions actuelles
         this.lstChemins.clear();
+
+        // 2. Regrouper les chemins par paire de classes pour gérer les doublons
+        // Clé = "ID_Classe1-ID_Classe2" (trié par ordre alphabétique ou hashCode pour unicité)
+        // Valeur = Liste des chemins entre ces deux classes
+        HashMap<String, List<Chemin>> mapGroupes = new HashMap<>();
+
         for (Liaison l : this.lstLiaisons) 
         {
             Rectangle r1 = this.mapClasseRectangle.get(l.getFromClass());
@@ -604,21 +601,16 @@ public class PanelUML extends JPanel
             
             if (r1 != null && r2 != null) 
             {
-                // Les flèches partent et arrivent aux centres des rectangles
-                int x1 = r1.getCentreX();
-                int y1 = r1.getCentreY();
-                Point p1 = new Point(x1,y1);
-
-                int x2 = r2.getCentreX();
-                int y2 = r2.getCentreY();
-                Point p2 = new Point(x2,y2);
+                // Points de départ temporaires (centres)
+                Point p1 = new Point(r1.getCentreX(), r1.getCentreY());
+                Point p2 = new Point(r2.getCentreX(), r2.getCentreY());
                 
-                Chemin chemin = new Chemin(p1, p2, l.getType(),this.mapClasseRectangle,l.getFromClass(), l.getToClass() );
+                Chemin chemin = new Chemin(p1, p2, l.getType(), this.mapClasseRectangle, l.getFromClass(), l.getToClass());
+                
+                // Calcul de la zone et attribution
                 char zone = this.getZone(r1, r2);
                 char zoneInv = zoneInverse(zone);
-                
-                // On définit la zone AVANT de mettre à jour le chemin
-                chemin.setZoneArrivee(zoneInv);
+                chemin.setZoneArrivee(zoneInv); 
                 
                 r1.addPos(zone, chemin);
                 r2.addPos(zoneInv, chemin);
@@ -627,16 +619,44 @@ public class PanelUML extends JPanel
                 r2.repartirPointsLiaison(zoneInv);
                 
                 chemin.setRectangleArrivee(r2);
-                
-                // --- AJOUT IMPORTANT ---
-                // Maintenant que repartirPointsLiaison a déplacé p1 et p2 sur les bords,
-                // et que la zoneArrivee est connue, on recalcul le tracé "propre".
-                chemin.updateChemin();
-                // -----------------------
 
-                this.lstChemins.add(chemin);
-            }
-        }
+					// --- SIMPLIFICATION : GESTION DU REGROUPEMENT ---
+				// On récupère juste les noms
+				String nom1 = l.getFromClass().getNom();
+				String nom2 = l.getToClass().getNom();
+
+				// On crée une clé unique en mettant les noms par ordre alphabétique
+				// Ex: que ce soit "Chien"->"Chat" ou "Chat"->"Chien", la clé sera "Chat-Chien"
+				String key;
+				if (nom1.compareTo(nom2) < 0) {
+					key = nom1 + "-" + nom2;
+				} else {
+					key = nom2 + "-" + nom1;
+				}
+
+				// On ajoute ce chemin au groupe correspondant
+				if (!mapGroupes.containsKey(key)) {
+					mapGroupes.put(key, new ArrayList<Chemin>());
+				}
+				mapGroupes.get(key).add(chemin);
+
+				this.lstChemins.add(chemin);
+        	}
+   	 	}
+
+    // 3. Appliquer les décalages (Inchangé)
+		for (List<Chemin> groupe : mapGroupes.values()) 
+		{
+			int total = groupe.size();
+			for (int i = 0; i < total; i++) 
+			{
+				Chemin c = groupe.get(i);
+				// On dit au chemin : "Tu es le numéro i sur un total de x flèches"
+				// Le chemin calculera son décalage tout seul grâce à ça.
+				c.setIndexLiaison(i, total); 
+				c.updateChemin();
+			}
+    	}
     }
 
     private String getSignatureAttributAlignee(Attribut att, int wGaucheMax, FontMetrics fm) 

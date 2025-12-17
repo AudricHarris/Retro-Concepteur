@@ -120,16 +120,16 @@ public class Rectangle
 		
 		if ( nbPoints > 0 )
 		{
-			double step = 0;
+			double espacement = 0;
 			
 			if (zone == 'H' || zone == 'B') 
 			{
-				step = (double) this.tailleX / (nbPoints + 1);
+				espacement = (double) this.tailleX / (nbPoints + 1);
 				
 				for (int i = 0; i < nbPoints; i++) 
 				{
 					Chemin chemin = listeChemins.get(i);
-					int positionX = this.x + (int)(step * (i + 1));
+					int positionX = this.x + (int)(espacement * (i + 1));
 					
 					int positionY = (zone == 'H') ? this.y : this.y + this.tailleY;
 
@@ -139,12 +139,12 @@ public class Rectangle
 			// Cas Vertical (Gauche / Droite)
 			else if (zone == 'G' || zone == 'D') 
 			{
-				step = (double) this.tailleY / (nbPoints + 1);
+				espacement = (double) this.tailleY / (nbPoints + 1);
 
 				for (int i = 0; i < nbPoints; i++) 
 				{
 					Chemin chemin = listeChemins.get(i);
-					int positionY = this.y + (int)(step * (i + 1));
+					int positionY = this.y + (int)(espacement * (i + 1));
 					
 					int positionX = (zone == 'G') ? this.x : this.x + this.tailleX;
 
