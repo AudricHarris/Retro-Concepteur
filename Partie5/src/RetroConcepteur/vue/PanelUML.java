@@ -438,7 +438,12 @@ public class PanelUML extends JPanel
         Font fontNormal = g2.getFont();
         Font fontGras = fontNormal.deriveFont(Font.BOLD);
 
-        if (classe.isInterface()) 
+        g2.setFont(fontGras);
+        dessinerStringCentre(g2, classe.getNom(), x, y, largeur);
+		y += hLigne;
+        g2.setFont(fontNormal);
+
+		 if (classe.isInterface()) 
         {
             dessinerStringCentre(g2, "<<Interface>>", x, y, largeur);
             y += hLigne;
@@ -449,10 +454,6 @@ public class PanelUML extends JPanel
             dessinerStringCentre(g2, "<<Abstract>>", x, y, largeur);
             y += hLigne;
         }
-
-        g2.setFont(fontGras);
-        dessinerStringCentre(g2, classe.getNom(), x, y, largeur);
-        g2.setFont(fontNormal);
     }
 
     // Methode generique pour dessiner Attributs ET Methodes
