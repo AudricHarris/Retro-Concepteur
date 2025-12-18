@@ -8,10 +8,13 @@ public class Attribut
 {
 	private int     num;
 	private String  nom;
-	private boolean constante;
 	private String  type;
 	private String  visibilite;
+	private boolean constante;
 	private boolean isStatic;
+	private boolean isAddOnly;
+	private boolean isReadOnly;
+
 
 	/**
 	 * Constructeur d'Attribut
@@ -42,6 +45,11 @@ public class Attribut
 	public String  getType      () {return this.type      ;}
 	public String  getVisibilite() {return this.visibilite;}
 	public boolean isStatic     () {return this.isStatic  ;}
+	public boolean isAddOnly   () {return this.isAddOnly ;}
+	public boolean isReadOnly  () {return this.isReadOnly;}
+
+	public void setAddOnly (boolean isAddOnly)  {this.isAddOnly  = isAddOnly ;}
+	public void setReadOnly(boolean isReadOnly) {this.isReadOnly = isReadOnly	;}
 
 	//---------------------------------------//
 	//         Methode instance              //

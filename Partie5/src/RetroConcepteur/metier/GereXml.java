@@ -25,15 +25,14 @@ import RetroConcepteur.metier.classe.Liaison;
 import RetroConcepteur.metier.classe.Methode;
 import RetroConcepteur.metier.classe.Multiplicite;
 import RetroConcepteur.metier.classe.Parametre;
-
-import RetroConcepteur.vue.outil.Rectangle;
+import RetroConcepteur.metier.classe.Position;
 
 public class GereXml 
 {
 	private GereXml() { }
 
 	public static void sauvegarderXml(String chemin, ArrayList<Classe> lstClasses, 
-									  HashMap<Classe, Rectangle> mapRect,
+									  HashMap<Classe, Position> mapPos,
 									  List<Liaison> lstLiaisons)
 	{
 		//variable
@@ -75,7 +74,7 @@ public class GereXml
 					classeElm.appendChild(GereXml.classeInterface(doc,c));
 				}
 
-				GereXml.ajouterPosition(classeElm, mapRect.get(c));
+				GereXml.ajouterPosition(classeElm, mapPos.get(c));
 
 				// gere Attributs
 				attributElm = doc.createElement("Attributs");
@@ -116,14 +115,14 @@ public class GereXml
 	/// Methodes utiliser pour la sauvegarde /////////////
 	//////////////////////////////////////////////////////
 
-	private static void ajouterPosition(Element classeElm, Rectangle r)
+	private static void ajouterPosition(Element classeElm, Position p)
 	{
-		if (r == null) return;
+		if (p == null) return;
 
-		classeElm.setAttribute("x", String.valueOf(r.getX()));
-		classeElm.setAttribute("y", String.valueOf(r.getY()));
-		classeElm.setAttribute("largeur", String.valueOf(r.getTailleX()));
-		classeElm.setAttribute("hauteur", String.valueOf(r.getTailleY()));
+		classeElm.setAttribute("x", String.valueOf(p.getX()));
+		classeElm.setAttribute("y", String.valueOf(p.getY()));
+		classeElm.setAttribute("largeur", String.valueOf(p.getLargeur()));
+		classeElm.setAttribute("hauteur", String.valueOf(p.getHauteur()));
 	}
 
 	private static Element classeMethode(Document doc, Methode m)
@@ -198,20 +197,20 @@ public class GereXml
 		{
 			lienElm = doc.createElement("Liaison");
 
-			lienElm.setAttribute("from", l.getFromClass().getNom());
-			lienElm.setAttribute("to", l.getToClass().getNom());
+			lienElm.setAttribute("de", l.getFromClass().getNom());
+			lienElm.setAttribute("vers", l.getToClass().getNom());
 			lienElm.setAttribute("type", l.getType());
 			lienElm.setAttribute("nomVar", l.getNomVar() == null ? "" : l.getNomVar());
 
 			if (l.getFromMultiplicity() != null)
 			{
-				lienElm.setAttribute("fromMin", l.getFromMultiplicity().getBorneInf());
-				lienElm.setAttribute("fromMax", l.getFromMultiplicity().getBorneSup());
+				lienElm.setAttribute("deMin", l.getFromMultiplicity().getBorneInf());
+				lienElm.setAttribute("deMax", l.getFromMultiplicity().getBorneSup());
 			}
 			if (l.getToMultiplicity() != null)
 			{
-				lienElm.setAttribute("toMin", l.getToMultiplicity().getBorneInf());
-				lienElm.setAttribute("toMax", l.getToMultiplicity().getBorneSup());
+				lienElm.setAttribute("versMin", l.getToMultiplicity().getBorneInf());
+				lienElm.setAttribute("versMax", l.getToMultiplicity().getBorneSup());
 			}
 			liaisonsElm.appendChild(lienElm);
 		}
@@ -441,11 +440,11 @@ public class GereXml
 	}
 
 	//////////////////////////////////////////////////
-	/// Chargement des positions et liaisons /////////////
-	///////////////////////////////////////////////////
+	/// Chargement des positions et liaisons /////////
+	//////////////////////////////////////////////////
 
 
-	public static HashMap<String, Rectangle> chargerPositionsXml(String chemin)
+	public static HashMap<String, Position> chargerPositionsXml(String chemin)	
 	{
 		File fchXml;
 		DocumentBuilderFactory docFact;
@@ -453,7 +452,7 @@ public class GereXml
 		Document doc;
 
 		NodeList lstNoeux;
-		HashMap<String, Rectangle> mapRect;
+		HashMap<String, Position> mapPos;
 
 		try
 		{
@@ -464,11 +463,11 @@ public class GereXml
 			doc.getDocumentElement().normalize();
 
 			lstNoeux = doc.getElementsByTagName("Classe");
-			mapRect = new HashMap<String, Rectangle>();
+			mapPos = new HashMap<String, Position>();
 
 			for (int i = 0; i < lstNoeux.getLength(); i++)
 			{
-				GereXml.extrairePositionClasse(mapRect, lstNoeux, i);
+				GereXml.extrairePositionClasse(mapPos, lstNoeux, i);
 			}
 		}
 		catch (Exception e)
@@ -476,10 +475,10 @@ public class GereXml
 			e.printStackTrace();
 			throw new RuntimeException("Erreur lors du chargement des positions XML : " + e.getMessage());
 		}	
-		return mapRect;
+		return mapPos;
 	}
 
-	private static void extrairePositionClasse(HashMap<String, Rectangle> mapRect, NodeList lstNoeux, int i)
+	private static void extrairePositionClasse(HashMap<String, Position> mapPos, NodeList lstNoeux, int i)
 	{
 		Element elm;
 		String nom;
@@ -504,10 +503,15 @@ public class GereXml
 			{
 				try 
 				{
-					mapRect.put(nom, new Rectangle(Integer.parseInt(x), 
-					                               Integer.parseInt(y),
-												   Integer.parseInt(w), 
-												   Integer.parseInt(h)));
+					mapPos.put(
+								nom,
+								new Position(
+									Integer.parseInt(x),
+									Integer.parseInt(y),
+									Integer.parseInt(w),
+									Integer.parseInt(h)
+								)
+							);
 				} 
 				catch (NumberFormatException ex) { }
 			}
@@ -534,14 +538,14 @@ public class GereXml
 				if (node.getNodeType() == Node.ELEMENT_NODE)
 				{
 					Element elm = (Element) node;
-					String from = elm.getAttribute("from");
-					String to = elm.getAttribute("to");
+					String from = elm.getAttribute("de");
+					String to = elm.getAttribute("vers");
 					String nomVar = elm.getAttribute("nomVar");
 
-					String fmin = elm.getAttribute("fromMin");
-					String fmax = elm.getAttribute("fromMax");
-					String tmin = elm.getAttribute("toMin");
-					String tmax = elm.getAttribute("toMax");
+					String fmin = elm.getAttribute("deMin");
+					String fmax = elm.getAttribute("deMax");
+					String tmin = elm.getAttribute("versMin");
+					String tmax = elm.getAttribute("versMax");
 
 					Classe cFrom = null; Classe cTo = null;
 					for (Classe c : classes)

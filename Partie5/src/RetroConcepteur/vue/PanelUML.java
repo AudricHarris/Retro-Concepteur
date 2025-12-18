@@ -192,11 +192,14 @@ public class PanelUML extends JPanel
 		Rectangle rect = this.mapClasseRectangle.get(classe);
 		int x = rect.getX();
 		int y = rect.getY();
+
 		// Préparation des textes avec alignement et filtrage
+
 		List<Attribut> lstAtt = new ArrayList<Attribut>();
 		int maxLargeurGaucheAtt = 0;
 		int cpt = 0;
 		boolean tropAtt = false;
+		
 		for (Attribut att : classe.getListOrdonneeAttribut())
 		{
 			if (this.ctrl.estClasseProjet(att.getType())) continue;
@@ -649,6 +652,59 @@ panel.setPreferredSize(new Dimension(240, 60));
 			h += hLigne;
 		
 		return h;
+	}
+
+	public void detecterZoneEtOuvrirEdition(Classe classe, Rectangle rect, Point pSouris)
+	{
+		Graphics2D g2 = (Graphics2D) this.getGraphics();
+		FontMetrics metrics = g2.getFontMetrics();
+		int hauteurLigne = metrics.getHeight();
+		int padding = 5; 
+
+		int hauteurTitre = hauteurLigne + (padding * 2);
+
+		int nbLignesAttributs = 0;
+		int cpt = 0;
+		
+		for (Attribut att : classe.getListOrdonneeAttribut())
+		{
+			if (this.ctrl.estClasseProjet(att.getType())) continue; 
+
+			if (cpt >= 3) 
+			{ 
+				nbLignesAttributs++; 
+				break; 
+			}
+			
+			nbLignesAttributs++;
+			cpt++;
+		}
+
+		
+		if (nbLignesAttributs == 0) nbLignesAttributs = 1; 
+
+		int hauteurZoneAttributs = (nbLignesAttributs * (hauteurLigne + 2)) + 10; 
+
+		
+		int yRelatif = pSouris.getY() - rect.getY();
+
+		if (yRelatif < hauteurTitre) 
+		{
+			System.out.println("Ouverture édition Titre");
+			
+			new FrameEdition(this.ctrl, classe, 'C');
+		} 
+		else if (yRelatif < (hauteurTitre + hauteurZoneAttributs)) 
+		{
+			
+			System.out.println("Ouverture édition Attributs");
+			new FrameEdition(this.ctrl, classe, 'A');
+		} 
+		else 
+		{
+			
+			new FrameEdition(this.ctrl, classe, 'M');
+		}
 	}
 
 	/**
