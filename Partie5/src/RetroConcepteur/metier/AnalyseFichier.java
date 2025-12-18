@@ -155,6 +155,7 @@ public class AnalyseFichier
 				String nomClasse = file.substring(file.lastIndexOf(File.separator) + 1,
 				                                    file.lastIndexOf("."));
 
+													System.out.println(nomClasse);
 				this.lstClass.add(new Classe(nomClasse));
 
 				LireFichier.lireFichier(file, this);
@@ -196,7 +197,7 @@ public class AnalyseFichier
 				}
 			}
 		}
-		catch (Exception e) { System.out.println("fichier non trouvé"); }
+		catch (Exception e) { System.out.println("fichier non trouvé  " + e.getMessage()); }
 	}
 
 	public void insererProprieteClass(String ligne)
@@ -362,8 +363,15 @@ public class AnalyseFichier
 	private void traiterMethode(String ligneRestante, String visibilite, boolean isStatic)
 	{
 		int indexParOuvrante = ligneRestante.indexOf('(');
-		String declaration = ligneRestante.substring(0, indexParOuvrante);
+		
 		int indexParFermante = ligneRestante.lastIndexOf(')');
+
+
+		if (indexParFermante == -1 || indexParFermante <= indexParOuvrante) 
+			return; 
+		
+
+		String declaration = ligneRestante.substring(0, indexParOuvrante);
 		String contenuParametres = "";
 
 		String nom = "";

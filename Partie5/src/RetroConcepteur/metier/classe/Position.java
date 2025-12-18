@@ -3,10 +3,10 @@ package RetroConcepteur.metier.classe;
 public class Position
 {
 
-    private final int x;
-    private final int y;
-    private final int largeur;
-    private final int hauteur;
+    private  int x;
+    private  int y;
+    private  int largeur;
+    private  int hauteur;
 
     public Position(int x, int y, int largeur, int hauteur) 
 	{
