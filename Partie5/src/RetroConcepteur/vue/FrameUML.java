@@ -92,6 +92,11 @@ public class FrameUML extends JFrame
 		this.panelUml.reinitialiser();
 	}
 
+	public void majIHM() 
+	{
+		this.panelUml.majIHM();
+	}
+
 	public void ouvrirFichier()
 	{
 		JFileChooser fileChooser = new JFileChooser();
@@ -194,4 +199,5 @@ public class FrameUML extends JFrame
 			}
 		}
 	}
+
 }

@@ -98,6 +98,10 @@ public class PanelUML extends JPanel
 		this.determinerPositions();
 		this.repaint();
 	}
+	public void majIHM()
+	{
+		this.repaint();
+	}
 	
 	/**
 	 * Applique une map de positions (Classe -> Rectangle) pré-calculée.
@@ -707,6 +711,7 @@ panel.setPreferredSize(new Dimension(240, 60));
 	{
 		String gauche = this.getVisibiliteSymbole(att.getVisibilite()) + " " + att.getNom();
 		String droite = " : " + att.getType() + (att.isConstante() ? " {freeze}" : "");
+		droite += att.isAddOnly() ? " {addOnly}" : "";
 		return padding(gauche, droite, wGaucheMax, fm);
 	}
 	
@@ -826,6 +831,61 @@ panel.setPreferredSize(new Dimension(240, 60));
 			case 'G': return 'D';
 			case 'D': return 'G';
 			default: return ' ';
+		}
+	}
+
+	public void detecterZoneEtOuvrirEdition(Classe classe, Rectangle rect, Point pSouris)
+	{
+		Graphics2D g2 = (Graphics2D) this.getGraphics();
+		FontMetrics metrics = g2.getFontMetrics();
+		int hauteurLigne = metrics.getHeight();
+		int padding = 5; 
+
+		int hauteurTitre = hauteurLigne + (padding * 2);
+
+		int nbLignesAttributs = 0;
+		int cpt = 0;
+		
+		for (Attribut att : classe.getListOrdonneeAttribut())
+		{
+			if (this.ctrl.estClasseProjet(att.getType())) continue; 
+
+			if (cpt >= 3) 
+			{ 
+				nbLignesAttributs++; 
+				break; 
+			}
+			
+			nbLignesAttributs++;
+			cpt++;
+		}
+
+		
+		if (nbLignesAttributs == 0) nbLignesAttributs = 1; 
+
+		int hauteurZoneAttributs = (nbLignesAttributs * (hauteurLigne + 2)) + 10; 
+
+		
+		int yRelatif = pSouris.getY() - rect.getY();
+
+		if (yRelatif < hauteurTitre) 
+		{
+			new FrameEdition(this.ctrl, classe, 'T');
+			System.out.println("Ouverture édition Titre");
+		} 
+		else if (yRelatif < (hauteurTitre + hauteurZoneAttributs)) 
+		{
+			if (!classe.getLstAttribut().isEmpty()) 
+				new FrameEdition(this.ctrl, classe, 'A');
+			else
+				JOptionPane.showMessageDialog(this.frame, "Cette classe ne possède pas d'attributs à éditer.");
+		} 
+		else 
+		{
+			if (!classe.getLstMethode().isEmpty()) 
+				new FrameEdition(this.ctrl, classe, 'M');
+			else
+				JOptionPane.showMessageDialog(this.frame, "Cette classe ne possède pas de méthodes à éditer.");
 		}
 	}
 }

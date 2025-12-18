@@ -7,6 +7,7 @@ import java.util.List;
 
 import RetroConcepteur.metier.AnalyseFichier;
 import RetroConcepteur.metier.GereXml;
+import RetroConcepteur.metier.classe.Attribut;
 import RetroConcepteur.metier.classe.Classe;
 import RetroConcepteur.metier.classe.Liaison;
 import RetroConcepteur.vue.FrameUML;
@@ -52,17 +53,24 @@ public class Controller
 	{
 		return this.analyseFichier.getListLiaisonBinaire();
 	}
-
-
+	
+	
 	/*
 	* Autres Methodes
 	*/
+	
+	public void majAttribut(Attribut att, String nom, boolean estConstante, boolean isAddOnly) 
+	{
+		att.setNom(nom);
+		att.setConstante(estConstante);
+		att.setAddOnly(isAddOnly);
+	}
 
 	public boolean estClasseProjet(String type)
 	{
 		return this.analyseFichier.estClasseProjet(type);
 	}
-
+	
 	public Classe get(int ind)
 	{
 		return this.analyseFichier.getLstClasses().get(ind);
@@ -106,10 +114,17 @@ public class Controller
 
 		this.frameUML.setMapPanel(newMap);
 	}
+	public void majIHM()
+	{
+		this.frameUML.majIHM();
+	}
 
 	public static void main(String[] args) 
 	{ 
 		String cheminRepertoire = (args.length > 0) ? args[0] : "./test";
         new Controller(cheminRepertoire);
 	}
+
+
+
 }
