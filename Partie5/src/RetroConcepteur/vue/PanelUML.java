@@ -755,7 +755,7 @@ public class PanelUML extends JPanel
 		List<Parametre> params = meth.getLstParam();
 		for (int i = 0; i < params.size(); i++)
 		{
-			if (i >= 2 && classe.estClique() )
+			if (i >= 2 && ! classe.estClique() )
 				return s + " ...)";
 
 			s += params.get(i).getNom() + " : " + params.get(i).getType();
