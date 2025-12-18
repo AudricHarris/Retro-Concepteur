@@ -105,7 +105,7 @@ public class Rectangle
 		
 		ArrayList<Chemin> listeChemins = this.hashPosPrises.get(c);
 		if (listeChemins.size() > 0)
-			listeChemins.removeLast()
+			listeChemins.removeLast();
 	}
 	
 	/**
