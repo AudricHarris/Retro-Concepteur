@@ -43,6 +43,7 @@ public class PanelUML extends JPanel
 
 	// Données de la vue
 	private HashMap<Classe, Rectangle> mapClasseRectangle;
+	private HashMap<Chemin, Liaison> mapCheminLiaison; 
 	private DessinerFleche dessinerFleche;
 	private DessinerMultiplicite dessinerMultiplicite;
 	private boolean positionDeterminee = false;
@@ -618,12 +619,12 @@ public class PanelUML extends JPanel
 	 */
 	private int calculerLargeurTitre(Classe c, FontMetrics fm)
 	{
-		int w = fm.stringWidth(c.getNom());
+		int largeur = fm.stringWidth(c.getNom());
 		if (c.isInterface() || c.isAbstract())
 		{
-			w = Math.max(w, fm.stringWidth("<<Interface>>"));
+			largeur = Math.max(largeur, fm.stringWidth("<<Interface>>"));
 		}
-		return w;
+		return largeur;
 	}
 
 	/**
@@ -758,14 +759,14 @@ public class PanelUML extends JPanel
 	 *
 	 * @param gauche Partie gauche.
 	 * @param droite Partie droite.
-	 * @param wMax Largeur max.
+	 * @param largeurMax Largeur max.
 	 * @param fm Métriques de police.
 	 * @return La chaîne paddée.
 	 */
-	private String padding(String gauche, String droite, int wMax, FontMetrics fm)
+	private String padding(String gauche, String droite, int largeurMax, FontMetrics fm)
 	{
-		int wActuel = fm.stringWidth(gauche);
-		int espace = Math.max(0, (wMax - wActuel) / fm.stringWidth(" "));
+		int largeurActuel = fm.stringWidth(gauche);
+		int espace = Math.max(0, (largeurMax - largeurActuel) / fm.stringWidth(" "));
 		return gauche + " ".repeat(espace) + droite;
 	}
 	

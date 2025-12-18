@@ -88,7 +88,9 @@ public class AnalyseRequete {
     }
     
     // Etape 3, Question 6 : Fonction nbRequeteSiteParIp
-    public long nbRequeteSiteParIp(String ipVisiteur, String nomSiteWeb) {
+    public long nbRequeteSiteParIp(String ipVisiteur, 
+		String nomSiteWeb
+	) {
         ArrayList<Requete> requetesPourSite = this.hashRequete.get(nomSiteWeb);
         
         if (requetesPourSite == null) {
