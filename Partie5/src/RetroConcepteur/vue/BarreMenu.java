@@ -88,7 +88,6 @@ public class BarreMenu extends JMenuBar implements ActionListener
 					if ("Afficher implements/inteface".equals(this.modeleBarre[i][1])) 
 					{
 										this.cbAfficher = checkBox;
-										this.cbAfficher.setSelected(true);
 					}
 				}
 

@@ -112,9 +112,7 @@ public class AnalyseFichier
 	 */
 	public boolean estClasse(String nom)
 	{
-		for ( Classe c : this.lstClass) 
-			if (c.getNom().equals(nom)) 
-				return true;
+		for ( Classe c : this.lstClass) if (c.getNom().equals(nom)) return true;
 		
 		return false;
 	}
@@ -155,7 +153,6 @@ public class AnalyseFichier
 				String nomClasse = file.substring(file.lastIndexOf(File.separator) + 1,
 				                                    file.lastIndexOf("."));
 
-													System.out.println(nomClasse);
 				this.lstClass.add(new Classe(nomClasse));
 
 				LireFichier.lireFichier(file, this);
@@ -164,11 +161,7 @@ public class AnalyseFichier
 			// Affichage des classes de la jdk extend
 			for ( String nom : this.lstExtends )
 				if ( ! this.estClasse(nom) )
-				{
-					Classe classe = new Classe(nom); 
-					classe.setCachable(true);
-					this.lstClass.add( classe);
-				}
+					this.lstClass.add( new Classe(nom) );
 
 			// Affichage des classe de la jdk implement
 			for ( String nom : this.lstImplement )
@@ -176,7 +169,6 @@ public class AnalyseFichier
 				{
 					Classe classe = new Classe(nom);
 					classe.setIsInterface(true);
-					classe.setCachable(true);
 					this.lstClass.add( classe );
 
 				}
@@ -197,7 +189,7 @@ public class AnalyseFichier
 				}
 			}
 		}
-		catch (Exception e) { System.out.println("fichier non trouvé  " + e.getMessage()); }
+		catch (Exception e) { System.out.println("fichier non trouvé"); }
 	}
 
 	public void majLiaison()
@@ -382,15 +374,8 @@ public class AnalyseFichier
 	private void traiterMethode(String ligneRestante, String visibilite, boolean isStatic)
 	{
 		int indexParOuvrante = ligneRestante.indexOf('(');
-		
-		int indexParFermante = ligneRestante.lastIndexOf(')');
-
-
-		if (indexParFermante == -1 || indexParFermante <= indexParOuvrante) 
-			return; 
-		
-
 		String declaration = ligneRestante.substring(0, indexParOuvrante);
+		int indexParFermante = ligneRestante.lastIndexOf(')');
 		String contenuParametres = "";
 
 		String nom = "";

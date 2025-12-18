@@ -200,13 +200,8 @@ public class FrameUML extends JFrame
 		}
 	}
 
-	/**
-	 * Active ou désactive l'affichage des classes cachables (interfaces/héritage JDK).
-	 *
-	 * @param afficher true pour afficher, false pour masquer.
-	 */
-	public void afficherImplHerit (boolean afficher)
+	public void afficherImplHerit (boolean bool)
 	{
-		this.panelUml.afficherInterfaceHeritage(afficher);
+		System.out.println(bool);
 	}
 }
