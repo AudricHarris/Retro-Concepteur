@@ -77,7 +77,6 @@ public class Controller
 		att.setNom(nom);
 		att.setConstante(estConstante);
 		att.setAddOnly(isAddOnly);
-		this.analyseFichier.majLiaison();
 	}
 
 	public boolean estClasseProjet(String type)
@@ -156,14 +155,6 @@ public class Controller
 	{ 
 		String cheminRepertoire = (args.length > 0) ? args[0] : "./test";
         new Controller(cheminRepertoire);
-	}
-
-	public void majClasse(Classe classe, String nouveauNom, boolean abstract1, boolean interface1) 
-	{
-		classe.setNom(nouveauNom);
-		classe.setIsAbstract(abstract1);
-		classe.setIsInterface(interface1);
-		this.analyseFichier.majLiaison();
 	}
 
 

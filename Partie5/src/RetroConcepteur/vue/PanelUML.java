@@ -100,8 +100,6 @@ public class PanelUML extends JPanel
 	}
 	public void majIHM()
 	{
-		this.lstClasse = this.ctrl.getLstClasses();
-		this.lstLiaisons = new ArrayList<Liaison>(this.ctrl.getListLiaison());
 		this.repaint();
 	}
 	
@@ -890,7 +888,7 @@ public class PanelUML extends JPanel
 
 		if (yRelatif < hauteurTitre) 
 		{
-			new FrameEdition(this.ctrl, classe, 'C');
+			new FrameEdition(this.ctrl, classe, 'T');
 			System.out.println("Ouverture édition Titre");
 		} 
 		else if (yRelatif < (hauteurTitre + hauteurZoneAttributs)) 
