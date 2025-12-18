@@ -93,26 +93,4 @@ public class GereSouris extends MouseAdapter
 			}
 		}
 	}
-	public void mouseClicked(MouseEvent e) 
-	{
-		
-		if (e.getClickCount() == 2) 
-		{
-			int x = e.getX();
-			int y = e.getY();
-
-			
-			for (Classe c : this.panelUML.getMap().keySet()) 
-			{
-				Point pSouris = new Point(x, y);
-				Rectangle r = this.panelUML.getMap().get(c);
-				if (r.possede(pSouris)) 
-				{
-					
-					this.panelUML.detecterZoneEtOuvrirEdition(c, r, pSouris);
-					break;
-				}
-			}
-		}
-	}
 }
