@@ -19,6 +19,7 @@ public class BarreMenu extends JMenuBar implements ActionListener
 	/*-----------*/
 
 	private FrameUML   frame;
+	private JCheckBoxMenuItem cbAfficher;
 
 	private String[][] modeleBarre = {  { "M", "Fichier",                      "F"                    },
 										{ "I", "Ouvrir",                       "O", "control O"       },
@@ -68,6 +69,28 @@ public class BarreMenu extends JMenuBar implements ActionListener
 					menuCourant.add(item);
 				}
 
+				case "C" -> 
+				{
+					JCheckBoxMenuItem checkBox = new JCheckBoxMenuItem(this.modeleBarre[i][1]);
+
+					if (this.modeleBarre[i].length > 2) {
+						checkBox.setMnemonic(this.modeleBarre[i][2].charAt(0));
+					}
+
+					if (this.modeleBarre[i].length == 4) {
+						checkBox.setAccelerator(KeyStroke.getKeyStroke(this.modeleBarre[i][3]));
+					}
+
+					checkBox.addActionListener(this);
+					menuCourant.add(checkBox);
+
+					// Stocke la référence si c'est la bonne checkbox
+					if ("Afficher implements/inteface".equals(this.modeleBarre[i][1])) 
+					{
+										this.cbAfficher = checkBox;
+					}
+				}
+
 				case "S" -> { menuCourant.addSeparator(); }
 			}
 		}
@@ -86,11 +109,13 @@ public class BarreMenu extends JMenuBar implements ActionListener
 
 		switch (cmd) 
 		{
-			case "Ouvrir"      -> this.frame.ouvrirFichier();
-			case "Ouvrir Xml"  -> this.frame.ouvrirXml();
-			case "Sauvegarder" -> this.frame.sauvegardeFichier();
-			case "Exporter"    -> this.frame.exporterFichier();
-			case "Quitter"     -> System.exit(0);
+			case "Ouvrir"      					-> this.frame.ouvrirFichier();
+			case "Ouvrir Xml"  					-> this.frame.ouvrirXml();
+			case "Sauvegarder" 					-> this.frame.sauvegardeFichier();
+			case "Exporter"    					-> this.frame.exporterFichier();			
+			case "Afficher implements/inteface" -> this.frame.afficherImplHerit(this.cbAfficher.getState());
+			case "Quitter"     					-> System.exit(0);
+			
 
 			default        -> System.out.println("Aucune action associée à : " + cmd);
 		}

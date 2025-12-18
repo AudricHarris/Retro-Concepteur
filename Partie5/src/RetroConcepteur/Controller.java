@@ -8,6 +8,7 @@ import java.util.List;
 import RetroConcepteur.metier.AnalyseFichier;
 import RetroConcepteur.metier.GereXml;
 import RetroConcepteur.metier.classe.Classe;
+import RetroConcepteur.metier.classe.Methode;
 import RetroConcepteur.metier.classe.Liaison;
 import RetroConcepteur.metier.classe.Position;
 import RetroConcepteur.vue.FrameUML;
@@ -52,6 +53,15 @@ public class Controller
 	public List<Liaison> getListLiaisonBinaire()
 	{
 		return this.analyseFichier.getListLiaisonBinaire();
+	}
+
+	public Classe getClasseAvecMeth( Methode meth )
+	{
+		for ( Classe c : this.getLstClasses() )
+		{
+			if ( c.getLstMethode().contains(meth)) return c;
+		}
+		return null;
 	}
 
 

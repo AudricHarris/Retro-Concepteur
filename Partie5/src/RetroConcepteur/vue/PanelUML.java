@@ -452,7 +452,7 @@ public class PanelUML extends JPanel
 	private void editMultiplicite(Multiplicite multiplicite)
 	{
 		JPanel panel = new JPanel();
-panel.setPreferredSize(new Dimension(240, 60));
+		panel.setPreferredSize(new Dimension(240, 60));
 		SpringLayout layout = new SpringLayout();
 		panel.setLayout(layout);
 		JLabel labelInf = new JLabel("Borne Inférieure:");
@@ -751,15 +751,16 @@ panel.setPreferredSize(new Dimension(240, 60));
 	private String getDebutSignatureMethode(Methode meth)
 	{
 		String s = getVisibiliteSymbole(meth.getVisibilite()) + " " + meth.getNom() + "(";
+		Classe classe = this.ctrl.getClasseAvecMeth(meth);
 		List<Parametre> params = meth.getLstParam();
 		for (int i = 0; i < params.size(); i++)
 		{
+			if (i >= 2 && classe.estClique() )
+				return s + " ...)";
+
 			s += params.get(i).getNom() + " : " + params.get(i).getType();
 			if (i < params.size() - 1)
 				s += ", ";
-		
-			if (i >= 2)
-				return s + " ...)";
 			
 		}
 		return s + ")";
