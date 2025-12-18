@@ -1,9 +1,14 @@
 package RetroConcepteur.vue.outil;
 
+// Paquetage awt
 import java.awt.List;
+
+// Paquetage Util
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashMap;
+
+// Nos paquetage
 import RetroConcepteur.vue.outil.*;
 
 public class Rectangle
@@ -14,6 +19,13 @@ public class Rectangle
 	private int tailleY;
 	private HashMap<Character, ArrayList<Chemin>> hashPosPrises;
 
+	/**
+	 *	Creer une instance de Rectangle
+	 *	@param x pos X de coin haut gauche
+	 *	@param y cord Y
+	 *	@param tailleX taille de longeur
+	 *	@param tailleY taille de la hauteur
+	 */
 	public Rectangle(int x, int y, int tailleX, int tailleY)
 	{
 		this.x = x;
@@ -23,53 +35,41 @@ public class Rectangle
 		this.tailleY = tailleY;
 		
 		this.hashPosPrises = new HashMap<Character, ArrayList<Chemin>>();
+
 		this.hashPosPrises.put('H', new ArrayList<Chemin>());
 		this.hashPosPrises.put('B', new ArrayList<Chemin>());
 		this.hashPosPrises.put('D', new ArrayList<Chemin>());
 		this.hashPosPrises.put('G', new ArrayList<Chemin>());
 	}
 
-	public int getCentreX()
-	{
-		return this.x + this.tailleX / 2;
-	}
+	//---------------------------------------//
+	//          Gestion de souris            //
+	//---------------------------------------//
+	
+	public int getX() { return this.x; }
+	public int getY() { return this.y; }
+	
+	public int getCentreX() { return this.x + this.tailleX / 2; }
+	public int getCentreY() { return this.y + this.tailleY / 2; }
 
-	public int getCentreY()
-	{
-		return this.y + this.tailleY / 2;
-	}
-
-	public int getTailleX()
-	{
-		return this.tailleX;
-	}
-
-	public int getTailleY()
-	{
-		return this.tailleY;
-	}
-
-	public int getX()
-	{
-		return this.x;
-	}
-
-	public int getY()
-	{
-		return this.y;
-	}
+	public int getTailleX() { return this.tailleX; }
+	public int getTailleY() { return this.tailleY; }
 
 	public ArrayList<Chemin> getListeChemin()
 	{
 		ArrayList<Chemin> liste = new ArrayList<Chemin>();
 		for (ArrayList<Chemin> lst : this.hashPosPrises.values())
-		{
 			liste.addAll(lst);
-		}
+
 		return liste;
 	}
 
+	public int getNbPoint(char c) { return this.hashPosPrises.get(c).size(); }
 
+	//---------------------------------------//
+	//          Gestion de souris            //
+	//---------------------------------------//
+	
 	public void deplacerX(int x)
 	{
 		this.x += x;
@@ -85,25 +85,33 @@ public class Rectangle
 	public void setX(int x) { this.x = x; mettreAJourToutesLesLiaisons(); }
 	public void setY(int y) { this.y = y; mettreAJourToutesLesLiaisons(); }
 
-	public void addPos(char c, Chemin chemin)
-	{
-		this.hashPosPrises.get(c).add(chemin);
-	}
-
+	//---------------------------------------//
+	//          Gestion de souris            //
+	//---------------------------------------//
+	
+	/**
+	 *	Ajoute le chemin a la hashmap pour la clé de la direction
+	 *	@param c la direction en char
+	 *	@param chemin le chemin
+	 */
+	public void addPos(char c, Chemin chemin) { this.hashPosPrises.get(c).add(chemin); }
+	
+	/**
+	 *  supprime le dernier chemin a la hashmap pour la clé de direction
+	 *	@param c la direction en char
+	 */
 	public void supPos(char c)
 	{
+		
 		ArrayList<Chemin> listeChemins = this.hashPosPrises.get(c);
 		if (listeChemins.size() > 0)
-		{
-			listeChemins.remove(listeChemins.size() - 1);
-		}
+			listeChemins.removeLast()
 	}
-
-	public int getNbPoint(char c)
-	{
-		return this.hashPosPrises.get(c).size();
-	}
-
+	
+	/**
+	 *	Retourne si un point est dans le rectangle
+	 *	@param autre un point
+	 */
 	public boolean possede(Point autre)
 	{
 		int autreX = autre.getX();
@@ -113,6 +121,10 @@ public class Rectangle
 			   autreY >= this.y && autreY <= this.y + this.tailleY;
 	}
 
+	/**
+	 *	Mets à jour un chemin autour d'un rectangle
+	 *	@param zone direction 
+	 */
 	public void repartirPointsLiaison(char zone)
 	{
 		ArrayList<Chemin> listeChemins = this.hashPosPrises.get( zone );
@@ -153,6 +165,8 @@ public class Rectangle
 			}
 		}
 	}
+
+
 	public void mettreAJourToutesLesLiaisons() 
 	{
 		this.repartirPointsLiaison('H');
