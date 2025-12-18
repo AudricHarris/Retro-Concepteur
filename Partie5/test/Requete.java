@@ -4,7 +4,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Locale;
 
-public class Requete {
+public class Requete 	{
     private String date;
     private String navigateur;
     private String ipVisiteur;

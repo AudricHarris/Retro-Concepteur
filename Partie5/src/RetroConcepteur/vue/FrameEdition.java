@@ -71,9 +71,7 @@ public class FrameEdition extends JFrame
 		else if (type == 'M')
 			this.add(this.pnlEditionMethode);
 
-		this.setSize(400, 300);
-		this.setLocationRelativeTo(null);
-
+		this.setSize(500, 300);
 		this.setVisible(true);
 		
 	}

@@ -1,6 +1,8 @@
 src/RetroConcepteur/metier/AnalyseFichier.java
 src/RetroConcepteur/metier/LireFichier.java
-src/RetroConcepteur/metier/GereXml.java
+
+src/RetroConcepteur/metier/gerexml/SauvegarderXml.java
+src/RetroConcepteur/metier/gerexml/ChargerXml.java
 
 src/RetroConcepteur/metier/classe/Liaison.java
 src/RetroConcepteur/metier/classe/Multiplicite.java
@@ -8,6 +10,7 @@ src/RetroConcepteur/metier/classe/Parametre.java
 src/RetroConcepteur/metier/classe/Methode.java
 src/RetroConcepteur/metier/classe/Attribut.java
 src/RetroConcepteur/metier/classe/Classe.java
+src/RetroConcepteur/metier/classe/Position.java
 
 src/RetroConcepteur/vue/outil/GereSouris.java
 src/RetroConcepteur/vue/outil/Chemin.java

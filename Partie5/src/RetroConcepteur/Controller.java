@@ -1,15 +1,19 @@
 package RetroConcepteur;
 
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
 import RetroConcepteur.metier.AnalyseFichier;
-import RetroConcepteur.metier.GereXml;
 import RetroConcepteur.metier.classe.Attribut;
 import RetroConcepteur.metier.classe.Classe;
+import RetroConcepteur.metier.classe.Methode;
 import RetroConcepteur.metier.classe.Liaison;
+import RetroConcepteur.metier.classe.Position;
+
+import RetroConcepteur.metier.gerexml.ChargerXml;
+import RetroConcepteur.metier.gerexml.SauvegarderXml;
+
 import RetroConcepteur.vue.FrameUML;
 import RetroConcepteur.vue.outil.Rectangle;
 
@@ -53,8 +57,17 @@ public class Controller
 	{
 		return this.analyseFichier.getListLiaisonBinaire();
 	}
-	
-	
+
+	public Classe getClasseAvecMeth( Methode meth )
+	{
+		for ( Classe c : this.getLstClasses() )
+		{
+			if ( c.getLstMethode().contains(meth)) return c;
+		}
+		return null;
+	}
+
+
 	/*
 	* Autres Methodes
 	*/
@@ -84,35 +97,54 @@ public class Controller
 	public void sauvegarderXml(String chemin)
 	{
 		ArrayList<Classe> lst = this.getLstClasses();
-		HashMap<Classe, Rectangle> map = this.frameUML.getMapPanel();
-		GereXml.sauvegarderXml(chemin, lst, map, this.getListLiaison());
+		HashMap<Classe, Rectangle> mapRect = this.frameUML.getMapPanel();
+		HashMap<Classe, Position> mapPositions = new HashMap<>();
+    	for (Classe c : lst) 
+		{
+			Rectangle r = mapRect.get(c);
+			if (r != null) 
+				{
+				mapPositions.put(c, new Position(r.getX(), r.getY(), r.getTailleX(), r.getTailleY()));
+			}
+		}
+
+		SauvegarderXml.sauvegarderXml(chemin, lst, mapPositions, this.getListLiaison());
 	}
 
 	public void chargerXml(String chemin)
 	{
-		ArrayList<Classe> classesLoaded = GereXml.chargerClassesXml(chemin);
+		ArrayList<Classe> classesLoaded = ChargerXml.chargerClassesXml(chemin);
 		if (classesLoaded == null || classesLoaded.isEmpty()) return;
 
-		HashMap<String, Rectangle> positionsLoaded = GereXml.chargerPositionsXml(chemin);
+		HashMap<String, Position> posCharger = ChargerXml.chargerPositionsXml(chemin);
 
-		// Charger les liaisons (si présentes dans le fichier)
-		List<Liaison> liaisonsLoaded = GereXml.chargerLiaisonsXml(chemin, classesLoaded);
+		List<Liaison> liaisonsCharger = ChargerXml.chargerLiaisonsXml(chemin, classesLoaded);
 
-		if (liaisonsLoaded != null && !liaisonsLoaded.isEmpty())
-			this.analyseFichier.remplacerClassesEtLiaisons(classesLoaded, liaisonsLoaded);
+		if (liaisonsCharger != null && !liaisonsCharger.isEmpty())
+			this.analyseFichier.remplacerClassesEtLiaisons(classesLoaded, liaisonsCharger);
 		else
 			this.analyseFichier.remplacerClassesEtLiaisons(classesLoaded);
 
 		this.frameUML.reinitialiser();
 
-		HashMap<Classe, Rectangle> newMap = new HashMap<>();
+		HashMap<Classe, Rectangle> nouvMap = new HashMap<Classe, Rectangle>();
+
 		for (Classe c : this.getLstClasses())
 		{
-			Rectangle r = positionsLoaded.get(c.getNom());
-			if (r != null) newMap.put(c, r);
+			Position pos = posCharger.get(c.getNom());
+			if (pos != null)
+			{
+				Rectangle r = new Rectangle(
+					pos.getX(),
+					pos.getY(),
+					pos.getLargeur(),
+					pos.getHauteur()
+				);
+				nouvMap.put(c, r);
+			}
 		}
 
-		this.frameUML.setMapPanel(newMap);
+		this.frameUML.setMapPanel(nouvMap);
 	}
 	public void majIHM()
 	{

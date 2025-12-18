@@ -12,7 +12,8 @@ public class Liaison
 {
 	public static final String[] LST_COLLECTIONS = {"List<","ArrayList<", "LinkedList<" ,
 	                                                "Set<" ,"HashSet<"  ,"Collection"   ,
-	                                                "Iterable<", "Iterator<"};
+	                                                "Iterable<", "Iterator<",
+												     "Map<", "HashMap<", "TreeMap<"};
 
 	private Classe fromClass;
 	private Classe toClass;

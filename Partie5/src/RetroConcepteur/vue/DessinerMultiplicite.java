@@ -24,77 +24,111 @@ public class DessinerMultiplicite
      * @param multDepart Multiplicité de départ.
      * @param multArrivee Multiplicité d'arrivée.
      */
-    public void dessiner(Graphics2D g2, Chemin chemin, String multDepart, String multArrivee)
+    public void dessiner(Graphics2D g2, Chemin chemin, String multDepart, String multArrivee, String nomVar)
 	{
         LinkedList<Point> points = chemin.getParcours();
         int distClasse = 10;
         int distTrait = 5;
-    
-		FontMetrics fm = g2.getFontMetrics();
+        int distRole = 5; 
+
+        FontMetrics fm = g2.getFontMetrics();
         double ascent = fm.getAscent();
+
         if (!multDepart.isEmpty())
 		{
             Point pDep = points.getFirst();
             Point pSvt = points.get(1);
             int x = pDep.getX();
             int y = pDep.getY();
+
             if (pDep.getY() == pSvt.getY())
 			{
-                y -= distTrait;
+                y += (int)ascent; 
                 if (pSvt.getX() > pDep.getX())
-				{
                     x += distClasse;
-                }
 				else
-				{
-                    x -= (distClasse + 15);
-                }
+                    x -= distClasse + 15;
             }
 			else
 			{
                 x += distTrait;
                 if (pSvt.getY() > pDep.getY())
-				{
                     y += (distClasse + 10);
-				}
 				else 
-				{
                     y -= distClasse;
-                }
             }
             g2.drawString(multDepart, x, y);
         }
+        
         if (!multArrivee.isEmpty())
 		{
             Point pArr = points.getLast();
             Point pPrc = points.get(points.size() - 2);
+
             int x = pArr.getX();
             int y = pArr.getY();
+            int xRole = 0;
+            int yRole = 0;
+
+            FontMetrics metrics = g2.getFontMetrics();
+            int largeurRole = metrics.stringWidth(nomVar);
+
+            // Chemin horizontal
             if (pArr.getY() == pPrc.getY())
 			{
-                y -= distTrait;
+                int yMult = y + (int)ascent;
+                
                 if (pArr.getX() > pPrc.getX())
 				{
-                    x -= (distClasse + 15);
-                }
+                    // Flèche vient de la gauche
+                    x -= distClasse + 15;
+                    xRole = x - largeurRole;
+                    yRole = y - distRole;
+				}
 				else
 				{
+                    // Flèche vient de la droite
                     x += distClasse;
-                }
+
+                    xRole = x + (largeurRole/2) ;
+                    yRole = y - distRole;
+				}
+                
+                g2.drawString(multArrivee, x, yMult);
             }
+			// Chemin vertical
 			else 
 			{
-                x += distTrait;
                 if (pArr.getY() > pPrc.getY())
 				{
-                    y -= distClasse;
-                }
+                    // Flèche vient du haut
+                    int xMult = x + distTrait;
+                    int yMult = y - distClasse;
+                    g2.drawString(multArrivee, xMult, yMult);
+                    
+                    // Rôle à GAUCHE du trait
+                    xRole = x - largeurRole - distTrait;
+                    yRole = y - (distClasse *3);
+				}
 				else 
 				{
-                    y += (distClasse + 10);
-                }
+                    // Flèche vient du bas
+
+                    int xMult = x + distTrait;
+                    int yMult = y + (distClasse + 10);
+                    g2.drawString(multArrivee, xMult, yMult);
+                    
+                    // Rôle à GAUCHE du trait
+                    xRole = x - largeurRole - distTrait;
+                    yRole = y + (distClasse + 10) *2;
+				}
             }
-            g2.drawString(multArrivee, x, y);
+            
+            // Dessiner le rôle seulement s'il n'est pas vide
+            if (nomVar != null && !nomVar.isEmpty())
+			{
+                g2.drawString(nomVar, xRole, yRole);
+			}
         }
     }
 
@@ -124,25 +158,17 @@ public class DessinerMultiplicite
 			{
                 y -= distTrait;
                 if (pSvt.getX() > pDep.getX())
-				{
                     x += distClasse;
-                }
 				else
-				{
                     x -= (distClasse + 15);
-                }
             } 
 			else
 			{
                 x += distTrait;
                 if (pSvt.getY() > pDep.getY())
-				{
                     y += (distClasse + 10);
-				}
 				else
-				{
                     y -= distClasse;
-                }
             }
 
             double width = fm.stringWidth(multDepart);
@@ -165,25 +191,17 @@ public class DessinerMultiplicite
 			{
                 y -= distTrait;
                 if (pArr.getX() > pPrc.getX())
-				{
                     x -= (distClasse + 15);
-                }
 				else
-				{
                     x += distClasse;
-                }
             } 
 			else
 			{
                 x += distTrait;
                 if (pArr.getY() > pPrc.getY())
-				{
                     y -= distClasse;
-                }
 				else
-				{
                     y += (distClasse + 10);
-                }
             }
 
             double width = fm.stringWidth(multArrivee);
@@ -199,6 +217,7 @@ public class DessinerMultiplicite
         }
         return false;
     }
+
     
 	/**
      * Indique si c'est la multiplicité de départ.

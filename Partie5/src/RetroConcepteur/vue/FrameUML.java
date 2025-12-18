@@ -200,4 +200,8 @@ public class FrameUML extends JFrame
 		}
 	}
 
+	public void afficherImplHerit (boolean bool)
+	{
+		System.out.println(bool);
+	}
 }

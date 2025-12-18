@@ -154,16 +154,30 @@ public class PanelUML extends JPanel
 		{
 			Liaison l = this.lstLiaisons.get(i);
 			Chemin c = this.lstChemins.get(i);
-			String multFrom = l.getFromMultiplicity().getBorneInf() + "." + l.getFromMultiplicity().getBorneSup();
-			String multTo = l.getToMultiplicity().getBorneInf() + "." + l.getToMultiplicity().getBorneSup();
-
-			if (multFrom.equals(".")) multFrom = "";
-			if (multTo.equals(".")) multTo = "";
-			if (multFrom.equals("1.1")) multFrom = "1";
-			if (multTo.equals("1.1")) multTo = "1";
 			
-			this.dessinerMultiplicite.dessiner(g2, c, multFrom, multTo);
+
+			String infFrom = l.getFromMultiplicity().getBorneInf();
+			String supFrom = l.getFromMultiplicity().getBorneSup();
+			String infTo   = l.getToMultiplicity().getBorneInf();
+			String supTo   = l.getToMultiplicity().getBorneSup();
+
+			String multFrom = construireLabelMultiplicite(infFrom, supFrom);
+			String multTo   = construireLabelMultiplicite(infTo, supTo);
+			
+			this.dessinerMultiplicite.dessiner(g2, c, multFrom, multTo, l.getNomVar());
 		}
+	}
+
+	/**
+	 * Construit le label (ex: "0..1" ou "1") et gère les cas vides.
+	 */
+	private String construireLabelMultiplicite(String inf, String sup)
+	{
+		if ((inf == null || inf.isEmpty()) && (sup == null || sup.isEmpty())) return "";
+		
+		if ("1".equals(inf) && "1".equals(sup)) return "1";
+		
+		return inf + ".." + sup;
 	}
 
 	// =========================================================================
@@ -182,15 +196,18 @@ public class PanelUML extends JPanel
 		Rectangle rect = this.mapClasseRectangle.get(classe);
 		int x = rect.getX();
 		int y = rect.getY();
+
 		// Préparation des textes avec alignement et filtrage
+
 		List<Attribut> lstAtt = new ArrayList<Attribut>();
 		int maxLargeurGaucheAtt = 0;
 		int cpt = 0;
 		boolean tropAtt = false;
+		
 		for (Attribut att : classe.getListOrdonneeAttribut())
 		{
 			if (this.ctrl.estClasseProjet(att.getType())) continue;
-			if (cpt >= 3)
+			if (cpt >= 3 && ! classe.estClique())
 			{
 				tropAtt = true;
 				break;
@@ -209,7 +226,7 @@ public class PanelUML extends JPanel
 		for (Methode meth : classe.getListOrdonneeMethode())
 		{
 			if (meth.getNom().equals("main")) continue;
-			if (cpt >= 3)
+			if (cpt >= 3 && ! classe.estClique() )
 			{
 				tropMeth = true;
 				break;
@@ -439,7 +456,7 @@ public class PanelUML extends JPanel
 	private void editMultiplicite(Multiplicite multiplicite)
 	{
 		JPanel panel = new JPanel();
-panel.setPreferredSize(new Dimension(240, 60));
+		panel.setPreferredSize(new Dimension(240, 60));
 		SpringLayout layout = new SpringLayout();
 		panel.setLayout(layout);
 		JLabel labelInf = new JLabel("Borne Inférieure:");
@@ -641,6 +658,59 @@ panel.setPreferredSize(new Dimension(240, 60));
 		return h;
 	}
 
+	public void detecterZoneEtOuvrirEdition(Classe classe, Rectangle rect, Point pSouris)
+	{
+		Graphics2D g2 = (Graphics2D) this.getGraphics();
+		FontMetrics metrics = g2.getFontMetrics();
+		int hauteurLigne = metrics.getHeight();
+		int padding = 5; 
+
+		int hauteurTitre = hauteurLigne + (padding * 2);
+
+		int nbLignesAttributs = 0;
+		int cpt = 0;
+		
+		for (Attribut att : classe.getListOrdonneeAttribut())
+		{
+			if (this.ctrl.estClasseProjet(att.getType())) continue; 
+
+			if (cpt >= 3) 
+			{ 
+				nbLignesAttributs++; 
+				break; 
+			}
+			
+			nbLignesAttributs++;
+			cpt++;
+		}
+
+		
+		if (nbLignesAttributs == 0) nbLignesAttributs = 1; 
+
+		int hauteurZoneAttributs = (nbLignesAttributs * (hauteurLigne + 2)) + 10; 
+
+		
+		int yRelatif = pSouris.getY() - rect.getY();
+
+		if (yRelatif < hauteurTitre) 
+		{
+			System.out.println("Ouverture édition Titre");
+			
+			new FrameEdition(this.ctrl, classe, 'C');
+		} 
+		else if (yRelatif < (hauteurTitre + hauteurZoneAttributs)) 
+		{
+			
+			System.out.println("Ouverture édition Attributs");
+			new FrameEdition(this.ctrl, classe, 'A');
+		} 
+		else 
+		{
+			
+			new FrameEdition(this.ctrl, classe, 'M');
+		}
+	}
+
 	/**
 	 * Calcule la hauteur d'un bloc.
 	 *
@@ -685,15 +755,16 @@ panel.setPreferredSize(new Dimension(240, 60));
 	private String getDebutSignatureMethode(Methode meth)
 	{
 		String s = getVisibiliteSymbole(meth.getVisibilite()) + " " + meth.getNom() + "(";
+		Classe classe = this.ctrl.getClasseAvecMeth(meth);
 		List<Parametre> params = meth.getLstParam();
 		for (int i = 0; i < params.size(); i++)
 		{
+			if (i >= 2 && ! classe.estClique() )
+				return s + " ...)";
+
 			s += params.get(i).getNom() + " : " + params.get(i).getType();
 			if (i < params.size() - 1)
 				s += ", ";
-		
-			if (i >= 2)
-				return s + " ...)";
 			
 		}
 		return s + ")";
