@@ -22,6 +22,7 @@ public class Classe
 	private boolean isInterface;
 
 	private boolean estClique;
+	private boolean cachable;
 	
 	/**
 	 * Constructeur de la classe
@@ -36,6 +37,7 @@ public class Classe
 		this.isAbstract = false;
 		this.isInterface = false;
 		this.estClique = false;
+		this.cachable  = false;
 	}
 	
 	//---------------------------------------//
@@ -228,6 +230,9 @@ public class Classe
 		}
 		return result;
 	}
+
+	public boolean getCachable() {return this.cachable;}
+
 	//---------------------------------------//
 	//          Modificateur                 //
 	//---------------------------------------//
@@ -235,7 +240,8 @@ public class Classe
 	public void setIsAbstract       (boolean isAbstract ) { this.isAbstract        = isAbstract;  }
 	public void setIsInterface      (boolean isInterface) { this.isInterface       = isInterface; }
 	public void setNomHeritageClasse(String  nom        ) { this.nomHeritageClasse = nom;         }
-	public void setEstClique(boolean bClique) { this.estClique=bClique;}
+	public void setEstClique        (boolean bClique    ) { this.estClique         = bClique;     }
+	public void setCachable         (boolean cachable   ) {this.cachable           = cachable;   }
 	
 	/**
 	 * Ajoute l'interface passer en param

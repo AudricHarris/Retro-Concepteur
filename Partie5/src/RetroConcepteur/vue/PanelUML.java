@@ -35,6 +35,7 @@ public class PanelUML extends JPanel
 {
 	private FrameUML frame;
 	private Controller ctrl;
+	
 
 	// Données du modèle
 	private List<Classe> lstClasse;
@@ -43,9 +44,11 @@ public class PanelUML extends JPanel
 
 	// Données de la vue
 	private HashMap<Classe, Rectangle> mapClasseRectangle;
+	private HashMap<Chemin, Liaison> mapCheminLiaison; // Associe chaque chemin à sa liaison
 	private DessinerFleche dessinerFleche;
 	private DessinerMultiplicite dessinerMultiplicite;
 	private boolean positionDeterminee = false;
+	private boolean afficherClassesCachables = true;
 
 	// Constantes de style
 	private final int PADDING_X = 10;
@@ -92,6 +95,7 @@ public class PanelUML extends JPanel
 		this.lstClasse = this.ctrl.getLstClasses();
 		this.lstLiaisons = new ArrayList<Liaison>(this.ctrl.getListLiaisonBinaire());
 		this.mapClasseRectangle = new HashMap<Classe, Rectangle>();
+		this.mapCheminLiaison = new HashMap<Chemin, Liaison>();
 		this.positionDeterminee = false;
 		this.lstChemins = new ArrayList<Chemin>();
 		this.initialiserPositions();
@@ -134,7 +138,11 @@ public class PanelUML extends JPanel
 		Font font = new Font("SansSerif", Font.PLAIN, 12);
 		g2.setFont(font);
 		g2.setStroke(new BasicStroke(2.0f));
-		for (Classe classe : this.lstClasse) this.dessinerClasse(g2, classe);
+		for (Classe classe : this.lstClasse)
+		{
+			if (!classe.getCachable() || this.afficherClassesCachables)
+				this.dessinerClasse(g2, classe);
+		}
 
 		if (!this.positionDeterminee)
 		{
@@ -146,25 +154,28 @@ public class PanelUML extends JPanel
 
 		for (Chemin c : this.lstChemins) this.dessinerFleche.dessinerLiaison(g2, c);
 
-		for (Classe classe : this.lstClasse) this.dessinerClasse(g2, classe);
-		
-		int numLiaisons = Math.min(this.lstLiaisons.size(), this.lstChemins.size());
-		
-		for (int i = 0; i < numLiaisons; i++)
+		for (Classe classe : this.lstClasse)
 		{
-			Liaison l = this.lstLiaisons.get(i);
-			Chemin c = this.lstChemins.get(i);
-			
+			if (!classe.getCachable() || this.afficherClassesCachables)
+				this.dessinerClasse(g2, classe);
+		}
+		
+		// Dessiner les multiplicités en utilisant la HashMap pour associer chemins et liaisons
+		for (Chemin c : this.lstChemins)
+		{
+			Liaison l = this.mapCheminLiaison.get(c);
+			if (l != null)
+			{
+				String infFrom = l.getFromMultiplicity().getBorneInf();
+				String supFrom = l.getFromMultiplicity().getBorneSup();
+				String infTo   = l.getToMultiplicity().getBorneInf();
+				String supTo   = l.getToMultiplicity().getBorneSup();
 
-			String infFrom = l.getFromMultiplicity().getBorneInf();
-			String supFrom = l.getFromMultiplicity().getBorneSup();
-			String infTo   = l.getToMultiplicity().getBorneInf();
-			String supTo   = l.getToMultiplicity().getBorneSup();
-
-			String multFrom = construireLabelMultiplicite(infFrom, supFrom);
-			String multTo   = construireLabelMultiplicite(infTo, supTo);
-			
-			this.dessinerMultiplicite.dessiner(g2, c, multFrom, multTo, l.getNomVar());
+				String multFrom = construireLabelMultiplicite(infFrom, supFrom);
+				String multTo   = construireLabelMultiplicite(infTo, supTo);
+				
+				this.dessinerMultiplicite.dessiner(g2, c, multFrom, multTo, l.getNomVar());
+			}
 		}
 	}
 
@@ -279,6 +290,7 @@ public class PanelUML extends JPanel
 	private void reconstruireChemins()
 	{
 		this.lstChemins.clear();
+		this.mapCheminLiaison.clear();
 		for (Liaison l : this.lstLiaisons)
 		{
 			Rectangle r1 = this.mapClasseRectangle.get(l.getFromClass());
@@ -300,6 +312,7 @@ public class PanelUML extends JPanel
 				r1.repartirPointsLiaison(zone);
 				r2.repartirPointsLiaison(zoneInv);
 				this.lstChemins.add(chemin);
+				this.mapCheminLiaison.put(chemin, l); // Associer le chemin à sa liaison
 			}
 		}
 		this.recalculerChemins();
@@ -313,10 +326,17 @@ public class PanelUML extends JPanel
 		for (Rectangle rect : this.mapClasseRectangle.values()) rect.nettoyerLiaisons();
 
 		this.lstChemins.clear();
+		this.mapCheminLiaison.clear();
 		HashMap<String, List<Chemin>> mapGroupes = new HashMap<>();
 		
 		for (Liaison l : this.lstLiaisons)
 		{
+			// Filtrer les liaisons impliquant des classes cachables si non affichées
+			if (!this.afficherClassesCachables)
+				if (l.getFromClass().getCachable() || l.getToClass().getCachable())
+					continue;
+			
+			
 			Rectangle r1 = this.mapClasseRectangle.get(l.getFromClass());
 			Rectangle r2 = this.mapClasseRectangle.get(l.getToClass());
 			
@@ -350,6 +370,7 @@ public class PanelUML extends JPanel
 
 				mapGroupes.get(cle).add(chemin);
 				this.lstChemins.add(chemin);
+				this.mapCheminLiaison.put(chemin, l); // Associer le chemin à sa liaison
 			}
 		}
 
@@ -426,12 +447,11 @@ public class PanelUML extends JPanel
 		Font font = new Font("SansSerif", Font.PLAIN, 12);
 		FontMetrics fm = getFontMetrics(font);
 		Point p = new Point((int)e.getPoint().getX(), (int) e.getPoint().getY());
-		int numLiaisons = Math.min(this.lstLiaisons.size(), this.lstChemins.size());
 		
-		for (int i = 0; i < numLiaisons; i++)
+		for (Chemin c : this.lstChemins)
 		{
-			Liaison l = this.lstLiaisons.get(i);
-			Chemin c = this.lstChemins.get(i);
+			Liaison l = this.mapCheminLiaison.get(c);
+			if (l == null) continue;
 			String multFrom = l.getFromMultiplicity().getBorneInf() + "." + l.getFromMultiplicity().getBorneSup();
 			String multTo = l.getToMultiplicity().getBorneInf() + "." + l.getToMultiplicity().getBorneSup();
 			if (multFrom.equals(".")) multFrom = "";
@@ -603,6 +623,18 @@ public class PanelUML extends JPanel
 		FontMetrics metrics = g.getFontMetrics();
 		int xCentre = x + (largeurConteneur - metrics.stringWidth(texte)) / 2;
 		g.drawString(texte, xCentre, y + metrics.getAscent());
+	}
+
+	/**
+	 * Active ou désactive l'affichage des classes cachables (JDK).
+	 *
+	 * @param afficher true pour afficher, false pour masquer.
+	 */
+	public void afficherInterfaceHeritage(boolean afficher)
+	{
+		this.afficherClassesCachables = afficher;
+		this.recalculerChemins();
+		this.repaint();
 	}
 	
 	// =========================================================================
