@@ -109,7 +109,6 @@ public class GereSouris extends MouseAdapter
 	 */
 	public void mouseClicked(MouseEvent e) 
 	{
-		
 		if (e.getClickCount() == 2 && SwingUtilities.isLeftMouseButton(e)) 
 		{
 			int x = e.getX();
@@ -118,8 +117,8 @@ public class GereSouris extends MouseAdapter
 			
 			for (Classe c : this.panelUML.getMap().keySet()) 
 			{
-				Point     pSouris = new Point(x, y);
-				Rectangle r       = this.panelUML.getMap().get(c);
+				Point pSouris = new Point(x, y);
+				Rectangle r = this.panelUML.getMap().get(c);
 				if (r.possede(pSouris)) 
 				{
 					this.panelUML.detecterZoneEtOuvrirEdition(c, r, pSouris);

@@ -658,6 +658,59 @@ public class PanelUML extends JPanel
 		return h;
 	}
 
+	public void detecterZoneEtOuvrirEdition(Classe classe, Rectangle rect, Point pSouris)
+	{
+		Graphics2D g2 = (Graphics2D) this.getGraphics();
+		FontMetrics metrics = g2.getFontMetrics();
+		int hauteurLigne = metrics.getHeight();
+		int padding = 5; 
+
+		int hauteurTitre = hauteurLigne + (padding * 2);
+
+		int nbLignesAttributs = 0;
+		int cpt = 0;
+		
+		for (Attribut att : classe.getListOrdonneeAttribut())
+		{
+			if (this.ctrl.estClasseProjet(att.getType())) continue; 
+
+			if (cpt >= 3) 
+			{ 
+				nbLignesAttributs++; 
+				break; 
+			}
+			
+			nbLignesAttributs++;
+			cpt++;
+		}
+
+		
+		if (nbLignesAttributs == 0) nbLignesAttributs = 1; 
+
+		int hauteurZoneAttributs = (nbLignesAttributs * (hauteurLigne + 2)) + 10; 
+
+		
+		int yRelatif = pSouris.getY() - rect.getY();
+
+		if (yRelatif < hauteurTitre) 
+		{
+			System.out.println("Ouverture édition Titre");
+			
+			new FrameEdition(this.ctrl, classe, 'C');
+		} 
+		else if (yRelatif < (hauteurTitre + hauteurZoneAttributs)) 
+		{
+			
+			System.out.println("Ouverture édition Attributs");
+			new FrameEdition(this.ctrl, classe, 'A');
+		} 
+		else 
+		{
+			
+			new FrameEdition(this.ctrl, classe, 'M');
+		}
+	}
+
 	/**
 	 * Calcule la hauteur d'un bloc.
 	 *
@@ -852,60 +905,6 @@ public class PanelUML extends JPanel
 		}
 	}
 
-	public void detecterZoneEtOuvrirEdition(Classe classe, Rectangle rect, Point pSouris)
-	{
-		Graphics2D g2 = (Graphics2D) this.getGraphics();
-		FontMetrics metrics = g2.getFontMetrics();
-		int hauteurLigne = metrics.getHeight();
-		int padding = 5; 
-
-		int hauteurTitre = hauteurLigne + (padding * 2);
-
-		int nbLignesAttributs = 0;
-		int cpt = 0;
-		
-		for (Attribut att : classe.getListOrdonneeAttribut())
-		{
-			if (this.ctrl.estClasseProjet(att.getType())) continue; 
-
-			if (cpt >= 3) 
-			{ 
-				nbLignesAttributs++; 
-				break; 
-			}
-			
-			nbLignesAttributs++;
-			cpt++;
-		}
-
-		
-		if (nbLignesAttributs == 0) nbLignesAttributs = 1; 
-
-		int hauteurZoneAttributs = (nbLignesAttributs * (hauteurLigne + 2)) + 10; 
-
-		
-		int yRelatif = pSouris.getY() - rect.getY();
-
-		if (yRelatif < hauteurTitre) 
-		{
-			new FrameEdition(this.ctrl, classe, 'T');
-			System.out.println("Ouverture édition Titre");
-		} 
-		else if (yRelatif < (hauteurTitre + hauteurZoneAttributs)) 
-		{
-			if (!classe.getLstAttribut().isEmpty()) 
-				new FrameEdition(this.ctrl, classe, 'A');
-			else
-				JOptionPane.showMessageDialog(this.frame, "Cette classe ne possède pas d'attributs à éditer.");
-		} 
-		else 
-		{
-			if (!classe.getLstMethode().isEmpty()) 
-				new FrameEdition(this.ctrl, classe, 'M');
-			else
-				JOptionPane.showMessageDialog(this.frame, "Cette classe ne possède pas de méthodes à éditer.");
-		}
-	}
 }
 
 
