@@ -12,39 +12,50 @@ public class GereSouris extends MouseAdapter
 {
 	private PanelUML panelUML;
 	private Point decalage;
-	private Rectangle classeActuel;
+	private Rectangle rectClasseActuel;
+	private Classe classeActuel;
 
 	public GereSouris(PanelUML panelUML)
 	{
 		this.panelUML = panelUML;
 		this.decalage = null;
 		this.classeActuel = null;
+		this.classeActuel = null;
 	}
 
 	public void mousePressed(MouseEvent e)
 	{
+		Point p=null;
+
 		for (Classe classe : panelUML.getMap().keySet())
 		{
 			Rectangle rect = panelUML.getMap().get(classe);
-			Point p = new Point(e.getX(), e.getY());
+			p = new Point(e.getX(), e.getY());
 			if (rect.possede(p))
 			{
-				this.classeActuel = rect;
+				this.rectClasseActuel = rect;
+				this.classeActuel = classe;
 				this.decalage = new Point(e.getX() - rect.getX(), 
 				                         e.getY() - rect.getY());
 			}
+		}
+
+		if ( this.rectClasseActuel != null && SwingUtilities.isRightMouseButton(e) && p!= null && rectClasseActuel.possede(p) )
+		{
+			this.classeActuel.setEstClique(true);
+			this.panelUML.repaint();
 		}
 	}
 
 	public void mouseDragged(MouseEvent e)
 	{
-		if (this.classeActuel != null && this.decalage != null)
+		if (this.classeActuel != null && this.decalage != null && SwingUtilities.isLeftMouseButton(e) )
 		{
 			int futurX = e.getX() - this.decalage.getX();
 			int futurY = e.getY() - this.decalage.getY();
 
-			this.classeActuel.setX(futurX);
-			this.classeActuel.setY(futurY);
+			this.rectClasseActuel.setX(futurX);
+			this.rectClasseActuel.setY(futurY);
 			
 			this.panelUML.recalculerChemins();
 			this.panelUML.repaint();
@@ -53,13 +64,18 @@ public class GereSouris extends MouseAdapter
 
 	public void mouseReleased(MouseEvent e)
 	{
+		if ( this.classeActuel != null ) this.classeActuel.setEstClique(false);
+		
 		this.classeActuel = null;
+		this.rectClasseActuel = null;
 		this.decalage = null;
+		this.panelUML.repaint();
 	}
+
 	public void mouseClicked(MouseEvent e) 
 	{
 		
-		if (e.getClickCount() == 2) 
+		if (e.getClickCount() == 2 && SwingUtilities.isLeftMouseButton(e)) 
 		{
 			int x = e.getX();
 			int y = e.getY();
@@ -71,7 +87,6 @@ public class GereSouris extends MouseAdapter
 				Rectangle r = this.panelUML.getMap().get(c);
 				if (r.possede(pSouris)) 
 				{
-					
 					this.panelUML.detecterZoneEtOuvrirEdition(c, r, pSouris);
 					break;
 				}

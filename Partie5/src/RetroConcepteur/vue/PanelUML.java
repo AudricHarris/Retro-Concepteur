@@ -203,7 +203,7 @@ public class PanelUML extends JPanel
 		for (Attribut att : classe.getListOrdonneeAttribut())
 		{
 			if (this.ctrl.estClasseProjet(att.getType())) continue;
-			if (cpt >= 3)
+			if (cpt >= 3 && ! classe.estClique())
 			{
 				tropAtt = true;
 				break;
@@ -222,7 +222,7 @@ public class PanelUML extends JPanel
 		for (Methode meth : classe.getListOrdonneeMethode())
 		{
 			if (meth.getNom().equals("main")) continue;
-			if (cpt >= 3)
+			if (cpt >= 3 && ! classe.estClique() )
 			{
 				tropMeth = true;
 				break;

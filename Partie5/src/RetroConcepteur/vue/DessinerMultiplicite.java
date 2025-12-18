@@ -90,7 +90,7 @@ public class DessinerMultiplicite
                     // Flèche vient de la droite
                     x += distClasse;
 
-                    xRole = x + largeurRole;
+                    xRole = x + (largeurRole/2) ;
                     yRole = y - distRole;
 				}
                 
@@ -120,7 +120,7 @@ public class DessinerMultiplicite
                     
                     // Rôle à GAUCHE du trait
                     xRole = x - largeurRole - distTrait;
-                    yRole = y + ((distClasse + 10) *3);
+                    yRole = y + (distClasse + 10) *2;
 				}
             }
             
