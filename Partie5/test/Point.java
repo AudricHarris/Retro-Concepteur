@@ -5,7 +5,7 @@ public class Point extends Mois
 	private int x;
 	private int y;
 
-	private Disque d;
+
 
 	
 	public Point(String nom, int x, int y) 

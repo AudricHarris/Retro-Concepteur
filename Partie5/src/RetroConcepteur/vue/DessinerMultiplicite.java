@@ -24,7 +24,7 @@ public class DessinerMultiplicite
      * @param multDepart Multiplicité de départ.
      * @param multArrivee Multiplicité d'arrivée.
      */
-    public void dessiner(Graphics2D g2, Chemin chemin, String multDepart, String multArrivee)
+    public void dessiner(Graphics2D g2, Chemin chemin, String multDepart, String multArrivee, String nomVar)
 	{
         LinkedList<Point> points = chemin.getParcours();
         int distClasse = 10;
@@ -32,6 +32,7 @@ public class DessinerMultiplicite
     
 		FontMetrics fm = g2.getFontMetrics();
         double ascent = fm.getAscent();
+
         if (!multDepart.isEmpty())
 		{
             Point pDep = points.getFirst();
@@ -42,25 +43,17 @@ public class DessinerMultiplicite
 			{
                 y -= distTrait;
                 if (pSvt.getX() > pDep.getX())
-				{
                     x += distClasse;
-                }
 				else
-				{
                     x -= (distClasse + 15);
-                }
             }
 			else
 			{
                 x += distTrait;
                 if (pSvt.getY() > pDep.getY())
-				{
                     y += (distClasse + 10);
-				}
 				else 
-				{
                     y -= distClasse;
-                }
             }
             g2.drawString(multDepart, x, y);
         }
@@ -74,27 +67,24 @@ public class DessinerMultiplicite
 			{
                 y -= distTrait;
                 if (pArr.getX() > pPrc.getX())
-				{
                     x -= (distClasse + 15);
-                }
 				else
-				{
                     x += distClasse;
-                }
             }
 			else 
 			{
                 x += distTrait;
                 if (pArr.getY() > pPrc.getY())
-				{
                     y -= distClasse;
-                }
 				else 
-				{
                     y += (distClasse + 10);
-                }
             }
             g2.drawString(multArrivee, x, y);
+            
+			FontMetrics metrics = g2.getFontMetrics();
+			int tailleVar = metrics.stringWidth(nomVar);
+
+			g2.drawString(nomVar, x + tailleVar, y);
         }
     }
 
@@ -124,25 +114,17 @@ public class DessinerMultiplicite
 			{
                 y -= distTrait;
                 if (pSvt.getX() > pDep.getX())
-				{
                     x += distClasse;
-                }
 				else
-				{
                     x -= (distClasse + 15);
-                }
             } 
 			else
 			{
                 x += distTrait;
                 if (pSvt.getY() > pDep.getY())
-				{
                     y += (distClasse + 10);
-				}
 				else
-				{
                     y -= distClasse;
-                }
             }
 
             double width = fm.stringWidth(multDepart);
@@ -165,25 +147,17 @@ public class DessinerMultiplicite
 			{
                 y -= distTrait;
                 if (pArr.getX() > pPrc.getX())
-				{
                     x -= (distClasse + 15);
-                }
 				else
-				{
                     x += distClasse;
-                }
             } 
 			else
 			{
                 x += distTrait;
                 if (pArr.getY() > pPrc.getY())
-				{
                     y -= distClasse;
-                }
 				else
-				{
                     y += (distClasse + 10);
-                }
             }
 
             double width = fm.stringWidth(multArrivee);

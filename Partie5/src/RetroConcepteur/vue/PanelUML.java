@@ -150,16 +150,30 @@ public class PanelUML extends JPanel
 		{
 			Liaison l = this.lstLiaisons.get(i);
 			Chemin c = this.lstChemins.get(i);
-			String multFrom = l.getFromMultiplicity().getBorneInf() + "." + l.getFromMultiplicity().getBorneSup();
-			String multTo = l.getToMultiplicity().getBorneInf() + "." + l.getToMultiplicity().getBorneSup();
-
-			if (multFrom.equals(".")) multFrom = "";
-			if (multTo.equals(".")) multTo = "";
-			if (multFrom.equals("1.1")) multFrom = "1";
-			if (multTo.equals("1.1")) multTo = "1";
 			
-			this.dessinerMultiplicite.dessiner(g2, c, multFrom, multTo);
+
+			String infFrom = l.getFromMultiplicity().getBorneInf();
+			String supFrom = l.getFromMultiplicity().getBorneSup();
+			String infTo   = l.getToMultiplicity().getBorneInf();
+			String supTo   = l.getToMultiplicity().getBorneSup();
+
+			String multFrom = construireLabelMultiplicite(infFrom, supFrom);
+			String multTo   = construireLabelMultiplicite(infTo, supTo);
+			
+			this.dessinerMultiplicite.dessiner(g2, c, multFrom, multTo, l.getNomVar());
 		}
+	}
+
+	/**
+	 * Construit le label (ex: "0..1" ou "1") et gère les cas vides.
+	 */
+	private String construireLabelMultiplicite(String inf, String sup)
+	{
+		if ((inf == null || inf.isEmpty()) && (sup == null || sup.isEmpty())) return "";
+		
+		if ("1".equals(inf) && "1".equals(sup)) return "1";
+		
+		return inf + ".." + sup;
 	}
 
 	// =========================================================================

@@ -75,8 +75,8 @@ public class Controller
 
 	public void sauvegarderXml(String chemin)
 	{
-		ArrayList<Classe> lst = this.getLstClasses();
 		HashMap<Classe, Rectangle> map = this.frameUML.getMapPanel();
+		ArrayList<Classe> lst = new ArrayList<>(map.keySet());
 		GereXml.sauvegarderXml(chemin, lst, map, this.getListLiaison());
 	}
 
