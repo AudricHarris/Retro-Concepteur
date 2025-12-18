@@ -1,20 +1,34 @@
 package RetroConcepteur.vue.outil;
 
+// Packetage SWING 
 import javax.swing.SwingUtilities;
 
+// Packetage AWT
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 
+// Nos packetage
 import RetroConcepteur.vue.PanelUML;
 import RetroConcepteur.metier.classe.*;
 
+/**
+ * Classe responsable du calcul des chemin
+ *
+ * @author [Equipe 9]
+ * @version 1.0
+ */
 public class GereSouris extends MouseAdapter
 {
-	private PanelUML panelUML;
-	private Point decalage;
+	private Point     decalage;
+	private Classe    classeActuel;
 	private Rectangle rectClasseActuel;
-	private Classe classeActuel;
 
+	private PanelUML panelUML;
+	
+	/**
+	 *	Creer une instance de Gere Souris
+	 *	@param panelUML le panel parent de gere souris
+	 */
 	public GereSouris(PanelUML panelUML)
 	{
 		this.panelUML = panelUML;
@@ -23,6 +37,14 @@ public class GereSouris extends MouseAdapter
 		this.classeActuel = null;
 	}
 
+	//---------------------------------------//
+	//          Gestion de souris            //
+	//---------------------------------------//
+	
+	/**
+	 *	Gestion pour la souris quand maintenue
+	 *	@param e Mouse event
+	 */
 	public void mousePressed(MouseEvent e)
 	{
 		Point p=null;
@@ -36,7 +58,7 @@ public class GereSouris extends MouseAdapter
 				this.rectClasseActuel = rect;
 				this.classeActuel = classe;
 				this.decalage = new Point(e.getX() - rect.getX(), 
-				                         e.getY() - rect.getY());
+				                          e.getY() - rect.getY());
 			}
 		}
 
@@ -46,7 +68,11 @@ public class GereSouris extends MouseAdapter
 			this.panelUML.repaint();
 		}
 	}
-
+	
+	/**
+	 *	Gestion pour la souris quand deplacer et maintenue
+	 *	@param e Mouse event
+	 */
 	public void mouseDragged(MouseEvent e)
 	{
 		if (this.classeActuel != null && this.decalage != null && SwingUtilities.isLeftMouseButton(e) )
@@ -61,17 +87,26 @@ public class GereSouris extends MouseAdapter
 			this.panelUML.repaint();
 		}
 	}
-
+	
+	/**
+	 *	Gestion pour la souris quand lacher
+	 *	@param e Mouse event
+	 */
 	public void mouseReleased(MouseEvent e)
 	{
 		if ( this.classeActuel != null ) this.classeActuel.setEstClique(false);
 		
-		this.classeActuel = null;
+		this.classeActuel     = null;
 		this.rectClasseActuel = null;
-		this.decalage = null;
+		this.decalage         = null;
+
 		this.panelUML.repaint();
 	}
-
+	
+	/**
+	 *	Gestion pour la souris quand cliquer
+	 *	@param e Mouse event
+	 */
 	public void mouseClicked(MouseEvent e) 
 	{
 		
@@ -83,8 +118,8 @@ public class GereSouris extends MouseAdapter
 			
 			for (Classe c : this.panelUML.getMap().keySet()) 
 			{
-				Point pSouris = new Point(x, y);
-				Rectangle r = this.panelUML.getMap().get(c);
+				Point     pSouris = new Point(x, y);
+				Rectangle r       = this.panelUML.getMap().get(c);
 				if (r.possede(pSouris)) 
 				{
 					this.panelUML.detecterZoneEtOuvrirEdition(c, r, pSouris);
