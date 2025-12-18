@@ -112,7 +112,9 @@ public class AnalyseFichier
 	 */
 	public boolean estClasse(String nom)
 	{
-		for ( Classe c : this.lstClass) if (c.getNom().equals(nom)) return true;
+		for ( Classe c : this.lstClass) 
+			if (c.getNom().equals(nom)) 
+				return true;
 		
 		return false;
 	}
@@ -161,7 +163,11 @@ public class AnalyseFichier
 			// Affichage des classes de la jdk extend
 			for ( String nom : this.lstExtends )
 				if ( ! this.estClasse(nom) )
-					this.lstClass.add( new Classe(nom) );
+				{
+					Classe classe = new Classe(nom);
+					classe.setCachable(true);
+					this.lstClass.add( classe);
+				}
 
 			// Affichage des classe de la jdk implement
 			for ( String nom : this.lstImplement )
@@ -169,6 +175,7 @@ public class AnalyseFichier
 				{
 					Classe classe = new Classe(nom);
 					classe.setIsInterface(true);
+					classe.setCachable(true);
 					this.lstClass.add( classe );
 
 				}
@@ -355,8 +362,12 @@ public class AnalyseFichier
 	private void traiterMethode(String ligneRestante, String visibilite, boolean isStatic)
 	{
 		int indexParOuvrante = ligneRestante.indexOf('(');
-		String declaration = ligneRestante.substring(0, indexParOuvrante);
 		int indexParFermante = ligneRestante.lastIndexOf(')');
+
+		if (indexParFermante == -1 || indexParFermante <= indexParOuvrante) 
+			return; 
+
+		String declaration = ligneRestante.substring(0, indexParOuvrante);
 		String contenuParametres = "";
 
 		String nom = "";

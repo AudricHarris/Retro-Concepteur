@@ -20,6 +20,7 @@ public class Classe
 
 	private boolean isAbstract;
 	private boolean isInterface;
+	private boolean cachable;
 
 	private boolean estClique;
 	
@@ -36,17 +37,19 @@ public class Classe
 		this.isAbstract = false;
 		this.isInterface = false;
 		this.estClique = false;
+		this.cachable  = false;
 	}
 	
 	//---------------------------------------//
 	//              Getters                  //
 	//---------------------------------------//
 
-	public String              getNom           (){ return this.nom;              }
-	public boolean             isAbstract       (){ return this.isAbstract;       }
-	public boolean             isInterface      (){ return this.isInterface;      }
+	public String              getNom              (){ return this.nom;              }
+	public boolean             isAbstract          (){ return this.isAbstract;       }
+	public boolean             isInterface         (){ return this.isInterface;      }
 	public String              getNomHeritageClasse(){ return this.nomHeritageClasse;}
-	public boolean estClique() { return this.estClique; }
+	public boolean             estClique           (){ return this.estClique;        }
+	public boolean             getCachable         (){return this.cachable ;          } 
 	
 	public ArrayList<Attribut> getLstAttribut()
 	{ 
@@ -235,7 +238,8 @@ public class Classe
 	public void setIsAbstract       (boolean isAbstract ) { this.isAbstract        = isAbstract;  }
 	public void setIsInterface      (boolean isInterface) { this.isInterface       = isInterface; }
 	public void setNomHeritageClasse(String  nom        ) { this.nomHeritageClasse = nom;         }
-	public void setEstClique(boolean bClique) { this.estClique=bClique;}
+	public void setEstClique        (boolean bClique    ) { this.estClique         =bClique;      }
+	public void setCachable         (boolean bCache     ) { this.cachable          = bCache;      }
 	
 	/**
 	 * Ajoute l'interface passer en param

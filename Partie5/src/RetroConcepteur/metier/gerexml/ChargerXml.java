@@ -20,12 +20,18 @@ import RetroConcepteur.metier.classe.Position;
 
 public class ChargerXml
 {
+	private static Document chargerUnXml(String chemin) throws Exception
+	{
+		File fchXml = new File(chemin);
+		DocumentBuilderFactory docFact = DocumentBuilderFactory.newInstance();
+		DocumentBuilder docConstru = docFact.newDocumentBuilder();
+		Document doc = docConstru.parse(fchXml);
+		doc.getDocumentElement().normalize();
+		return doc;
+	}
+
 	public static ArrayList<Classe> chargerClassesXml(String chemin)
 	{
-		// Variables
-		File fichierXml;
-		DocumentBuilderFactory docFact;
-		DocumentBuilder docConstru;
 		Document doc;
 
 		NodeList lstNoeux;
@@ -33,11 +39,7 @@ public class ChargerXml
 
 		try
 		{
-			fichierXml = new File(chemin);
-			docFact = DocumentBuilderFactory.newInstance();
-			docConstru = docFact.newDocumentBuilder();
-			doc = docConstru.parse(fichierXml);
-			doc.getDocumentElement().normalize();
+			doc = chargerUnXml(chemin);
 
 			lstNoeux = doc.getElementsByTagName("Classe");
 			classes = new ArrayList<>();
@@ -218,9 +220,6 @@ public class ChargerXml
 
 	public static HashMap<String, Position> chargerPositionsXml(String chemin)	
 	{
-		File fchXml;
-		DocumentBuilderFactory docFact;
-		DocumentBuilder docConstru;
 		Document doc;
 
 		NodeList lstNoeux;
@@ -228,11 +227,7 @@ public class ChargerXml
 
 		try
 		{
-			fchXml = new File(chemin);
-			docFact = DocumentBuilderFactory.newInstance();
-			docConstru = docFact.newDocumentBuilder();
-			doc = docConstru.parse(fchXml);
-			doc.getDocumentElement().normalize();
+			doc = chargerUnXml(chemin);
 
 			lstNoeux = doc.getElementsByTagName("Classe");
 			mapPos = new HashMap<String, Position>();
@@ -257,8 +252,8 @@ public class ChargerXml
 
 		String x;
 		String y;
-		String w;
-		String h;
+		String largeur;
+		String hauteur;
 
 		Node node = lstNoeux.item(i);
 		if (node.getNodeType() == Node.ELEMENT_NODE)
@@ -268,20 +263,19 @@ public class ChargerXml
 
 			x = elm.getAttribute("x");
 			y = elm.getAttribute("y");
-			w = elm.getAttribute("largeur");
-			h = elm.getAttribute("hauteur");
+			largeur = elm.getAttribute("largeur");
+			hauteur = elm.getAttribute("hauteur");
 
-			if (!x.isEmpty() && !y.isEmpty() && !w.isEmpty() && !h.isEmpty())
+			if (!x.isEmpty() && !y.isEmpty() && !largeur.isEmpty() && !hauteur.isEmpty())
 			{
 				try 
 				{
-					mapPos.put(
-								nom,
+					mapPos.put( nom,
 								new Position(
 									Integer.parseInt(x),
 									Integer.parseInt(y),
-									Integer.parseInt(w),
-									Integer.parseInt(h)
+									Integer.parseInt(largeur),
+									Integer.parseInt(hauteur)
 								)
 							);
 				} 
@@ -290,53 +284,28 @@ public class ChargerXml
 		}
 	}
 
-	public static ArrayList<Liaison> chargerLiaisonsXml(String chemin, ArrayList<Classe> classes)
+	public static ArrayList<Liaison> chargerLiaisonsXml(String chemin, ArrayList<Classe> classes) 
 	{
+		Element elm;
+		Liaison l;
+		Node noeux;
 		try
 		{
-			File fchXml = new File(chemin);
-			DocumentBuilderFactory docFact = DocumentBuilderFactory.newInstance();
-			DocumentBuilder docConstru = docFact.newDocumentBuilder();
-			Document doc = docConstru.parse(fchXml);
-			doc.getDocumentElement().normalize();
-
+			Document doc = chargerUnXml(chemin);
 			ArrayList<Liaison> liaisons = new ArrayList<>();
-
 			NodeList lstNoeux = doc.getElementsByTagName("Liaison");
 
 			for (int i = 0; i < lstNoeux.getLength(); i++)
 			{
-				Node node = lstNoeux.item(i);
-				if (node.getNodeType() == Node.ELEMENT_NODE)
+				noeux = lstNoeux.item(i);
+				if (noeux.getNodeType() == Node.ELEMENT_NODE)
 				{
-					Element elm = (Element) node;
-					String from = elm.getAttribute("de");
-					String to = elm.getAttribute("vers");
-					String nomVar = elm.getAttribute("nomVar");
-
-					String fmin = elm.getAttribute("deMin");
-					String fmax = elm.getAttribute("deMax");
-					String tmin = elm.getAttribute("versMin");
-					String tmax = elm.getAttribute("versMax");
-
-					Classe cFrom = null; Classe cTo = null;
-					for (Classe c : classes)
-					{
-						if (c.getNom().equals(from)) cFrom = c;
-						if (c.getNom().equals(to)) cTo = c;
-					}
-
-					if (cFrom != null && cTo != null)
-					{
-						Multiplicite mFrom = new Multiplicite(fmin == null ? "" : fmin, fmax == null ? "" : fmax);
-						Multiplicite mTo   = new Multiplicite(tmin == null ? "" : tmin, tmax == null ? "" : tmax);
-
-						Liaison l = new Liaison(cFrom, cTo, mFrom, mTo, nomVar, null);
+					elm = (Element) noeux;
+					l = creerLiaisonDepuisElement(elm, classes);
+					if (l != null)
 						liaisons.add(l);
-					}
 				}
 			}
-
 			return liaisons;
 		}
 		catch (Exception e)
@@ -344,5 +313,38 @@ public class ChargerXml
 			e.printStackTrace();
 			throw new RuntimeException("Erreur lors du chargement des liaisons XML : " + e.getMessage());
 		}
+	}
+
+	private static Liaison creerLiaisonDepuisElement(Element elm, ArrayList<Classe> classes)
+	{
+		Multiplicite mltde;
+		Multiplicite mltVers;
+
+		String de = elm.getAttribute("de");
+		String vers = elm.getAttribute("vers");
+		String nomVar = elm.getAttribute("nomVar");
+
+		Classe clsDe = trouverClasse(classes, de);
+		Classe clsVers = trouverClasse(classes, vers);
+
+		if (clsDe == null || clsVers == null) return null;
+
+		mltde   = new Multiplicite( elm.getAttribute("deMin"),
+								    elm.getAttribute("deMax")
+								  );
+		mltVers = new Multiplicite( elm.getAttribute("versMin"),
+									elm.getAttribute("versMax")
+								  );
+		return new Liaison(clsDe, clsVers, mltde, mltVers, nomVar, null);
+	}
+
+	private static Classe trouverClasse(ArrayList<Classe> classes, String nom)
+	{
+		for (Classe c : classes)
+		{
+			if (c.getNom().equals(nom))
+				return c;
+		}
+		return null;
 	}
 }

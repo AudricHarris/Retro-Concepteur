@@ -47,6 +47,7 @@ public class PanelUML extends JPanel
 	private DessinerFleche dessinerFleche;
 	private DessinerMultiplicite dessinerMultiplicite;
 	private boolean positionDeterminee = false;
+	private boolean afficherClassesCachables = true;
 
 	// Constantes de style
 	private final int PADDING_X = 10;
@@ -95,6 +96,7 @@ public class PanelUML extends JPanel
 		this.mapClasseRectangle = new HashMap<Classe, Rectangle>();
 		this.positionDeterminee = false;
 		this.lstChemins = new ArrayList<Chemin>();
+		this.mapCheminLiaison = new HashMap<Chemin, Liaison>();
 		this.initialiserPositions();
 		this.determinerPositions();
 		this.repaint();
@@ -135,7 +137,11 @@ public class PanelUML extends JPanel
 		Font font = new Font("SansSerif", Font.PLAIN, 12);
 		g2.setFont(font);
 		g2.setStroke(new BasicStroke(2.0f));
-		for (Classe classe : this.lstClasse) this.dessinerClasse(g2, classe);
+
+		for (Classe classe : this.lstClasse)
+			if (!classe.getCachable() || this.afficherClassesCachables)
+				this.dessinerClasse(g2, classe);
+		
 
 		if (!this.positionDeterminee)
 		{
@@ -147,26 +153,35 @@ public class PanelUML extends JPanel
 
 		for (Chemin c : this.lstChemins) this.dessinerFleche.dessinerLiaison(g2, c);
 
-		for (Classe classe : this.lstClasse) this.dessinerClasse(g2, classe);
-		
+		for (Classe classe : this.lstClasse)
+			if (!classe.getCachable() || this.afficherClassesCachables)
+				this.dessinerClasse(g2, classe);	
+
 		int numLiaisons = Math.min(this.lstLiaisons.size(), this.lstChemins.size());
 		
-		for (int i = 0; i < numLiaisons; i++)
-		{
-			Liaison l = this.lstLiaisons.get(i);
-			Chemin c = this.lstChemins.get(i);
-			
 
-			String infFrom = l.getFromMultiplicity().getBorneInf();
-			String supFrom = l.getFromMultiplicity().getBorneSup();
-			String infTo   = l.getToMultiplicity().getBorneInf();
-			String supTo   = l.getToMultiplicity().getBorneSup();
+		for (Chemin c : this.lstChemins)	
+		{	
+			Liaison l = this.mapCheminLiaison.get(c);
+			if (l != null)
+			{
+				String infFrom = l.getFromMultiplicity().getBorneInf();
+				String supFrom = l.getFromMultiplicity().getBorneSup();
+				String infTo   = l.getToMultiplicity().getBorneInf();
+				String supTo   = l.getToMultiplicity().getBorneSup();
 
-			String multFrom = construireLabelMultiplicite(infFrom, supFrom);
-			String multTo   = construireLabelMultiplicite(infTo, supTo);
-			
-			this.dessinerMultiplicite.dessiner(g2, c, multFrom, multTo, l.getNomVar());
+				String multFrom = construireLabelMultiplicite(infFrom, supFrom);
+				String multTo   = construireLabelMultiplicite(infTo, supTo);
+
+				this.dessinerMultiplicite.dessiner(g2, c, multFrom, multTo, l.getNomVar());
+			}
 		}
+
+		for (Classe classe : this.lstClasse)
+			if (!classe.getCachable() || this.afficherClassesCachables)
+				this.dessinerClasse(g2, classe);
+
+		
 	}
 
 	/**
@@ -282,6 +297,7 @@ public class PanelUML extends JPanel
 		this.lstChemins.clear();
 		for (Liaison l : this.lstLiaisons)
 		{
+			this.mapCheminLiaison.clear();
 			Rectangle r1 = this.mapClasseRectangle.get(l.getFromClass());
 			Rectangle r2 = this.mapClasseRectangle.get(l.getToClass());
 			if (r1 != null && r2 != null)
@@ -301,6 +317,7 @@ public class PanelUML extends JPanel
 				r1.repartirPointsLiaison(zone);
 				r2.repartirPointsLiaison(zoneInv);
 				this.lstChemins.add(chemin);
+				this.mapCheminLiaison.put(chemin, l);
 			}
 		}
 		this.recalculerChemins();
@@ -314,10 +331,15 @@ public class PanelUML extends JPanel
 		for (Rectangle rect : this.mapClasseRectangle.values()) rect.nettoyerLiaisons();
 
 		this.lstChemins.clear();
+		this.mapCheminLiaison.clear(); 	
 		HashMap<String, List<Chemin>> mapGroupes = new HashMap<>();
 		
 		for (Liaison l : this.lstLiaisons)
 		{
+			if (!this.afficherClassesCachables)
+				if (l.getFromClass().getCachable() || l.getToClass().getCachable())
+					continue;
+			
 			Rectangle r1 = this.mapClasseRectangle.get(l.getFromClass());
 			Rectangle r2 = this.mapClasseRectangle.get(l.getToClass());
 			
@@ -351,6 +373,7 @@ public class PanelUML extends JPanel
 
 				mapGroupes.get(cle).add(chemin);
 				this.lstChemins.add(chemin);
+				this.mapCheminLiaison.put(chemin, l);
 			}
 		}
 
@@ -429,12 +452,14 @@ public class PanelUML extends JPanel
 		Point p = new Point((int)e.getPoint().getX(), (int) e.getPoint().getY());
 		int numLiaisons = Math.min(this.lstLiaisons.size(), this.lstChemins.size());
 		
-		for (int i = 0; i < numLiaisons; i++)
+		for (Chemin c : this.lstChemins)
 		{
-			Liaison l = this.lstLiaisons.get(i);
-			Chemin c = this.lstChemins.get(i);
+			Liaison l = this.mapCheminLiaison.get(c);
+			if (l == null) continue;
+
 			String multFrom = l.getFromMultiplicity().getBorneInf() + "." + l.getFromMultiplicity().getBorneSup();
 			String multTo = l.getToMultiplicity().getBorneInf() + "." + l.getToMultiplicity().getBorneSup();
+
 			if (multFrom.equals(".")) multFrom = "";
 			if (multTo.equals(".")) multTo = "";
 			if (multFrom.equals("1.1")) multFrom = "1";
@@ -605,6 +630,18 @@ public class PanelUML extends JPanel
 		int xCentre = x + (largeurConteneur - metrics.stringWidth(texte)) / 2;
 		g.drawString(texte, xCentre, y + metrics.getAscent());
 	}
+
+	/**
+	 * Active ou désactive l'affichage des classes cachables (JDK).
+	 *
+	 * @param afficher true pour afficher, false pour masquer.
+	 */
+	public void afficherInterfaceHeritage(boolean afficher)
+	{
+		this.afficherClassesCachables = afficher;
+		this.recalculerChemins();
+		this.repaint();
+	}
 	
 	// =========================================================================
 	// CALCULS DE TEXTE ET ALIGNEMENT
@@ -657,6 +694,49 @@ public class PanelUML extends JPanel
 			h += hLigne;
 		
 		return h;
+	}
+
+	public void detecterZoneEtOuvrirEdition(Classe classe, Rectangle rect, Point pSouris)
+	{
+		Graphics2D g2 = (Graphics2D) this.getGraphics();
+		FontMetrics metrics = g2.getFontMetrics();
+		int hauteurLigne = metrics.getHeight();
+		int padding = 5; 
+		int hauteurTitre = hauteurLigne + (padding * 2);
+		int nbLignesAttributs = 0;
+		int cpt = 0;
+
+		for (Attribut att : classe.getListOrdonneeAttribut())
+		{
+			if (this.ctrl.estClasseProjet(att.getType())) continue; 
+			if (cpt >= 3) 
+			{ 
+				nbLignesAttributs++; 
+				break; 
+			}
+			nbLignesAttributs++;
+			cpt++;
+		}
+
+		if (nbLignesAttributs == 0) nbLignesAttributs = 1; 
+		int hauteurZoneAttributs = (nbLignesAttributs * (hauteurLigne + 2)) + 10; 
+		int yRelatif = pSouris.getY() - rect.getY();
+
+		if (yRelatif < hauteurTitre) 
+		{
+			System.out.println("Ouverture édition Titre");
+			new FrameEdition(this.ctrl, classe, 'C');
+		} 
+		else if (yRelatif < (hauteurTitre + hauteurZoneAttributs)) 
+		{
+			System.out.println("Ouverture édition Attributs");
+			new FrameEdition(this.ctrl, classe, 'A');
+		} 
+		else 
+		{
+			new FrameEdition(this.ctrl, classe, 'M');
+		}
+
 	}
 
 	/**
@@ -853,60 +933,7 @@ public class PanelUML extends JPanel
 		}
 	}
 
-	public void detecterZoneEtOuvrirEdition(Classe classe, Rectangle rect, Point pSouris)
-	{
-		Graphics2D g2 = (Graphics2D) this.getGraphics();
-		FontMetrics metrics = g2.getFontMetrics();
-		int hauteurLigne = metrics.getHeight();
-		int padding = 5; 
-
-		int hauteurTitre = hauteurLigne + (padding * 2);
-
-		int nbLignesAttributs = 0;
-		int cpt = 0;
-		
-		for (Attribut att : classe.getListOrdonneeAttribut())
-		{
-			if (this.ctrl.estClasseProjet(att.getType())) continue; 
-
-			if (cpt >= 3) 
-			{ 
-				nbLignesAttributs++; 
-				break; 
-			}
-			
-			nbLignesAttributs++;
-			cpt++;
-		}
-
-		
-		if (nbLignesAttributs == 0) nbLignesAttributs = 1; 
-
-		int hauteurZoneAttributs = (nbLignesAttributs * (hauteurLigne + 2)) + 10; 
-
-		
-		int yRelatif = pSouris.getY() - rect.getY();
-
-		if (yRelatif < hauteurTitre) 
-		{
-			new FrameEdition(this.ctrl, classe, 'T');
-			System.out.println("Ouverture édition Titre");
-		} 
-		else if (yRelatif < (hauteurTitre + hauteurZoneAttributs)) 
-		{
-			if (!classe.getLstAttribut().isEmpty()) 
-				new FrameEdition(this.ctrl, classe, 'A');
-			else
-				JOptionPane.showMessageDialog(this.frame, "Cette classe ne possède pas d'attributs à éditer.");
-		} 
-		else 
-		{
-			if (!classe.getLstMethode().isEmpty()) 
-				new FrameEdition(this.ctrl, classe, 'M');
-			else
-				JOptionPane.showMessageDialog(this.frame, "Cette classe ne possède pas de méthodes à éditer.");
-		}
-	}
+	
 }
 
 
