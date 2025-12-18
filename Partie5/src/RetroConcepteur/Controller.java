@@ -1,16 +1,18 @@
 package RetroConcepteur;
 
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
 import RetroConcepteur.metier.AnalyseFichier;
-import RetroConcepteur.metier.GereXml;
 import RetroConcepteur.metier.classe.Classe;
 import RetroConcepteur.metier.classe.Methode;
 import RetroConcepteur.metier.classe.Liaison;
 import RetroConcepteur.metier.classe.Position;
+
+import RetroConcepteur.metier.gerexml.ChargerXml;
+import RetroConcepteur.metier.gerexml.SauvegarderXml;
+
 import RetroConcepteur.vue.FrameUML;
 import RetroConcepteur.vue.outil.Rectangle;
 
@@ -98,17 +100,17 @@ public class Controller
 			}
 		}
 
-		GereXml.sauvegarderXml(chemin, lst, mapPositions, this.getListLiaison());
+		SauvegarderXml.sauvegarderXml(chemin, lst, mapPositions, this.getListLiaison());
 	}
 
 	public void chargerXml(String chemin)
 	{
-		ArrayList<Classe> classesLoaded = GereXml.chargerClassesXml(chemin);
+		ArrayList<Classe> classesLoaded = ChargerXml.chargerClassesXml(chemin);
 		if (classesLoaded == null || classesLoaded.isEmpty()) return;
 
-		HashMap<String, Position> posCharger = GereXml.chargerPositionsXml(chemin);
+		HashMap<String, Position> posCharger = ChargerXml.chargerPositionsXml(chemin);
 
-		List<Liaison> liaisonsCharger = GereXml.chargerLiaisonsXml(chemin, classesLoaded);
+		List<Liaison> liaisonsCharger = ChargerXml.chargerLiaisonsXml(chemin, classesLoaded);
 
 		if (liaisonsCharger != null && !liaisonsCharger.isEmpty())
 			this.analyseFichier.remplacerClassesEtLiaisons(classesLoaded, liaisonsCharger);
