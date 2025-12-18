@@ -305,4 +305,10 @@ public class Classe
 
 		return sRet;
 	}
+
+	public void setNom(String nouveauNom) 
+	{
+		if (nouveauNom!=null) 
+			this.nom = nouveauNom;
+	}
 }

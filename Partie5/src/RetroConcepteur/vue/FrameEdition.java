@@ -32,11 +32,11 @@ public class FrameEdition extends JFrame
 		{
 			case 'C':
 				if (this.pnlEditionClasse == null) 
-					this.pnlEditionClasse = new PanelEditionClasse(ctrl, classe);
+					this.pnlEditionClasse = new PanelEditionClasse(ctrl, this,classe);
 				else
 				{
 					this.pnlEditionClasse.removeAll();
-					this.pnlEditionClasse = new PanelEditionClasse(ctrl, classe);
+					this.pnlEditionClasse = new PanelEditionClasse(ctrl, this, classe);
 				}
 				break;
 			case 'A':
@@ -50,11 +50,11 @@ public class FrameEdition extends JFrame
 				break;
 			case 'M':
 				if (this.pnlEditionMethode == null)
-					this.pnlEditionMethode = new PanelEditionMethode(ctrl, classe);
+					this.pnlEditionMethode = new PanelEditionMethode(ctrl, this, classe);
 				else
 				{
 					this.pnlEditionMethode.removeAll();
-					this.pnlEditionMethode = new PanelEditionMethode(ctrl, classe);
+					this.pnlEditionMethode = new PanelEditionMethode(ctrl, this, classe);
 				}
 				break;
 		

@@ -192,6 +192,25 @@ public class AnalyseFichier
 		catch (Exception e) { System.out.println("fichier non trouvé"); }
 	}
 
+	public void majLiaison()
+	{
+		this.lstLiaisons.clear();
+
+		// Créer les liaisons après avoir ajouté toutes les classes
+		for (Classe classe1 : this.lstClass)
+		{
+			for (Classe classe2 : this.lstClass)
+			{
+				if (classe1 != classe2)
+				{
+					List<Liaison> liaisons = Liaison.creerLiaison(classe1, classe2, this);
+					for (Liaison liaison : liaisons)
+						if (liaison != null) this.lstLiaisons.add(liaison);
+				}
+			}
+		}
+	}
+
 	public void insererProprieteClass(String ligne)
 	{
 		
