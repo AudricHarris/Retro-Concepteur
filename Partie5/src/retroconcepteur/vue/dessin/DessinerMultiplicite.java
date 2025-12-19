@@ -3,7 +3,6 @@ package retroconcepteur.vue.dessin;
 import retroconcepteur.vue.outil.*;
 import java.awt.FontMetrics;
 import java.awt.Graphics2D;
-import java.awt.geom.Rectangle2D;
 import java.util.LinkedList;
 
 /**
