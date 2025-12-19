@@ -8,7 +8,7 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 
 // Nos packetage
-import RetroConcepteur.vue.PanelUML;
+import RetroConcepteur.vue.panel.PanelUML;
 import RetroConcepteur.metier.classe.*;
 
 /**

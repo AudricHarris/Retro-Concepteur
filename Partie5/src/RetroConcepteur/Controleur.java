@@ -18,16 +18,16 @@ import RetroConcepteur.vue.FrameUML;
 import RetroConcepteur.vue.outil.Rectangle;
 
 /*
- * Controller est la pont entre notre logique et l'IHM
+ * Controleur est la pont entre notre logique et l'IHM
  */
-public class Controller 
+public class Controleur 
 {
 	private AnalyseFichier analyseFichier;
 
 	private FrameUML frameUML;
 	private String cheminDonnees;
 
-	public Controller( String cheminDonnees ) 
+	public Controleur( String cheminDonnees ) 
 	{
 		this.cheminDonnees = cheminDonnees;
 		this.analyseFichier = new AnalyseFichier(this.cheminDonnees);
@@ -154,7 +154,7 @@ public class Controller
 	public static void main(String[] args) 
 	{ 
 		String cheminRepertoire = (args.length > 0) ? args[0] : "./test";
-        new Controller(cheminRepertoire);
+        new Controleur(cheminRepertoire);
 	}
 
 

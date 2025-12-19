@@ -16,15 +16,15 @@ import javax.imageio.ImageIO;
 import javax.swing.*;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
-import RetroConcepteur.Controller;
+import RetroConcepteur.Controleur;
 import RetroConcepteur.metier.classe.Classe;
 import RetroConcepteur.vue.outil.Rectangle;
-
-import RetroConcepteur.vue.BarreMenu;
+import RetroConcepteur.vue.panel.PanelUML;
+import RetroConcepteur.vue.outil.BarreMenu;
 
 public class FrameUML extends JFrame
 {
-	private Controller ctrl;
+	private Controleur ctrl;
 
 	private BarreMenu barreMenu;
 
@@ -36,7 +36,7 @@ public class FrameUML extends JFrame
 	private File dossierUML;
 	
 	
-	public FrameUML(Controller ctrl)
+	public FrameUML(Controleur ctrl)
 	{
 
 		this.ctrl = ctrl;
@@ -86,7 +86,7 @@ public class FrameUML extends JFrame
 		this.panelUml.setMap(map);
 	}
 
-	// Réinitialise le panel (recharge les classes depuis le Controller)
+	// Réinitialise le panel (recharge les classes depuis le Controleur)
 	public void reinitialiser()
 	{
 		this.panelUml.reinitialiser();

@@ -1,4 +1,4 @@
-package RetroConcepteur.vue; 
+package RetroConcepteur.vue.dessin;
 
 import java.awt.Color;
 import java.awt.Graphics2D;

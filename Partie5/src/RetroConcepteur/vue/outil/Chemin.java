@@ -91,8 +91,6 @@ public class Chemin
 
 	public void setType            (String    type) { this.type = type;             }
 	public void setRectangleArrivee(Rectangle rect) { this.rectangleArrivee = rect; }
-
-	public void updateChemin() { this.calculerChemin(); }
 	
 	public void updatePoint(Rectangle rectOrigine, int x, int y)
 	{

@@ -6,26 +6,27 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
-import RetroConcepteur.Controller;
+import RetroConcepteur.Controleur;
 import RetroConcepteur.metier.classe.Classe;
+import RetroConcepteur.vue.panel.PanelEditionAttribut;
 
 public class FrameEdition extends JFrame
 {
     // 1. Ajoutez cette variable statique (partagée par toute l'application)
     private static FrameEdition instanceOuverte = null;
-	private Controller ctrl;
+	private Controleur ctrl;
 	private JPanel pnlEditionClasse;
 	private JPanel pnlEditionAttribut;
 	private JPanel pnlEditionMethode;
 
-	public FrameEdition(Controller ctrl, Classe classe, char type)
+	public FrameEdition(Controleur ctrl, Classe classe, char type)
 	{
         // 2. AJOUTEZ CE BLOC AU TOUT DÉBUT DU CONSTRUCTEUR
         if (instanceOuverte != null) 
         {
-            instanceOuverte.dispose(); // On ferme l'ancienne fenêtre proprement
+            instanceOuverte.dispose(); 
         }
-        instanceOuverte = this; // On enregistre celle-ci comme la nouvelle fenêtre active
+        instanceOuverte = this;
 		
 		this.ctrl = ctrl;
 		

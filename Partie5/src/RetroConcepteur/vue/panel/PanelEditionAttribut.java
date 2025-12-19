@@ -1,7 +1,8 @@
-package RetroConcepteur.vue;
+package RetroConcepteur.vue.panel;
 
-import RetroConcepteur.Controller;
+import RetroConcepteur.Controleur;
 import RetroConcepteur.metier.classe.Classe;
+import RetroConcepteur.vue.FrameEdition;
 import RetroConcepteur.metier.classe.Attribut;
 
 import java.awt.BorderLayout;
@@ -20,9 +21,10 @@ import javax.swing.JScrollPane;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
 
+
 public class PanelEditionAttribut extends JPanel implements ActionListener
 {
-    Controller ctrl;
+    Controleur ctrl;
     FrameEdition frmParent;
     Classe classe;
     JButton btnValider;
@@ -31,7 +33,7 @@ public class PanelEditionAttribut extends JPanel implements ActionListener
     ArrayList<JCheckBox> listeCbFrozen;
     ArrayList<JCheckBox> listeCbAddOnly;
     ArrayList<JTextField> listeTxtNom;
-    public PanelEditionAttribut(Controller ctrl, FrameEdition frmParent, Classe classe) 
+    public PanelEditionAttribut(Controleur ctrl, FrameEdition frmParent, Classe classe) 
     {
         this.ctrl = ctrl;
         this.classe = classe;

@@ -1,4 +1,5 @@
-package RetroConcepteur.vue;
+package RetroConcepteur.vue.dessin;
+
 import RetroConcepteur.vue.outil.*;
 import java.awt.FontMetrics;
 import java.awt.Graphics2D;

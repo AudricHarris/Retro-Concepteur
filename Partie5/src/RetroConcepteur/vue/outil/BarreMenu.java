@@ -1,4 +1,6 @@
-package RetroConcepteur.vue;
+package RetroConcepteur.vue.outil;
+
+import RetroConcepteur.vue.FrameUML;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
