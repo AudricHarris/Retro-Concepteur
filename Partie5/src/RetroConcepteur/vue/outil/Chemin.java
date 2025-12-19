@@ -10,7 +10,7 @@ import RetroConcepteur.vue.outil.*;
 
 /**
  * Classe responsable du calcul des chemin
- * * @author [Keryann Le Besque, Laurent Descourtis, Audric Harris, Pol Armand Bermendora, Lucas Leprevost] 
+ * * @author [Keryann Le Besque, Laurent Descourtis, Audric Harris, Pol Armand Bermendora, Lucas Leprevost]
  * @version 2.0
  */
 
@@ -59,9 +59,9 @@ public class Chemin
 	}
 	
 
-	//---------------------------------------//
-	//              Getters                  //
-	//---------------------------------------//
+	/*---------------------------------------*/
+	/*              Getters                  */
+	/*---------------------------------------*/
 
 	public Point getDepart () { return this.depart;  }
 	public Point getArrivee() { return this.arrivee; }
@@ -76,9 +76,9 @@ public class Chemin
 	public LinkedList<Point> getParcours() { return new LinkedList<Point>(this.parcours); }
 
 
-	//---------------------------------------//
-	//              Setters                  //
-	//---------------------------------------//
+	/*---------------------------------------*/
+	/*              Setters                  */
+	/*---------------------------------------*/
 	
 	public void setZoneArrivee(char zone) { this.zoneArrivee = zone; }
 	
@@ -108,9 +108,9 @@ public class Chemin
 	}
 
 
-	//---------------------------------------//
-	//      Methode d'instance               //
-	//---------------------------------------//
+	/*---------------------------------------*/
+	/*      Methode d'instance               */
+	/*---------------------------------------*/
 	
 	/**
 	 *	Calcul le chemin (On ajoute 2 points entre arrivee & depart)
