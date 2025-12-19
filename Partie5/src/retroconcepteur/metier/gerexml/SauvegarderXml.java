@@ -1,10 +1,20 @@
 package retroconcepteur.metier.gerexml;
 
+// Nos paquetage
+import retroconcepteur.metier.classe.Attribut;
+import retroconcepteur.metier.classe.Classe;
+import retroconcepteur.metier.classe.Liaison;
+import retroconcepteur.metier.classe.Methode;
+import retroconcepteur.metier.classe.Parametre;
+import retroconcepteur.metier.classe.Position;
+
+// paquetage io
 import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+// paquetage util
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.transform.OutputKeys;
@@ -13,21 +23,32 @@ import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 
+// paquetage org
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
-import retroconcepteur.metier.classe.Attribut;
-import retroconcepteur.metier.classe.Classe;
-import retroconcepteur.metier.classe.Liaison;
-import retroconcepteur.metier.classe.Methode;
-import retroconcepteur.metier.classe.Parametre;
-import retroconcepteur.metier.classe.Position;
-
+/**
+ * Classe utilitaire permettant de sauvegarder un diagramme de classes
+ * sous forme de fichier XML.
+ */
 public class SauvegarderXml 
 {
-		public static void sauvegarderXml(String chemin, ArrayList<Classe> lstClasses, 
-									  HashMap<Classe, Position> mapPos,
-									  List<Liaison> lstLiaisons)
+	/*------------------------------------------*/
+	/*       Methode de classe public           */
+	/*------------------------------------------*/
+
+	/**
+	 * Sauvegarde un diagramme de classes dans un fichier XML.
+	 *
+	 * @param chemin chemin du fichier XML à créer
+	 * @param lstClasses liste des classes du diagramme
+	 * @param mapPos association entre chaque classe et sa position graphique
+	 * @param lstLiaisons liste des liaisons entre les classes
+	 * @throws RuntimeException si une erreur survient lors de la génération du XML
+	 */
+	public static void sauvegarderEnXml(String chemin, ArrayList<Classe> lstClasses,
+									    HashMap<Classe, Position> mapPos,
+								        List<Liaison> lstLiaisons)
 	{
 		//variable
 		DocumentBuilderFactory docFac;
@@ -62,7 +83,6 @@ public class SauvegarderXml
 				if (c.getNomHeritageClasse() != null)
 					classeElm.setAttribute("extends", c.getNomHeritageClasse());
 
-				// gere interfaces
 				if (c.getLstInterfaces() != null && !c.getLstInterfaces().isEmpty())
 				{
 					classeElm.appendChild(SauvegarderXml.classeInterface(doc,c));
@@ -70,7 +90,6 @@ public class SauvegarderXml
 
 				SauvegarderXml.ajouterPosition(classeElm, mapPos.get(c));
 
-				// gere Attributs
 				attributElm = doc.createElement("Attributs");
 				for (Attribut a : c.getLstAttribut()) 
 				{
@@ -78,7 +97,6 @@ public class SauvegarderXml
 				}
 				classeElm.appendChild(attributElm);
 
-				// gere Methodes
 				methodeElm = doc.createElement("Methodes");
 				for (Methode m : c.getLstMethode()) 
 				{
@@ -89,13 +107,11 @@ public class SauvegarderXml
 				elmRacine.appendChild(classeElm);
 			}
 
-			// Sauvegarde des liaisons si fournies
 			if (lstLiaisons != null && !lstLiaisons.isEmpty())
 			{
 				elmRacine.appendChild(sauvegarderLiaison(doc,lstLiaisons));
 			}
 
-			// ecrit dans doc xml
 			SauvegarderXml.ecritXml(doc,chemin);
 		} 
 		catch (Exception e)
@@ -105,10 +121,16 @@ public class SauvegarderXml
 		}
 	}
 
-	//////////////////////////////////////////////////////
-	/// Methodes utiliser pour la sauvegarde /////////////
-	//////////////////////////////////////////////////////
+	/*------------------------------------------*/
+	/*      Methode de classe privee            */
+	/*------------------------------------------*/
 
+	/**
+	 * Ajoute les informations de position graphique à un élément XML représentant une classe.
+	 *
+	 * @param classeElm élément XML de la classe
+	 * @param p position graphique de la classe
+	 */
 	private static void ajouterPosition(Element classeElm, Position p)
 	{
 		if (p == null) return;
@@ -119,6 +141,13 @@ public class SauvegarderXml
 		classeElm.setAttribute("hauteur", String.valueOf(p.getHauteur()));
 	}
 
+	/**
+	 * Crée un élément XML représentant une méthode.
+	 *
+	 * @param doc document XML
+	 * @param m méthode à convertir en XML
+	 * @return élément XML correspondant à la méthode
+	 */
 	private static Element classeMethode(Document doc, Methode m)
 	{
 		Element paramsElm;
@@ -149,6 +178,13 @@ public class SauvegarderXml
 		return metElm;
 	}
 
+	/**
+	 * Crée un élément XML représentant un attribut.
+	 *
+	 * @param doc document XML
+	 * @param a attribut à convertir en XML
+	 * @return élément XML correspondant à l'attribut
+	 */
 	private static Element classeAttribut(Document doc, Attribut a)
 	{
 		Element attElm;
@@ -165,6 +201,13 @@ public class SauvegarderXml
 		return attElm;
 	}
 
+	/**
+	 * Crée un élément XML représentant les interfaces implémentées par une classe.
+	 *
+	 * @param doc document XML
+	 * @param c classe concernée
+	 * @return élément XML contenant les interfaces
+	 */
 	private static Element classeInterface(Document doc, Classe c)
 	{
 		Element interfaceElm;
@@ -182,6 +225,13 @@ public class SauvegarderXml
 		return interfaceElm;
 	}
 
+	/**
+	 * Crée un élément XML représentant l'ensemble des liaisons du diagramme.
+	 *
+	 * @param doc document XML
+	 * @param lstLiaisons liste des liaisons
+	 * @return élément XML contenant les liaisons
+	 */
 	private static Element sauvegarderLiaison(Document doc,List<Liaison>lstLiaisons)
 	{
 		Element liaisonsElm;
@@ -212,6 +262,13 @@ public class SauvegarderXml
 		return liaisonsElm;
 	}
 
+	/**
+	 * Écrit le document XML sur le disque.
+	 *
+	 * @param doc document XML à écrire
+	 * @param chemin chemin du fichier de sortie
+	 * @throws RuntimeException si une erreur survient lors de l'écriture
+	 */
 	private static void ecritXml(Document doc, String chemin)
 	{
 		TransformerFactory transformerFactory;

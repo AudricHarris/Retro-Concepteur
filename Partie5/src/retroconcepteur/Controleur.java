@@ -88,7 +88,7 @@ public class Controleur
 				mapPositions.put(c, new Position(r.getX(), r.getY(), r.getTailleX(), r.getTailleY()));
 		}
 
-		SauvegarderXml.sauvegarderXml(chemin, lst, mapPositions, this.getListLiaison());
+		SauvegarderXml.sauvegarderEnXml(chemin, lst, mapPositions, this.getListLiaison());
 	}
 
 	public void chargerXml(String chemin)

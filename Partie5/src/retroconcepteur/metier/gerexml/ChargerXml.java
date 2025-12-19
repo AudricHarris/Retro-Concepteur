@@ -1,25 +1,128 @@
 package retroconcepteur.metier.gerexml;
 
-import java.io.File;
-import java.util.ArrayList;
-import java.util.HashMap;
-
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
-
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
-
+// Nos paquetage
 import retroconcepteur.metier.classe.Classe;
 import retroconcepteur.metier.classe.Liaison;
 import retroconcepteur.metier.classe.Multiplicite;
 import retroconcepteur.metier.classe.Parametre;
 import retroconcepteur.metier.classe.Position;
 
+// paquetage io
+import java.io.File;
+
+// paquetage util
+import java.util.ArrayList;
+import java.util.HashMap;
+
+// paquetage xml
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+
+// paquetage org
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
+
+
 public class ChargerXml
 {
+	/*------------------------------------------*/
+	/*       Methode de classe public           */
+	/*------------------------------------------*/
+	
+	public static ArrayList<Classe> chargerClassesXml(String chemin)
+	{
+		Document doc;
+		
+		NodeList lstNoeux;
+		ArrayList<Classe> classes;
+		
+		try
+		{
+			doc = chargerUnXml(chemin);
+			
+			lstNoeux = doc.getElementsByTagName("Classe");
+			classes = new ArrayList<>();
+			
+			for (int i = 0; i < lstNoeux.getLength(); i++)
+			{
+				Classe c = lireClasseXml(lstNoeux.item(i));
+				if (c != null)
+					classes.add(c);
+			}
+				
+			return classes;
+		}
+		catch (Exception e)
+		{
+			e.printStackTrace();
+			throw new RuntimeException("Erreur lors du chargement XML : " + e.getMessage());
+		}
+	}
+		
+	public static HashMap<String, Position> chargerPositionsXml(String chemin)	
+	{
+		Document doc;
+
+		NodeList lstNoeux;
+		HashMap<String, Position> mapPos;
+
+		try
+		{
+			doc = chargerUnXml(chemin);
+
+			lstNoeux = doc.getElementsByTagName("Classe");
+			mapPos = new HashMap<String, Position>();
+			
+			for (int i = 0; i < lstNoeux.getLength(); i++)
+			{
+				ChargerXml.extrairePositionClasse(mapPos, lstNoeux, i);
+			}
+		}
+		catch (Exception e)
+		{
+			e.printStackTrace();
+			throw new RuntimeException("Erreur lors du chargement des positions XML : " + e.getMessage());
+		}	
+		return mapPos;
+	}
+		
+	public static ArrayList<Liaison> chargerLiaisonsXml(String chemin, ArrayList<Classe> classes) 
+	{
+		Element elm;
+		Liaison l;
+		Node noeux;
+		try
+		{
+			Document doc = chargerUnXml(chemin);
+			ArrayList<Liaison> liaisons = new ArrayList<>();
+			NodeList lstNoeux = doc.getElementsByTagName("Liaison");
+
+			for (int i = 0; i < lstNoeux.getLength(); i++)
+			{
+				noeux = lstNoeux.item(i);
+				if (noeux.getNodeType() == Node.ELEMENT_NODE)
+				{
+					elm = (Element) noeux;
+					l = creerLiaisonDepuisElement(elm, classes);
+					if (l != null)
+						liaisons.add(l);
+				}
+			}
+			return liaisons;
+		}
+		catch (Exception e)
+		{
+			e.printStackTrace();
+			throw new RuntimeException("Erreur lors du chargement des liaisons XML : " + e.getMessage());
+		}
+	}
+
+	/*------------------------------------------*/
+	/*      Methode de classe privee            */
+	/*------------------------------------------*/
+
 	private static Document chargerUnXml(String chemin) throws Exception
 	{
 		File fchXml = new File(chemin);
@@ -28,36 +131,6 @@ public class ChargerXml
 		Document doc = docConstru.parse(fchXml);
 		doc.getDocumentElement().normalize();
 		return doc;
-	}
-
-	public static ArrayList<Classe> chargerClassesXml(String chemin)
-	{
-		Document doc;
-
-		NodeList lstNoeux;
-		ArrayList<Classe> classes;
-
-		try
-		{
-			doc = chargerUnXml(chemin);
-
-			lstNoeux = doc.getElementsByTagName("Classe");
-			classes = new ArrayList<>();
-
-			for (int i = 0; i < lstNoeux.getLength(); i++)
-			{
-				Classe c = lireClasseXml(lstNoeux.item(i));
-				if (c != null)
-					classes.add(c);
-			}
-
-			return classes;
-		}
-		catch (Exception e)
-		{
-			e.printStackTrace();
-			throw new RuntimeException("Erreur lors du chargement XML : " + e.getMessage());
-		}
 	}
 
 	private static Classe lireClasseXml(Node node)
@@ -122,7 +195,7 @@ public class ChargerXml
 			}
 		}
 	}
-
+	
 	private static void lireAttributs(Element elm, Classe c)
 	{
 		NodeList atts;
@@ -215,38 +288,6 @@ public class ChargerXml
 		return params;
 	}
 
-	//////////////////////////////////////////////////
-	/// Chargement des positions et liaisons /////////
-	//////////////////////////////////////////////////
-
-
-	public static HashMap<String, Position> chargerPositionsXml(String chemin)	
-	{
-		Document doc;
-
-		NodeList lstNoeux;
-		HashMap<String, Position> mapPos;
-
-		try
-		{
-			doc = chargerUnXml(chemin);
-
-			lstNoeux = doc.getElementsByTagName("Classe");
-			mapPos = new HashMap<String, Position>();
-
-			for (int i = 0; i < lstNoeux.getLength(); i++)
-			{
-				ChargerXml.extrairePositionClasse(mapPos, lstNoeux, i);
-			}
-		}
-		catch (Exception e)
-		{
-			e.printStackTrace();
-			throw new RuntimeException("Erreur lors du chargement des positions XML : " + e.getMessage());
-		}	
-		return mapPos;
-	}
-
 	private static void extrairePositionClasse(HashMap<String, Position> mapPos, NodeList lstNoeux, int i)
 	{
 		Element elm;
@@ -286,36 +327,6 @@ public class ChargerXml
 		}
 	}
 
-	public static ArrayList<Liaison> chargerLiaisonsXml(String chemin, ArrayList<Classe> classes) 
-	{
-		Element elm;
-		Liaison l;
-		Node noeux;
-		try
-		{
-			Document doc = chargerUnXml(chemin);
-			ArrayList<Liaison> liaisons = new ArrayList<>();
-			NodeList lstNoeux = doc.getElementsByTagName("Liaison");
-
-			for (int i = 0; i < lstNoeux.getLength(); i++)
-			{
-				noeux = lstNoeux.item(i);
-				if (noeux.getNodeType() == Node.ELEMENT_NODE)
-				{
-					elm = (Element) noeux;
-					l = creerLiaisonDepuisElement(elm, classes);
-					if (l != null)
-						liaisons.add(l);
-				}
-			}
-			return liaisons;
-		}
-		catch (Exception e)
-		{
-			e.printStackTrace();
-			throw new RuntimeException("Erreur lors du chargement des liaisons XML : " + e.getMessage());
-		}
-	}
 
 	private static Liaison creerLiaisonDepuisElement(Element elm, ArrayList<Classe> classes)
 	{
