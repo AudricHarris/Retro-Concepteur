@@ -28,48 +28,20 @@ public class FrameEdition extends JFrame
         instanceOuverte = this; // On enregistre celle-ci comme la nouvelle fenêtre active
 		
 		this.ctrl = ctrl;
-		switch (type) 
-		{
-			case 'C':
-				if (this.pnlEditionClasse == null) 
-					this.pnlEditionClasse = new PanelEditionClasse(ctrl, classe);
-				else
-				{
-					this.pnlEditionClasse.removeAll();
-					this.pnlEditionClasse = new PanelEditionClasse(ctrl, classe);
-				}
-				break;
-			case 'A':
-				if (this.pnlEditionAttribut == null)
-					this.pnlEditionAttribut = new PanelEditionAttribut(ctrl,this, classe);
-				else
-				{
-					this.pnlEditionAttribut.removeAll();
-					this.pnlEditionAttribut = new PanelEditionAttribut(ctrl,this, classe);
-				}
-				break;
-			case 'M':
-				if (this.pnlEditionMethode == null)
-					this.pnlEditionMethode = new PanelEditionMethode(ctrl, classe);
-				else
-				{
-					this.pnlEditionMethode.removeAll();
-					this.pnlEditionMethode = new PanelEditionMethode(ctrl, classe);
-				}
-				break;
 		
-			default:
-				break;
+		if (this.pnlEditionAttribut == null)
+			this.pnlEditionAttribut = new PanelEditionAttribut(ctrl,this, classe);
+		else
+		{
+			this.pnlEditionAttribut.removeAll();
+			this.pnlEditionAttribut = new PanelEditionAttribut(ctrl,this, classe);
 		}
+
 		JLabel lblTitle = new JLabel("Edition de la classe : " + classe.getNom());
 		this.setTitle("Edition de la classe : " + classe.getNom());
 		this.add(lblTitle);
-		if (type == 'C')
-			this.add(this.pnlEditionClasse);
-		else if (type == 'A')
-			this.add(this.pnlEditionAttribut);
-		else if (type == 'M')
-			this.add(this.pnlEditionMethode);
+		
+		this.add(this.pnlEditionAttribut);
 
 		this.setSize(500, 300);
 		this.setVisible(true);
