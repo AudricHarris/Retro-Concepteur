@@ -252,7 +252,6 @@ public class Classe
 	 * @param type       le type de l'attribut
 	 * @param visibilite Visibilite de l'attribut
 	 * @param isStatic   si l'attribut est static
-	 * @param isAddOnly  si l'attribut est addOnly
 	 */
 	public void ajouterAttribut(String nomAtt    , boolean constante, String type,
 		                        String visibilite, boolean isStatic)
