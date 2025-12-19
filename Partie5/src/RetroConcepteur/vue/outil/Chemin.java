@@ -4,16 +4,16 @@ package RetroConcepteur.vue.outil;
 import java.util.HashMap;
 import java.util.LinkedList;
 
-// Nos packetage
+// Nos package
 import RetroConcepteur.metier.classe.Classe;
 import RetroConcepteur.vue.outil.*;
 
 /**
  * Classe responsable du calcul des chemin
- *
- * @author [Equipe 9]
- * @version 1.0
+ * * @author [Keryann Le Besque, Laurent Descourtis, Audric Harris, Pol Armand Bermendora, Lucas Leprevost] 
+ * @version 2.0
  */
+
 public class Chemin
 {
 	private int    indexLiaison  = 0;
@@ -179,9 +179,4 @@ public class Chemin
 		this.arrivee = nouvelleArrivee;
 		this.calculerChemin();
 	}
-	
-
-
-	
-
 }

@@ -35,9 +35,10 @@ import javax.swing.SpringLayout;
  * Panneau principal de l'application.
  * Il orchestre l'affichage du diagramme en deleguant le dessin specifique
  * aux classes specialisees (DessinerClasse, DessinerFleche, DessinerMultiplicite).
- * * @author [Equipe 9]
- * @version 2.0 (Refactorise)
+ * * @author [Keryann Le Besque, Laurent Descourtis, Audric Harris, Pol Armand Bermendora, Lucas Leprevost] 
+ * @version 2.0
  */
+
 public class PanelUML extends JPanel
 {
 	private FrameUML frame;
@@ -55,7 +56,7 @@ public class PanelUML extends JPanel
 	// --- Outils de dessin delegues ---
 	private DessinerFleche dessinerFleche;
 	private DessinerMultiplicite dessinerMultiplicite;
-	private DessinerClasse dessinerClasse; // Nouvelle classe deleguee
+	private DessinerClasse dessinerClasse;
 
 	private boolean positionDeterminee = false;
 	private boolean afficherClassesCachables = true;
@@ -74,7 +75,7 @@ public class PanelUML extends JPanel
 		
 		this.dessinerFleche = new DessinerFleche();
 		this.dessinerMultiplicite = new DessinerMultiplicite();
-		this.dessinerClasse = new DessinerClasse(ctrl); // On passe le controleur
+		this.dessinerClasse = new DessinerClasse(ctrl);
 		
 		this.setPreferredSize(new Dimension(2000, 2000));
 	
@@ -82,19 +83,52 @@ public class PanelUML extends JPanel
 		this.addMouseListener(gs);
 		this.addMouseMotionListener(gs);
 	
-		// ecouteur pour le clic sur les multiplicites
-		this.addMouseListener(new MouseAdapter()
-		{
-			@Override
-			public void mouseClicked(MouseEvent e)
-			{
-				handleMultipliciteClick(e);
-			}
-		});
-	
 		this.reinitialiser();
 	}
+
+	/*------------------------------------------*/
+	/*               Modificateur               */
+	/*------------------------------------------*/
 	
+	/**
+	 * Definit manuellement la carte des positions (utilise lors du chargement XML).
+	 * @param map La correspondance Classe -> Rectangle.
+	 */
+	public void setMap(HashMap<Classe, Rectangle> map)
+	{
+		this.mapClasseRectangle = map;
+		this.positionDeterminee = true;
+		this.reconstruireChemins();
+		this.repaint();
+	}
+
+	/*------------------------------------------*/
+	/*                Accesseur                 */
+	/*------------------------------------------*/
+
+	public HashMap<Classe, Rectangle> getMap()
+	{
+		return new HashMap<Classe, Rectangle>(mapClasseRectangle);
+	}
+
+	public char getZone(Rectangle source, Rectangle target)
+	{
+		double dx    = target.getCentreX() - source.getCentreX();
+		double dy    = target.getCentreY() - source.getCentreY();
+		double xNorm = dx / (double) source.getTailleX();
+		double yNorm = dy / (double) source.getTailleY();
+		
+		if (Math.abs(yNorm) > Math.abs(xNorm))
+			return (yNorm < 0) ? 'H' : 'B';
+		else
+			return (xNorm < 0) ? 'G' : 'D';
+	}
+
+	
+	/*------------------------------------------*/
+	/*          Methode d'instance              */
+	/*------------------------------------------*/
+
 	/**
 	 * Recharge toutes les donnees depuis le controleur et reinitialise l'affichage.
 	 * Appele lors de l'ouverture d'un nouveau dossier.
@@ -115,37 +149,92 @@ public class PanelUML extends JPanel
 	}
 
 	/**
-	 * Force le redessin du composant.
-	 */
-	public void majIHM()
-	{
-		this.repaint();
-	}
-	
+     * Algorithme principal de routage des liaisons.
+     * Regroupe les liaisons par paires de classes pour eviter les collisions visuelles.
+     */
+    public void recalculerChemins()
+    {
+        for ( Rectangle rect : this.mapClasseRectangle.values() ) 
+            rect.nettoyerLiaisons();
+
+        this.lstChemins.clear();
+        this.mapCheminLiaison.clear();  
+        HashMap<String, List<Chemin>> mapGroupes = new HashMap<>();
+        
+        for ( Liaison l : this.lstLiaisons )
+        {
+            if ( ! this.afficherClassesCachables )
+                if ( l.getFromClass().getCachable() || l.getToClass().getCachable() )
+                    continue;
+            
+            Chemin chemin = creerChemin(l); 
+            
+            if (chemin != null)
+            {
+                Rectangle r2 = this.mapClasseRectangle.get(l.getToClass());
+                chemin.setRectangleArrivee(r2);
+                
+                String nom1 = l.getFromClass().getNom();
+                String nom2 = l.getToClass().getNom();
+                String cle = (nom1.compareTo(nom2) < 0) ? nom1 + "-" + nom2 : nom2 + "-" + nom1;
+
+                if ( ! mapGroupes.containsKey(cle) )
+                    mapGroupes.put(cle, new ArrayList<Chemin>());
+
+                mapGroupes.get(cle).add(chemin);
+                this.lstChemins.add(chemin);
+                this.mapCheminLiaison.put(chemin, l);
+            }
+        }
+
+        for (List<Chemin> groupe : mapGroupes.values())
+        {
+            int total = groupe.size();
+            for (int i = 0; i < total; i++)
+            {
+                Chemin c = groupe.get(i);
+                c.setIndexLiaison(i, total);
+            }
+        }
+    }
+
 	/**
-	 * Definit manuellement la carte des positions (utilise lors du chargement XML).
-	 * @param map La correspondance Classe -> Rectangle.
+	 * Permet d'activer ou desactiver l'affichage des classes Java de la jdk si implementees ou herite.
 	 */
-	public void setMap(HashMap<Classe, Rectangle> map)
+	public void afficherInterfaceHeritage(boolean afficher)
 	{
-		this.mapClasseRectangle = map;
-		this.positionDeterminee = true;
-		this.reconstruireChemins();
+		this.afficherClassesCachables = afficher;
+		this.recalculerChemins();
 		this.repaint();
 	}
 
 	/**
-	 * Retourne la carte des rectangles actuels.
-	 * @return La map Classe -> Rectangle.
+	 * methode pour modifier une multiplicite.
+	 * @param e L'evenement souris.
 	 */
-	public HashMap<Classe, Rectangle> getMap()
+	public void multipliciteClic(MouseEvent e)
 	{
-		return new HashMap<Classe, Rectangle>(mapClasseRectangle);
+		Font font = new Font("SansSerif", Font.PLAIN, 12);
+		FontMetrics fm = getFontMetrics(font);
+		Point point = new Point((int)e.getPoint().getX(), (int) e.getPoint().getY());
+		
+		for (Chemin chemin : this.lstChemins)
+		{
+			Liaison l = this.mapCheminLiaison.get(chemin);
+			if (l == null) continue;
+
+			String multDep = construireLabelMultiplicite( l.getFromMultiplicity().getBorneInf(), l.getFromMultiplicity().getBorneSup() );
+			String multArr   = construireLabelMultiplicite( l.getToMultiplicity  ().getBorneInf(), l.getToMultiplicity  ().getBorneSup() );
+
+			if ( this.dessinerMultiplicite.verifierClic(point, chemin, multDep, multArr, fm) )
+			{
+				Multiplicite multiplicite = this.dessinerMultiplicite.estDepart() ? l.getFromMultiplicity() : l.getToMultiplicity();
+				modifMultiplicite(multiplicite);
+				this.repaint();
+				return;
+			}
+		}
 	}
-	
-	// =========================================================================
-	// DESSIN PRINCIPAL (PAINT COMPONENT)
-	// =========================================================================
 	
 	@Override
 	protected void paintComponent(Graphics g)
@@ -176,15 +265,6 @@ public class PanelUML extends JPanel
 		for (Chemin c : this.lstChemins) 
 			this.dessinerFleche.dessinerLiaison(g2, c);
 
-		for (Classe classe : this.lstClasse)
-		{
-			if (!classe.getCachable() || this.afficherClassesCachables)
-			{
-				Rectangle rect = this.mapClasseRectangle.get(classe);
-				this.dessinerClasse.dessiner(g2, classe, rect);
-			}
-		}
-
 		for (Chemin c : this.lstChemins)    
 		{   
 			Liaison l = this.mapCheminLiaison.get(c);
@@ -201,7 +281,20 @@ public class PanelUML extends JPanel
 				this.dessinerMultiplicite.dessiner(g2, c, multFrom, multTo, l.getNomVar());
 			}
 		}
+
+		for (Classe classe : this.lstClasse)
+		{
+			if (!classe.getCachable() || this.afficherClassesCachables)
+			{
+				Rectangle rect = this.mapClasseRectangle.get(classe);
+				this.dessinerClasse.dessiner(g2, classe, rect);
+			}
+		}
 	}
+
+	/*------------------------------------------*/
+	/*            Methode privee                */
+	/*------------------------------------------*/
 
 	/**
 	 * Formate le texte de la multiplicite (ex: convertit "0" et "*" en "0..*").
@@ -215,17 +308,13 @@ public class PanelUML extends JPanel
 		return inf + ".." + sup;
 	}
 
-	// =========================================================================
-	// GESTION DES LIAISONS ET CHEMINS
-	// =========================================================================
-
 	/**
-     * Helper method to create and configure a Chemin object from a Liaison.
-     * It calculates zones, adds positions to rectangles, and distributes link points.
-     *
-     * @param l The Liaison object to create a path for.
-     * @return The configured Chemin object, or null if rectangles are missing.
-     */
+	 * Methode utilitaire pour creer et configurer un objet `Chemin` a partir d'une `Liaison`.
+	 * Elle calcule les zones, ajoute les positions aux rectangles et repartit les points de liaison.
+	 *
+	 * @param l L'objet `Liaison` pour lequel creer un chemin.
+	 * @return L'objet `Chemin` configure, ou `null` si les rectangles sont manquants.
+	 */
     private Chemin creerChemin(Liaison l) 
 	{
         Rectangle r1 = this.mapClasseRectangle.get(l.getFromClass());
@@ -253,109 +342,29 @@ public class PanelUML extends JPanel
     }
 	
 	/**
-	 * Recree les objets Chemin a partir des rectangles existants.
-	 * Utile apres un chargement de fichier ou un deplacement manuel.
-	 */
-	private void reconstruireChemins()
-	{
-		this.lstChemins.clear();
-		for (Liaison l : this.lstLiaisons)
-		{
-			this.mapCheminLiaison.clear();
-			Rectangle r1 = this.mapClasseRectangle.get(l.getFromClass());
-			Rectangle r2 = this.mapClasseRectangle.get(l.getToClass());
-			if (r1 != null && r2 != null)
-			{
-				Point p1 = new Point(r1.getCentreX(), r1.getCentreY());
-				Point p2 = new Point(r2.getCentreX(), r2.getCentreY());
-				Chemin chemin = new Chemin(p1, p2, l.getType(), this.mapClasseRectangle, l.getFromClass(), l.getToClass());
-				
-				char zone = this.getZone(r1, r2);
-				char zoneInv = zoneInverse(zone);
-				chemin.setZoneArrivee(zoneInv);
-				
-				r1.addPos(zone, chemin);
-				r2.addPos(zoneInv, chemin);
-				r1.repartirPointsLiaison(zone);
-				r2.repartirPointsLiaison(zoneInv);
-				
-				this.lstChemins.add(chemin);
-				this.mapCheminLiaison.put(chemin, l);
-			}
-		}
-		this.recalculerChemins();
-	}
+     * Recree les objets Chemin a partir des rectangles existants.
+     * Utile apres un chargement de fichier ou un deplacement manuel.
+     */
+    private void reconstruireChemins()
+    {
+        this.lstChemins.clear();
+        for (Liaison l : this.lstLiaisons)
+        {
+            this.mapCheminLiaison.clear(); 
+            
+            Chemin chemin = creerChemin(l); 
+            
+            if (chemin != null)
+            {
+                this.lstChemins.add(chemin);
+                this.mapCheminLiaison.put(chemin, l);
+            }
+        }
+        this.recalculerChemins();
+    }
 
 	/**
-	 * Algorithme principal de routage des liaisons.
-	 * Regroupe les liaisons par paires de classes pour eviter les collisions visuelles.
-	 */
-	public void recalculerChemins()
-	{
-		// On vide les points d'ancrage des rectangles
-		for ( Rectangle rect : this.mapClasseRectangle.values() ) 
-			rect.nettoyerLiaisons();
-
-		this.lstChemins.clear();
-		this.mapCheminLiaison.clear();  
-		HashMap<String, List<Chemin>> mapGroupes = new HashMap<>();
-		
-		for ( Liaison l : this.lstLiaisons )
-		{
-			if ( ! this.afficherClassesCachables )
-				if ( l.getFromClass().getCachable() || l.getToClass().getCachable() )
-					continue;
-			
-			Rectangle r1 = this.mapClasseRectangle.get(l.getFromClass());
-			Rectangle r2 = this.mapClasseRectangle.get(l.getToClass());
-			
-			if ( r1 != null && r2 != null )
-			{
-				Point p1 = new Point( r1.getCentreX(), r1.getCentreY() );
-				Point p2 = new Point( r2.getCentreX(), r2.getCentreY() );
-
-				Chemin chemin = new Chemin( p1, p2, l.getType(), this.mapClasseRectangle, l.getFromClass(), l.getToClass() );
-				
-				char zone    = this.getZone(r1, r2);
-				char zoneInv = zoneInverse(zone);
-				chemin.setZoneArrivee(zoneInv);
-				
-				r1.addPos(zone, chemin);
-				r2.addPos(zoneInv, chemin);
-
-				r1.repartirPointsLiaison(zone);
-				r2.repartirPointsLiaison(zoneInv);
-
-				chemin.setRectangleArrivee(r2);
-				
-				// Creation d'une cle unique pour regrouper les liaisons entre deux memes classes
-				String nom1 = l.getFromClass().getNom();
-				String nom2 = l.getToClass().getNom();
-				String cle = (nom1.compareTo(nom2) < 0) ? nom1 + "-" + nom2 : nom2 + "-" + nom1;
-
-				if ( ! mapGroupes.containsKey(cle) )
-					mapGroupes.put(cle, new ArrayList<Chemin>());
-
-				mapGroupes.get(cle).add(chemin);
-				this.lstChemins.add(chemin);
-				this.mapCheminLiaison.put(chemin, l);
-			}
-		}
-
-		// Application du decalage (anti-collision) pour les groupes de liaisons
-		for (List<Chemin> groupe : mapGroupes.values())
-		{
-			int total = groupe.size();
-			for (int i = 0; i < total; i++)
-			{
-				Chemin c = groupe.get(i);
-				c.setIndexLiaison(i, total);
-			}
-		}
-	}
-
-	/**
-	 * Initie les positions des classes de manière optimale
+	 * Initie les positions des classes de maniere optimale
 	 */
 	private void initialiserPositions()
 	{
@@ -374,7 +383,6 @@ public class PanelUML extends JPanel
 			}
 		}
 	}
-	
 
 	/**
 	 * Ajuste la mise en page pour eviter que les boites ne se chevauchent.
@@ -405,38 +413,6 @@ public class PanelUML extends JPanel
 		
 		this.recalculerChemins();
 	}
-	
-	// =========================================================================
-	// INTERACTION UTILISATEUR (CLICS ET eDITION)
-	// =========================================================================
-	
-	/**
-	 * Gere le clic de souris sur une multiplicite pour ouvrir la fenetre d'edition.
-	 * @param e L'evenement souris.
-	 */
-	private void handleMultipliciteClick(MouseEvent e)
-	{
-		Font font = new Font("SansSerif", Font.PLAIN, 12);
-		FontMetrics fm = getFontMetrics(font);
-		Point point = new Point((int)e.getPoint().getX(), (int) e.getPoint().getY());
-		
-		for (Chemin chemin : this.lstChemins)
-		{
-			Liaison l = this.mapCheminLiaison.get(chemin);
-			if (l == null) continue;
-
-			String multDep = construireLabelMultiplicite( l.getFromMultiplicity().getBorneInf(), l.getFromMultiplicity().getBorneSup() );
-			String multArr   = construireLabelMultiplicite( l.getToMultiplicity  ().getBorneInf(), l.getToMultiplicity  ().getBorneSup() );
-
-			if ( this.dessinerMultiplicite.checkClick(point, chemin, multDep, multArr, fm) )
-			{
-				Multiplicite multiplicite = this.dessinerMultiplicite.isDepart() ? l.getFromMultiplicity() : l.getToMultiplicity();
-				modifMultiplicite(multiplicite);
-				this.repaint();
-				return;
-			}
-		}
-	}
 
 	/**
 	 * Affiche une boite de dialogue pour modifier les bornes d'une multiplicite.
@@ -444,72 +420,37 @@ public class PanelUML extends JPanel
 	 */
 	private void modifMultiplicite(Multiplicite multiplicite)
 	{
-		JPanel panel = new JPanel();
-		panel.setPreferredSize(new Dimension(240, 60));
-		SpringLayout layout = new SpringLayout();
-		panel.setLayout(layout);
-		
-		JLabel labelInf = new JLabel("Borne Inferieure:");
-		JTextField fieldInf = new JTextField(multiplicite.getBorneInf(), 10);
-		JLabel labelSup = new JLabel("Borne Superieure:");
-		JTextField fieldSup = new JTextField(multiplicite.getBorneSup(), 10);
-	
-		panel.add(labelInf);
-		panel.add(fieldInf);
-		panel.add(labelSup);
-		panel.add(fieldSup);
-		
-		// Mise en page (contraintes SpringLayout)
-		layout.putConstraint(SpringLayout.WEST, labelInf, 5, SpringLayout.WEST, panel);
-		layout.putConstraint(SpringLayout.NORTH, labelInf, 5, SpringLayout.NORTH, panel);
-		layout.putConstraint(SpringLayout.WEST, fieldInf, 5, SpringLayout.EAST, labelInf);
-		layout.putConstraint(SpringLayout.NORTH, fieldInf, 5, SpringLayout.NORTH, panel);
-		layout.putConstraint(SpringLayout.WEST, labelSup, 5, SpringLayout.WEST, panel);
-		layout.putConstraint(SpringLayout.NORTH, labelSup, 5, SpringLayout.SOUTH, fieldInf);
-		layout.putConstraint(SpringLayout.WEST, fieldSup, 5, SpringLayout.EAST, labelSup);
-		layout.putConstraint(SpringLayout.NORTH, fieldSup, 5, SpringLayout.SOUTH, fieldInf);
-		
+        JPanel panel = new JPanel(new java.awt.GridLayout(2, 2, 10, 10));
+        
+        JLabel labelInf = new JLabel("Borne Inferieure :");
+        JTextField fieldInf = new JTextField(multiplicite.getBorneInf());
+        
+        JLabel labelSup = new JLabel("Borne Superieure :");
+        JTextField fieldSup = new JTextField(multiplicite.getBorneSup());
+    
+        panel.add(labelInf); 
+        panel.add(fieldInf); 
+        panel.add(labelSup); 
+        panel.add(fieldSup); 
+
 		int result = JOptionPane.showConfirmDialog(this.frame, panel, "editer Multiplicite", JOptionPane.OK_CANCEL_OPTION);
 		if (result == JOptionPane.OK_OPTION)
 		{
+			try 
+			{
+				Integer.parseInt(fieldInf.getText());
+				Integer.parseInt(fieldSup.getText());
+			} 
+			catch (NumberFormatException e) 
+			{
+				JOptionPane.showMessageDialog(this, "Vous devez entrer des entiers pour les multiplicites", "Erreur", JOptionPane.ERROR_MESSAGE);  
+				return;
+			}
+
 			multiplicite.setBorneInf(fieldInf.getText());
 			multiplicite.setBorneSup(fieldSup.getText());
 			this.repaint();
 		}
-	}
-
-
-	/**
-	 * Permet d'activer ou desactiver l'affichage des classes Java de la jdk si implementees ou herite.
-	 */
-	public void afficherInterfaceHeritage(boolean afficher)
-	{
-		this.afficherClassesCachables = afficher;
-		this.recalculerChemins();
-		this.repaint();
-	}
-	
-	// =========================================================================
-	// OUTILS GEOMETRIQUES
-	// =========================================================================
-	
-	/**
-	 * Determine la zone relative d'un rectangle cible par rapport a une source.
-	 * @return 'H' (Haut), 'B' (Bas), 'G' (Gauche), 'D' (Droite).
-	 */
-	public char getZone(Rectangle source, Rectangle target)
-	{
-		double dx    = target.getCentreX() - source.getCentreX();
-		double dy    = target.getCentreY() - source.getCentreY();
-		double xNorm = dx / (double) source.getTailleX();
-		double yNorm = dy / (double) source.getTailleY();
-		
-		if (Math.abs(yNorm) > Math.abs(xNorm))
-			return (yNorm < 0) ? 'H' : 'B';
-		
-		else
-			return (xNorm < 0) ? 'G' : 'D';
-		
 	}
 
 	/**

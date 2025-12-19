@@ -17,9 +17,13 @@ import RetroConcepteur.metier.gerexml.SauvegarderXml;
 import RetroConcepteur.vue.FrameUML;
 import RetroConcepteur.vue.outil.Rectangle;
 
-/*
+
+/**
  * Controleur est la pont entre notre logique et l'IHM
+ * * @author [Keryann Le Besque, Laurent Descourtis, Audric Harris, Pol Armand Bermendora, Lucas Leprevost] 
+ * @version 2.0
  */
+
 public class Controleur 
 {
 	private AnalyseFichier analyseFichier;
@@ -35,42 +39,24 @@ public class Controleur
 		this.frameUML = new FrameUML(this);
 	}
 
-	/* 
-	* Getters
-	 */
-	public ArrayList<Classe> getLstClasses()
-	{
-		return this.analyseFichier.getLstClasses();
-	}
+	/*---------------------------------------*/
+	/*              Accesseurs               */
+	/*---------------------------------------*/
 
-	public List<Liaison> getListLiaison()
-	{
-		return this.analyseFichier.getListLiaison();
-	}
-	
-	public List<Liaison> getListLiaisonUnique()
-	{
-		return this.analyseFichier.getListLiaisonUnique();
-	}
-
-	public List<Liaison> getListLiaisonBinaire()
-	{
-		return this.analyseFichier.getListLiaisonBinaire();
-	}
+	public ArrayList<Classe> getLstClasses        () { return this.analyseFichier.getLstClasses()        ; }
+	public List<Liaison>     getListLiaison       () { return this.analyseFichier.getListLiaison()       ; }
+	public List<Liaison>     getListLiaisonUnique () { return this.analyseFichier.getListLiaisonUnique() ; }
+	public List<Liaison>     getListLiaisonBinaire() { return this.analyseFichier.getListLiaisonBinaire(); }
 
 	public Classe getClasseAvecMeth( Methode meth )
 	{
 		for ( Classe c : this.getLstClasses() )
-		{
-			if ( c.getLstMethode().contains(meth)) return c;
-		}
+			if ( c.getLstMethode().contains(meth)) 
+				return c;
 		return null;
 	}
 
-
-	/*
-	* Autres Methodes
-	*/
+	/*  */
 	
 	public void majAttribut(Attribut att, String nom, boolean estConstante, boolean isAddOnly) 
 	{
@@ -82,11 +68,6 @@ public class Controleur
 	public boolean estClasseProjet(String type)
 	{
 		return this.analyseFichier.estClasseProjet(type);
-	}
-	
-	public Classe get(int ind)
-	{
-		return this.analyseFichier.getLstClasses().get(ind);
 	}
 
 	public void ouvrirDossier(String dossier)
@@ -103,9 +84,7 @@ public class Controleur
 		{
 			Rectangle r = mapRect.get(c);
 			if (r != null) 
-				{
 				mapPositions.put(c, new Position(r.getX(), r.getY(), r.getTailleX(), r.getTailleY()));
-			}
 		}
 
 		SauvegarderXml.sauvegarderXml(chemin, lst, mapPositions, this.getListLiaison());

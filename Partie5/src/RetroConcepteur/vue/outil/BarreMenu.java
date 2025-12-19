@@ -12,30 +12,34 @@ import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.KeyStroke;
 
-
+/**
+ * Classe responsable de la creation de la barre de menu de l'application.
+ * * @author [Keryann Le Besque, Laurent Descourtis, Audric Harris, Pol Armand Bermendora, Lucas Leprevost] 
+ * @version 2.0
+ */
 
 public class BarreMenu extends JMenuBar implements ActionListener
 {
-	/*-----------*/
-	/* Attributs */
-	/*-----------*/
+	/*---------------------------------*/
+	/*           Attributs             */
+	/*---------------------------------*/
 
 	private FrameUML   frame;
 	private JCheckBoxMenuItem cbAfficher;
 
 	private String[][] modeleBarre = {  { "M", "Fichier",                      "F"                    },
-										{ "I", "Ouvrir",                       "O", "control O"       },
-										{ "I", "Ouvrir Xml",                   "N", "control N"       },
-										{ "I", "Exporter",                     "E", "control E"       },
-										{ "I", "Sauvegarder",                  "S", "control S"       },
+										{ "I", "Ouvrir Dossier",               "O", "control O"       },
+										{ "I", "Ouvrir Xml",                   "X", "control X"       },
+										{ "I", "Exporter en Image",            "I", "control I"       },
+										{ "I", "Sauvegarder en xml",           "S", "control S"       },
 										{ "S"                                                         },
 										{ "I", "Quitter",                      "Q", "alt F4"          },
 										{ "M", "Edition",                      "E"                    },
-										{ "C", "Afficher implements/inteface", "G", "control G"       }};
+										{ "C", "Afficher implements/inteface", "A", "control A"       }};
 
-	/*--------------*/
-	/* Constructeur */
-	/*--------------*/
+	/*---------------------------------------*/
+	/*            Constructeur               */
+	/*---------------------------------------*/
 
 	public BarreMenu (FrameUML frame)
 	{
@@ -75,22 +79,19 @@ public class BarreMenu extends JMenuBar implements ActionListener
 				{
 					JCheckBoxMenuItem checkBox = new JCheckBoxMenuItem(this.modeleBarre[i][1]);
 
-					if (this.modeleBarre[i].length > 2) {
+					if (this.modeleBarre[i].length > 2)
 						checkBox.setMnemonic(this.modeleBarre[i][2].charAt(0));
-					}
 
-					if (this.modeleBarre[i].length == 4) {
+					if (this.modeleBarre[i].length == 4)
 						checkBox.setAccelerator(KeyStroke.getKeyStroke(this.modeleBarre[i][3]));
-					}
 
 					checkBox.addActionListener(this);
 					menuCourant.add(checkBox);
 
-					// Stocke la référence si c'est la bonne checkbox
 					if ("Afficher implements/inteface".equals(this.modeleBarre[i][1])) 
 					{
-										this.cbAfficher = checkBox;
-										this.cbAfficher.setSelected(true);
+						this.cbAfficher = checkBox;
+						this.cbAfficher.setSelected(true);
 					}
 				}
 
@@ -102,9 +103,9 @@ public class BarreMenu extends JMenuBar implements ActionListener
 		this.setVisible( true );
 	}
 
-	/*-----------------*/
-	/* Autres méthodes */
-	/*-----------------*/
+	/*-------------------------------------*/
+	/*           Autres methodes           */
+	/*-------------------------------------*/
 
 	public void actionPerformed ( ActionEvent e )
 	{
@@ -112,15 +113,14 @@ public class BarreMenu extends JMenuBar implements ActionListener
 
 		switch (cmd) 
 		{
-			case "Ouvrir"      					-> this.frame.ouvrirFichier();
+			case "Ouvrir Dossier"      			-> this.frame.ouvrirFichier();
 			case "Ouvrir Xml"  					-> this.frame.ouvrirXml();
-			case "Sauvegarder" 					-> this.frame.sauvegardeFichier();
-			case "Exporter"    					-> this.frame.exporterFichier();			
+			case "Sauvegarder en xml"           -> this.frame.sauvegardeFichier();
+			case "Exporter en Image"    		-> this.frame.exporterImage();			
 			case "Afficher implements/inteface" -> this.frame.afficherImplHerit(this.cbAfficher.getState());
 			case "Quitter"     					-> System.exit(0);
-			
 
-			default        -> System.out.println("Aucune action associée à : " + cmd);
+			default        -> System.out.println("Aucune action associee a : " + cmd);
 		}
 	}
 }

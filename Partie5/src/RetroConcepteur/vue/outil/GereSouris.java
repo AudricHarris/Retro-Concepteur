@@ -1,6 +1,7 @@
 package RetroConcepteur.vue.outil;
 
 // Packetage SWING 
+import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
 
 // Packetage AWT
@@ -8,9 +9,10 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 
 // Nos packetage
-import RetroConcepteur.vue.panel.PanelUML;
-import RetroConcepteur.metier.classe.*;
 import RetroConcepteur.Controleur;
+import RetroConcepteur.metier.classe.Classe;
+
+import RetroConcepteur.vue.panel.PanelUML;
 import RetroConcepteur.vue.FrameEdition;
 
 /**
@@ -74,7 +76,7 @@ public class GereSouris extends MouseAdapter
 	}
 	
 	/**
-	 *	Gestion pour la souris quand deplacer et maintenue
+	 *	Gestion des deplacements 
 	 *	@param e Mouse event
 	 */
 	public void mouseDragged(MouseEvent e)
@@ -127,11 +129,14 @@ public class GereSouris extends MouseAdapter
 				
 				if (r.possede(pSouris)) 
 				{
-					new FrameEdition(this.ctrl, c, 'A');
+					if (!c.getLstAttribut().isEmpty()) 
+						new FrameEdition(this.ctrl, c, 'A');
+					else
+						JOptionPane.showMessageDialog(this.panelUML, "La classe ne possede pas d'attribut a modifier", "Erreur", JOptionPane.ERROR_MESSAGE);  
 					break;
 				}
 			}
 		}
+		this.panelUML.multipliciteClic(e);
 	}
-	
 }

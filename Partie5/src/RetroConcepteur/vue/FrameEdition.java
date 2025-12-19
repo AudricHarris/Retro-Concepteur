@@ -1,52 +1,60 @@
 package RetroConcepteur.vue;
 
-
-
-import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-
 import RetroConcepteur.Controleur;
 import RetroConcepteur.metier.classe.Classe;
 import RetroConcepteur.vue.panel.PanelEditionAttribut;
 
+import java.awt.BorderLayout;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.SwingConstants;
+
+/**
+ * Fenetre flottante permettant l'edition des proprietes d'une classe (Attributs, etc.).
+ * Elle gere un mecanisme d'instance unique pour eviter d'ouvrir plusieurs fenetres d'edition a la fois.
+ */
+
 public class FrameEdition extends JFrame
 {
-    // 1. Ajoutez cette variable statique (partagée par toute l'application)
-    private static FrameEdition instanceOuverte = null;
-	private Controleur ctrl;
-	private JPanel pnlEditionClasse;
-	private JPanel pnlEditionAttribut;
-	private JPanel pnlEditionMethode;
+	// Variable statique pour conserver la reference de la fenetre active
+	private static FrameEdition instanceOuverte = null;
 
+	private Controleur          ctrl;
+	private JPanel              pnlEditionAttribut;
+
+	/**
+	 * Constructeur de la fenetre d'edition.
+	 * Ferme automatiquement toute autre fenetre d'edition deja ouverte.
+	 *
+	 * @param ctrl Le controleur de l'application.
+	 * @param classe La classe metier a modifier.
+	 * @param type Le type d'edition (Actuellement non utilise, par defaut 'A' pour attributs).
+	 */
 	public FrameEdition(Controleur ctrl, Classe classe, char type)
 	{
-        // 2. AJOUTEZ CE BLOC AU TOUT DÉBUT DU CONSTRUCTEUR
-        if (instanceOuverte != null) 
-        {
-            instanceOuverte.dispose(); 
-        }
-        instanceOuverte = this;
+		JLabel lblTitle;
+
+		if (this.instanceOuverte != null) 
+			this.instanceOuverte.dispose(); 
+		
+		this.instanceOuverte = this;
 		
 		this.ctrl = ctrl;
 		
-		if (this.pnlEditionAttribut == null)
-			this.pnlEditionAttribut = new PanelEditionAttribut(ctrl,this, classe);
-		else
-		{
-			this.pnlEditionAttribut.removeAll();
-			this.pnlEditionAttribut = new PanelEditionAttribut(ctrl,this, classe);
-		}
+		this.setTitle("edition de la classe : " + classe.getNom());
+		this.setSize (500, 300);
+		this.setLayout(new BorderLayout(0, 10)); // ecart vertical de 10px
 
-		JLabel lblTitle = new JLabel("Edition de la classe : " + classe.getNom());
-		this.setTitle("Edition de la classe : " + classe.getNom());
-		this.add(lblTitle);
+		lblTitle = new JLabel("edition de la classe : " + classe.getNom(), SwingConstants.CENTER);
 		
-		this.add(this.pnlEditionAttribut);
+		this.pnlEditionAttribut = new PanelEditionAttribut(ctrl, this, classe);
 
-		this.setSize(500, 300);
+		
+		this.add(lblTitle, BorderLayout.NORTH);
+		this.add(this.pnlEditionAttribut, BorderLayout.CENTER);
+
+		this.setLocationRelativeTo(null); 
 		this.setVisible(true);
-		
 	}
-
 }
