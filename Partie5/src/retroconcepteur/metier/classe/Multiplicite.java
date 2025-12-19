@@ -1,8 +1,9 @@
 package retroconcepteur.metier.classe;
 
-
 /**
  * Instance qui stock la Multiplicite d'une Liaison
+ * * @author [Keryann Le Besque, Laurent Descourtis, Audric Harris, Pol Armand Bermendora, Lucas Leprevost] 
+ * @version 2.0
  */
 public class Multiplicite
 {
@@ -20,16 +21,9 @@ public class Multiplicite
 		this.borneSup = borneSup;
 	}
 
-	//---------------------------------------//
-	//             getter                    //
-	//---------------------------------------//
-	
-	public String getBorneInf() { return this.borneInf; }
-	public String getBorneSup() { return this.borneSup; }
-
-	//---------------------------------------//
-	//            Modificateur               //
-	//---------------------------------------//
+	/*---------------------------------------*/
+	/*            Modificateur               */
+	/*---------------------------------------*/
 	
 	public void setBorneInf(String borneInf) 
 	{ 
@@ -41,9 +35,16 @@ public class Multiplicite
 		this.borneSup = borneSup;
 	}
 
-	//---------------------------------------//
-	//            Methode instance           //
-	//---------------------------------------//
+	/*---------------------------------------*/
+	/*             Accesseurs                */
+	/*---------------------------------------*/
+	
+	public String getBorneInf() { return this.borneInf; }
+	public String getBorneSup() { return this.borneSup; }
+
+	/*---------------------------------------*/
+	/*            Methode instance           */
+	/*---------------------------------------*/
 	
 	public String toString()
 	{

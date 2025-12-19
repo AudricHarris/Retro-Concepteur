@@ -7,6 +7,8 @@ import retroconcepteur.metier.AnalyseFichier;
 
 /**
  * Determine les Liaison potentiel entre les classe et leur multiplicité.
+ * * @author [Keryann Le Besque, Laurent Descourtis, Audric Harris, Pol Armand Bermendora, Lucas Leprevost] 
+ * @version 2.0
  */
 public class Liaison
 {
@@ -72,9 +74,9 @@ public class Liaison
 	private Liaison(Classe classe1 , Classe classe2, Attribut attribut,
 		            AnalyseFichier analyseFichier                      )
 	{
-		this.fromClass      = classe1;
-		this.toClass        = classe2;
-		this.analyseFichier = analyseFichier;
+		this.fromClass        = classe1;
+		this.toClass          = classe2;
+		this.analyseFichier   = analyseFichier;
 		
 		this.toMultiplicity   = new Multiplicite("", ""); // Pas de multiplicité pour héritage/implémentaion
 		this.fromMultiplicity = new Multiplicite("", ""); 
@@ -83,7 +85,7 @@ public class Liaison
 		if (attribut != null)
 		{
 			this.nomVar = attribut.getNom();
-			this.toMultiplicity = new Multiplicite("1", "1"); // Défaut
+			this.toMultiplicity = new Multiplicite("1", "1");
 			this.fromMultiplicity = new Multiplicite("0", "*");
 
 			Methode constructeur = classe1.getLstMethode().size() >= 1 ? classe1.getLstMethode().get(0) : null;
@@ -119,9 +121,9 @@ public class Liaison
 		this.analyseFichier = analyseFichier;
 	}
 
-	//---------------------------------------//
-	//              Getters                  //
-	//---------------------------------------//
+	/*---------------------------------------*/
+	/*              Getters                  */
+	/*---------------------------------------*/
 
 	public Classe getFromClass() { return this.fromClass; }
 	public Classe getToClass  () { return this.toClass;   }
@@ -153,13 +155,9 @@ public class Liaison
 		if (sType.equals("Association")) 
 		{
 			if (this.estBidirectionel())
-			{
 				sType = "BIDIRECTIONNELLE";
-			}
 			else
-			{
 				sType = "UNI";
-			}
 		}
 		
 		return sType;
@@ -173,16 +171,16 @@ public class Liaison
 		return false;
 	}
 	
-	//---------------------------------------//
-	//            Modificateur               //
-	//---------------------------------------//
+	/*---------------------------------------*/
+	/*            Modificateur               */
+	/*---------------------------------------*/
 
 	
 	public void setFromMultiplicte(Multiplicite m) { this.fromMultiplicity = m;}
 
-	//---------------------------------------//
-	//            Methode instance           //
-	//---------------------------------------//
+	/*---------------------------------------*/
+	/*            Methode instance           */
+	/*---------------------------------------*/
 
 	public String toString()
 	{
@@ -191,9 +189,9 @@ public class Liaison
 	}
 	
 
-	//---------------------------------------//
-	//			  Methode static		   //
-	//---------------------------------------//
+	/*---------------------------------------*/
+	/*			  Methode static		     */
+	/*---------------------------------------*/
 
 	/**
 	 *	Parcours la liste LST_COLLECTIONS et renvoie si type peut être former avec nom

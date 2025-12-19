@@ -7,7 +7,10 @@ import java.util.List;
 /**
  * Class classe est une instance qui permet de stocker les differents class de chaque fichier
  * Elle contient un nom, une list d'attribut et liste de methode pour les variables
- * */
+ * * @author [Keryann Le Besque, Laurent Descourtis, Audric Harris, Pol Armand Bermendora, Lucas Leprevost] 
+ * @version 2.0
+ */
+
 public class Classe
 {
 	private String              nom;
@@ -43,12 +46,14 @@ public class Classe
 	//              Getters                  //
 	//---------------------------------------//
 
-	public String              getNom              (){ return this.nom;              }
-	public boolean             isAbstract          (){ return this.isAbstract;       }
-	public boolean             isInterface         (){ return this.isInterface;      }
-	public String              getNomHeritageClasse(){ return this.nomHeritageClasse;}
-	public boolean             estClique           (){ return this.estClique;        }
-	public boolean             getCachable         (){return this.cachable ;          } 
+	public String              getNom              (){ return this.nom;               }
+	public boolean             isAbstract          (){ return this.isAbstract;        }
+	public boolean             isInterface         (){ return this.isInterface;       }
+	public String              getNomHeritageClasse(){ return this.nomHeritageClasse; }
+	public boolean             estClique           (){ return this.estClique;         }
+	public boolean             getCachable         (){ return this.cachable ;         } 
+	public int getNbMethode                        (){ return this.lstMethode.size(); }
+	public int getNbAttribut                       (){ return this.lstAttribut.size();}
 	
 	public ArrayList<Attribut> getLstAttribut()
 	{ 
@@ -109,28 +114,17 @@ public class Classe
 		}
 		return grand;
 	}
-	/**
-	 * Retourne le nombre de constante de la classe
-	 * @return int le nombre de constante
-	 */
+
 	public int getNbConstante()
 	{
 		int cpt=0;
-		for ( Attribut att : this.lstAttribut ) if ( att.isConstante() ) cpt++;
-
+		for ( Attribut att : this.lstAttribut ) 
+			if ( att.isConstante() ) 
+				cpt++;
 		return cpt;
 	}
-	/**
-	 * Retourne le nombre de méthode de la classe
-	 * @return int le nombre de méthode
-	 */
-	public int getNbMethode() { return this.lstMethode.size(); }
 
-	/**
-	 * Retourne le nombre d'attribut de la classe
-	 * @return int le nombre d'attribut
-	 */
-	public int getNbAttribut() { return this.lstAttribut.size(); }
+
 	
 	/**
 	* Retourne une liste ordonnée des attributs :
@@ -285,9 +279,9 @@ public class Classe
 		if ( meth != null) this.lstMethode.add(meth);
 	}
 
-	//---------------------------------------//
-	//         Methode instance              //
-	//---------------------------------------//
+	/*---------------------------------------*/
+	/*         Methode instance              */
+	/*---------------------------------------*/
 
 	public String toString()
 	{

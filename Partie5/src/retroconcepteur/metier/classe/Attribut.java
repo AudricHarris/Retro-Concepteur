@@ -3,6 +3,8 @@ package retroconcepteur.metier.classe;
 /**
  * Class Attribut est une instance qui permet de stocker les attribut d'un classe
  * Elle contient plus paramètres comme type, visibilite, isStatic, son nom et un num
+ * * @author [Keryann Le Besque, Laurent Descourtis, Audric Harris, Pol Armand Bermendora, Lucas Leprevost] 
+ * @version 2.0
  */
 public class Attribut 
 {
@@ -35,10 +37,18 @@ public class Attribut
 		this.isStatic   = isStatic;
 		this.isAddOnly  = isAddOnly;
 	}
+
+	/*---------------------------------------*/
+	/*              Modificateurs            */
+	/*---------------------------------------*/
+
+	public void setNom       (String nom       ) { this.nom = nom             ;}
+	public void setConstante (boolean constante) {this.constante  = constante ;}
+	public void setAddOnly   (boolean isAddOnly) {this.isAddOnly  = isAddOnly ;}
 	
-	//---------------------------------------//
-	//              Getters                  //
-	//---------------------------------------//
+	/*---------------------------------------*/
+	/*              Accesseurs               */
+	/*---------------------------------------*/
 
 	public int     getNum       () {return this.num       ;}
 	public String  getNom       () {return this.nom       ;}
@@ -48,16 +58,9 @@ public class Attribut
 	public boolean isStatic     () {return this.isStatic  ;}
 	public boolean isAddOnly    () {return this.isAddOnly ;}
 
-	//---------------------------------------//
-	//              Setters                  //
-	//---------------------------------------//
-	public void setNom       (String nom       ) { this.nom = nom       ;}
-	public void setConstante (boolean constante)  {this.constante  = constante ;}
-	public void setAddOnly (boolean isAddOnly)  {this.isAddOnly  = isAddOnly ;}
-
-	//---------------------------------------//
-	//         Methode instance              //
-	//---------------------------------------//
+	/*---------------------------------------*/
+	/*         Methode instance              */
+	/*---------------------------------------*/
 
 	@Override
 	public String toString()

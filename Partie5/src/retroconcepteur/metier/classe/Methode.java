@@ -4,6 +4,8 @@ import java.util.ArrayList;
 
 /**
  * Class methode stock le nom, visibilite, type, lstParam et isStatic d'une classe
+ * * @author [Keryann Le Besque, Laurent Descourtis, Audric Harris, Pol Armand Bermendora, Lucas Leprevost] 
+ * @version 2.0
  */
 public class Methode
 {
@@ -30,9 +32,9 @@ public class Methode
 		this.isStatic   = isStatic;
 	}
 
-	//---------------------------------------//
-	//              Getters                  //
-	//---------------------------------------//
+	/*---------------------------------------*/
+	/*              Getters                  */
+	/*---------------------------------------*/
 
 	public String               getVisibilite() {return this.visibilite;}
 	public String               getNom       () {return this.nom       ;}
@@ -40,9 +42,9 @@ public class Methode
 	public ArrayList<Parametre> getLstParam  () {return this.lstParam  ;}
 	public boolean              isStatic     () {return this.isStatic  ;}
 
-	//---------------------------------------//
-	//          methode instance             //
-	//---------------------------------------//
+	/*---------------------------------------*/
+	/*          Methode instance             */
+	/*---------------------------------------*/
 
 	@Override
 	public String toString()
