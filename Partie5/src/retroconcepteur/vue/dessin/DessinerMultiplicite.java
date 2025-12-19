@@ -27,230 +27,83 @@ public class DessinerMultiplicite
 	 * @return True si c'est le départ, False si c'est l'arrivée.
 	 */
 	
-	public boolean estDepart()
-	{
-		return this.estDepart;
-	}
+	public boolean estDepart()	{return this.estDepart;}
 
-	/*---------------------------------------*/
-	/* AUTRES MÉTHODES PUBLIQUES             */
-	/*---------------------------------------*/
+	/*------------------------------------------*/
+	/* MÉTHODES PUBLIQUES À MODIFIER            */
+	/*------------------------------------------*/
 
 	/**
-	 * Dessine les textes de multiplicites et le nom de variable sur le contexte graphique.
-	 *
-	 * @param g2            Le contexte graphique Java AWT.
-	 * @param chemin        L'objet chemin contenant les points de la liaison.
-	 * @param multDepart    Le texte de la multiplicite cote source.
-	 * @param multArrivee   Le texte de la multiplicite cote cible.
-	 * @param nomVariable   Le nom du rôle côté cible.
+	 * Dessine les multiplicités et le rôle sur le diagramme.
+	 * Utilise la même logique de positionnement que la détection de clic pour éviter les décalages.
 	 */
 	public void dessiner(Graphics2D g2, Chemin chemin, String multDepart, String multArrivee, String nomVariable)
 	{
 		LinkedList<Point> points;
-		FontMetrics       metriquesPolice;
-		double            ascent;
-		int               distanceClasse;
-		int               distanceTrait;
-		int               distanceRole;
+		FontMetrics       fm;
+		Rectangle         zone;
 		int               x, y;
 		
-		points          = chemin.getParcours();
-		metriquesPolice = g2.getFontMetrics();
-		ascent          = metriquesPolice.getAscent();
-		
-		distanceClasse  = 10;
-		distanceTrait   = 5;
-		distanceRole    = 5;
+		points = chemin.getParcours();
+		fm     = g2.getFontMetrics();
 
-		if (multDepart != null && !multDepart.isEmpty())
+		// Dessin de la Multiplicité de depart
+		if (multDepart != null && !multDepart.isEmpty() && points.size() > 1)
 		{
-			Point pDepart  = points.getFirst();
-			Point pSuivant = points.get(1);
+			zone = this.calculerZoneTexte(points.getFirst(), points.get(1), multDepart, fm);
 			
-			x = pDepart.getX();
-			y = pDepart.getY();
-
-			// Si le segment est horizontal
-			if (pDepart.getY() == pSuivant.getY())
-			{
-				y += (int) ascent; 
-				if (pSuivant.getX() > pDepart.getX())
-					x += distanceClasse;
-				else
-					x -= (distanceClasse + 15);
-			}
-			// Si le segment est vertical
-			else
-			{
-				x += distanceTrait;
-				if (pSuivant.getY() > pDepart.getY())
-					y += (distanceClasse + 10);
-				else 
-					y -= distanceClasse;
-			}
+			x = (int) zone.getX();
+			y = (int) (zone.getY() + fm.getAscent());
+			
 			g2.drawString(multDepart, x, y);
 		}
 		
-		if (multArrivee != null && !multArrivee.isEmpty())
+		// Dessin de la Multiplicité d'arrive
+		if (multArrivee != null && !multArrivee.isEmpty() && points.size() > 1)
 		{
-			Point pArrivee    = points.getLast();
-			Point pPrecedent  = points.get(points.size() - 2);
-			int   largeurRole = metriquesPolice.stringWidth(nomVariable == null ? "" : nomVariable);
-			int   xRole       = 0;
-			int   yRole       = 0;
-
-			x = pArrivee.getX();
-			y = pArrivee.getY();
-
-			// Si le segment est horizontal
-			if (pArrivee.getY() == pPrecedent.getY())
-			{
-				int yMult = y + (int) ascent;
-				
-				if (pArrivee.getX() > pPrecedent.getX())
-				{
-					// Flèche vient de la gauche 
-					x    -= (distanceClasse + 15);
-					xRole = x - largeurRole;
-					yRole = y - distanceRole;
-				}
-				else
-				{
-					// Flèche vient de la droite 
-					x    += distanceClasse;
-					xRole = x + (largeurRole / 2);
-					yRole = y - distanceRole;
-				}
-				
-				g2.drawString(multArrivee, x, yMult);
-			}
-			// Si le segment est vertical
-			else 
-			{
-				int xMult, yMult;
-				
-				if (pArrivee.getY() > pPrecedent.getY())
-				{
-					// Flèche vient du haut 
-					xMult = x + distanceTrait;
-					yMult = y - distanceClasse;
-					g2.drawString(multArrivee, xMult, yMult);
-					
-					// Rôle à gauche du trait
-					xRole = x - largeurRole - distanceTrait;
-					yRole = y - (distanceClasse * 3);
-				}
-				else 
-				{
-					// Flèche vient du bas 
-					xMult = x + distanceTrait;
-					yMult = y + (distanceClasse + 10);
-					g2.drawString(multArrivee, xMult, yMult);
-					
-					// Rôle a gauche du trait
-					xRole = x - largeurRole - distanceTrait;
-					yRole = y + (distanceClasse + 10) * 2;
-				}
-			}
+			zone = this.calculerZoneTexte(points.getLast(), points.get(points.size() - 2), multArrivee, fm);
 			
+			x = (int) zone.getX();
+			y = (int) (zone.getY() + fm.getAscent());
+			
+			g2.drawString(multArrivee, x, y);
+
+			// Dessin du Rôle 
 			if (nomVariable != null && !nomVariable.isEmpty())
-				g2.drawString(nomVariable, xRole, yRole);
+				this.dessinerRole(g2, points.getLast(), points.get(points.size() - 2), nomVariable, x, y, fm);
+			
 		}
 	}
 
 	/**
-	 * Vérifie si un clic de souris correspond à la zone d'une des multiplicités.
-	 * Met à jour l'état interne (estDepart) si un clic est détecté.
-	 *
-	 * @param pointClic     Les coordonnées du clic souris.
-	 * @param chemin        Le chemin de la liaison.
-	 * @param multDepart    Le texte de la multiplicité de départ.
-	 * @param multArrivee   Le texte de la multiplicité d'arrivée.
-	 * @param fm            Les métriques de police pour calculer les zones de clic.
-	 * @return True si le clic a touché une zone de texte, False sinon.
+	 * Vérifie si un clic souris est à l'intérieur d'une zone de multiplicité.
+	 * Met à jour le flag estDepart si vrai.
 	 */
 	public boolean verifierClic(Point pointClic, Chemin chemin, String multDepart, String multArrivee, FontMetrics fm)
 	{
 		LinkedList<Point> points;
-		double            ascent;
-		double            largeur, hauteur;
-		int               distanceClasse;
-		int               distanceTrait;
-		int               x, y;
-		Rectangle2D       limites;
+		Rectangle       zoneDepart, zoneArrivee;
 		
-		points          = chemin.getParcours();
-		ascent          = fm.getAscent();
-		distanceClasse  = 10;
-		distanceTrait   = 5;
+		points = chemin.getParcours();
+		
+		if (points.size() < 2) return false;
 
-		if (multDepart != null && !multDepart.isEmpty() && points.size() > 1)
+		if (multDepart != null && !multDepart.isEmpty())
 		{
-			Point pDepart  = points.getFirst();
-			Point pSuivant = points.get(1);
-			
-			x = pDepart.getX();
-			y = pDepart.getY();
-			
-			if (pDepart.getY() == pSuivant.getY())
-			{
-				y -= distanceTrait;
-				if (pSuivant.getX() > pDepart.getX())
-					x += distanceClasse;
-				else
-					x -= (distanceClasse + 15);
-			} 
-			else
-			{
-				x += distanceTrait;
-				if (pSuivant.getY() > pDepart.getY())
-					y += (distanceClasse + 10);
-				else
-					y -= distanceClasse;
-			}
 
-			largeur = fm.stringWidth(multDepart);
-			hauteur = fm.getHeight();
-			limites = new Rectangle2D.Double(x, y - ascent, largeur, hauteur);
-			
-			if (limites.contains(pointClic.getX(), pointClic.getY()))
+			zoneDepart = this.calculerZoneTexte(points.getFirst(), points.get(1), multDepart, fm);
+			if (zoneDepart.possede(new Point(pointClic.getX(), pointClic.getY())))
 			{
 				this.estDepart = true;
 				return true;
 			}
 		}
 
-		if (multArrivee != null && !multArrivee.isEmpty() && points.size() > 1)
+		// Vérification Arrivée
+		if (multArrivee != null && !multArrivee.isEmpty())
 		{
-			Point pArrivee   = points.getLast();
-			Point pPrecedent = points.get(points.size() - 2);
-			
-			x = pArrivee.getX();
-			y = pArrivee.getY();
-			
-			if (pArrivee.getY() == pPrecedent.getY())
-			{
-				y -= distanceTrait;
-				if (pArrivee.getX() > pPrecedent.getX())
-					x -= (distanceClasse + 15);
-				else
-					x += distanceClasse;
-			} 
-			else
-			{
-				x += distanceTrait;
-				if (pArrivee.getY() > pPrecedent.getY())
-					y -= distanceClasse;
-				else
-					y += (distanceClasse + 10);
-			}
-
-			largeur = fm.stringWidth(multArrivee);
-			hauteur = fm.getHeight();
-			limites = new Rectangle2D.Double(x, y - ascent, largeur, hauteur);
-			
-			if (limites.contains(pointClic.getX(), pointClic.getY()))
+			zoneArrivee = this.calculerZoneTexte(points.getLast(), points.get(points.size() - 2), multArrivee, fm);
+			if (zoneArrivee.possede(new Point(pointClic.getX(), pointClic.getY())))
 			{
 				this.estDepart = false;
 				return true;
@@ -258,5 +111,87 @@ public class DessinerMultiplicite
 		}
 		
 		return false;
+	}
+
+	/*------------------------------------------*/
+	/* MÉTHODES PRIVÉES                         */
+	/*------------------------------------------*/
+
+	/**
+	 * Calcule le rectangle englobant le texte de la multiplicité.
+	 * Modifié : Place le texte EN DESSOUS du trait pour les liaisons horizontales.
+	 */
+	private Rectangle calculerZoneTexte(Point pAncre, Point pDirection, String texte, FontMetrics fm)
+	{
+		int    distClasse, distTrait;
+		int    largeurTexte, hauteurTexte;
+		int    x, y;
+		double yHaut;
+
+		distClasse   = 10;
+		distTrait    = 5;
+		largeurTexte = fm.stringWidth(texte);
+		hauteurTexte = fm.getHeight();
+		x            = pAncre.getX();
+		y            = pAncre.getY();
+
+		if (pAncre.getY() == pDirection.getY())
+		{
+			
+			yHaut = y + distTrait; 
+
+			if (pDirection.getX() > pAncre.getX())
+				x += distClasse;
+			else
+				x -= (distClasse + largeurTexte);
+		}
+		else
+		{
+			x += distTrait; 
+
+			if (pDirection.getY() > pAncre.getY())
+				yHaut = y + distClasse;
+			else
+				yHaut = y - distClasse - hauteurTexte;
+		}
+
+		return new Rectangle(x, (int)yHaut, largeurTexte, hauteurTexte);
+	}
+
+	/**
+	 * Dessine le rôle (nom de variable) à côté de la multiplicité d'arrivée.
+	 * Modifié : Positionne le rôle AU-DESSUS du trait (opposé à la multiplicité) et plus proche de la classe.
+	 */
+	private void dessinerRole(Graphics2D g2, Point pArr, Point pPrec, String nom, int xMult, int yMult, FontMetrics fm)
+	{
+		int largeurRole, xRole, yRole;
+		int distClasseVert = 20;
+		int distClasseHori = 40;
+		int distTrait  = 5;
+
+		largeurRole = fm.stringWidth(nom);
+
+		if (pArr.getY() == pPrec.getY()) 
+		{
+			yRole = pArr.getY() - distTrait; 
+			
+			if (pArr.getX() > pPrec.getX()) 
+				xRole = pArr.getX() - distClasseHori - largeurRole  ;
+			
+			else 
+				xRole = pArr.getX() + distClasseHori ;
+			
+		}
+		else 
+		{
+			xRole = pArr.getX() - distTrait - largeurRole; 
+
+			if (pArr.getY() > pPrec.getY()) 
+				yRole = yMult - distClasseVert;
+			else
+				yRole = yMult + distClasseVert ;
+		}
+
+		g2.drawString(nom, xRole, yRole);
 	}
 }

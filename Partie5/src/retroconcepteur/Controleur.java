@@ -56,7 +56,7 @@ public class Controleur
 		return null;
 	}
 
-	/*  */
+	/*  Autres methodes*/
 	
 	public void majAttribut(Attribut att, String nom, boolean estConstante, boolean isAddOnly) 
 	{
