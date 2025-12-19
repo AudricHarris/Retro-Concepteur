@@ -79,6 +79,7 @@ public class SauvegarderXml
 				classeElm.setAttribute("nom", c.getNom());
 				classeElm.setAttribute("isAbstract", Boolean.toString(c.isAbstract()));
 				classeElm.setAttribute("isInterface", Boolean.toString(c.isInterface()));
+				classeElm.setAttribute("cachable", Boolean.toString(c.getCachable()));
 
 				if (c.getNomHeritageClasse() != null)
 					classeElm.setAttribute("extends", c.getNomHeritageClasse());
@@ -116,7 +117,6 @@ public class SauvegarderXml
 		} 
 		catch (Exception e)
 		{
-			e.printStackTrace();
 			throw new RuntimeException("Erreur lors de la sauvegarde XML : " + e.getMessage());
 		}
 	}
@@ -291,7 +291,6 @@ public class SauvegarderXml
 		} 
 		catch (Exception e) 
 		{
-			e.printStackTrace();
 			throw new RuntimeException("Erreur lors de la sauvegarde XML : " + e.getMessage());
 		}
 	}

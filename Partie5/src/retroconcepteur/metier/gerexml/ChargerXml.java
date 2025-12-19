@@ -24,13 +24,23 @@ import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
-
+/**
+ * Classe utilitaire permettant de charger un diagramme de classes
+ * depuis un fichier XML.
+ */
 public class ChargerXml
 {
 	/*------------------------------------------*/
 	/*       Methode de classe public           */
 	/*------------------------------------------*/
 	
+	/**
+	 * Charge les classes depuis un fichier XML.
+	 *
+	 * @param chemin chemin du fichier XML à lire
+	 * @return liste des classes chargées
+	 * @throws RuntimeException si une erreur survient lors du chargement
+	 */
 	public static ArrayList<Classe> chargerClassesXml(String chemin)
 	{
 		Document doc;
@@ -56,11 +66,17 @@ public class ChargerXml
 		}
 		catch (Exception e)
 		{
-			e.printStackTrace();
-			throw new RuntimeException("Erreur lors du chargement XML : " + e.getMessage());
+			throw new RuntimeException(e.getMessage());
 		}
 	}
 		
+	/**
+	 * Charge les positions graphiques des classes depuis un fichier XML.
+	 *
+	 * @param chemin chemin du fichier XML à lire
+	 * @return map associant le nom d'une classe à sa position graphique
+	 * @throws RuntimeException si une erreur survient lors du chargement
+	 */
 	public static HashMap<String, Position> chargerPositionsXml(String chemin)	
 	{
 		Document doc;
@@ -82,12 +98,19 @@ public class ChargerXml
 		}
 		catch (Exception e)
 		{
-			e.printStackTrace();
 			throw new RuntimeException("Erreur lors du chargement des positions XML : " + e.getMessage());
 		}	
 		return mapPos;
 	}
 		
+	/**
+	 * Charge les liaisons entre les classes depuis un fichier XML.
+	 *
+	 * @param chemin chemin du fichier XML à lire
+	 * @param classes liste des classes déjà chargées
+	 * @return liste des liaisons chargées
+	 * @throws RuntimeException si une erreur survient lors du chargement
+	 */
 	public static ArrayList<Liaison> chargerLiaisonsXml(String chemin, ArrayList<Classe> classes) 
 	{
 		Element elm;
@@ -114,7 +137,6 @@ public class ChargerXml
 		}
 		catch (Exception e)
 		{
-			e.printStackTrace();
 			throw new RuntimeException("Erreur lors du chargement des liaisons XML : " + e.getMessage());
 		}
 	}
@@ -123,6 +145,13 @@ public class ChargerXml
 	/*      Methode de classe privee            */
 	/*------------------------------------------*/
 
+	/**
+	 * Charge et parse un fichier XML.
+	 *
+	 * @param chemin chemin du fichier XML
+	 * @return document XML normalisé
+	 * @throws Exception en cas d'erreur de lecture ou de parsing
+	 */
 	private static Document chargerUnXml(String chemin) throws Exception
 	{
 		File fchXml = new File(chemin);
@@ -133,6 +162,12 @@ public class ChargerXml
 		return doc;
 	}
 
+	/**
+	 * Construit un objet {@link Classe} à partir d'un nœud XML.
+	 *
+	 * @param node nœud XML représentant une classe
+	 * @return instance de {@link Classe} ou {@code null} si le nœud est invalide
+	 */
 	private static Classe lireClasseXml(Node node)
 	{
 		Element elm;
@@ -155,11 +190,18 @@ public class ChargerXml
 		return c;
 	}
 
+	/**
+	 * Lit les propriétés générales d'une classe (abstraite, interface, héritage).
+	 *
+	 * @param elm élément XML de la classe
+	 * @param c classe à configurer
+	 */
 	private static void lireProprietesClasse(Element elm, Classe c)
 	{
 		String sAbstract;
 		String sInterface;
 		String sExtends;
+		String sCachable;
 
 		sAbstract = elm.getAttribute("isAbstract");
 		if (!sAbstract.isEmpty())
@@ -172,8 +214,18 @@ public class ChargerXml
 		sExtends = elm.getAttribute("extends");
 		if (!sExtends.isEmpty())
 			c.setNomHeritageClasse(sExtends);
+
+		sCachable = elm.getAttribute("cachable");
+		if (!sCachable.isEmpty())
+			c.setCachable(Boolean.parseBoolean(sCachable));
 	}
 
+	/**
+	 * Lit les interfaces implémentées par une classe.
+	 *
+	 * @param elm élément XML de la classe
+	 * @param c classe à enrichir
+	 */
 	private static void lireInterfaces(Element elm, Classe c)
 	{
 		NodeList interfacesNodes;
@@ -196,6 +248,12 @@ public class ChargerXml
 		}
 	}
 	
+	/**
+	 * Lit les attributs d'une classe depuis le XML.
+	 *
+	 * @param elm élément XML de la classe
+	 * @param c classe à enrichir
+	 */
 	private static void lireAttributs(Element elm, Classe c)
 	{
 		NodeList atts;
@@ -230,6 +288,12 @@ public class ChargerXml
 		}
 	}
 
+	/**
+	 * Lit les méthodes d'une classe depuis le XML.
+	 *
+	 * @param elm élément XML de la classe
+	 * @param c classe à enrichir
+	 */
 	private static void lireMethodes(Element elm, Classe c)
 	{
 		NodeList meths;
@@ -260,6 +324,12 @@ public class ChargerXml
 		}
 	}
 
+	/**
+	 * Lit les paramètres d'une méthode.
+	 *
+	 * @param mEl élément XML représentant une méthode
+	 * @return liste des paramètres de la méthode
+	 */
 	private static ArrayList<Parametre> lireParametres(Element mEl)
 	{
 		ArrayList<Parametre> params;
@@ -288,6 +358,13 @@ public class ChargerXml
 		return params;
 	}
 
+	/**
+	 * Extrait la position graphique d'une classe depuis le XML.
+	 *
+	 * @param mapPos map contenant les positions des classes
+	 * @param lstNoeux liste des nœuds "Classe"
+	 * @param i index du nœud à traiter
+	 */
 	private static void extrairePositionClasse(HashMap<String, Position> mapPos, NodeList lstNoeux, int i)
 	{
 		Element elm;
@@ -327,7 +404,13 @@ public class ChargerXml
 		}
 	}
 
-
+	/**
+	 * Crée une liaison à partir d'un élément XML.
+	 *
+	 * @param elm élément XML représentant la liaison
+	 * @param classes liste des classes existantes
+	 * @return liaison construite ou {@code null} si invalide
+	 */
 	private static Liaison creerLiaisonDepuisElement(Element elm, ArrayList<Classe> classes)
 	{
 		Multiplicite mltde;
@@ -351,6 +434,13 @@ public class ChargerXml
 		return new Liaison(clsDe, clsVers, mltde, mltVers, nomVar, null);
 	}
 
+	/**
+	 * Recherche une classe par son nom dans une liste.
+	 *
+	 * @param classes liste des classes
+	 * @param nom nom de la classe recherchée
+	 * @return classe trouvée ou {@code null} si absente
+	 */
 	private static Classe trouverClasse(ArrayList<Classe> classes, String nom)
 	{
 		for (Classe c : classes)
