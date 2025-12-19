@@ -320,7 +320,7 @@ public class AnalyseFichier
 		if (ligne.contains("(") && !ligne.contains("="))
 			traiterMethode(ligne, visibilite, isStatic);
 		else
-			traiterAttribut(ligne, visibilite, isStatic, isFinal);
+			traiterAttribut(ligne, visibilite, isStatic, isFinal, false);
 	}
 
 	/**
@@ -330,7 +330,7 @@ public class AnalyseFichier
 	 * @param isStatic      si l'attribut est global ou instance
 	 * @param isFinal       si l'attribut est une constante
 	 */
-	private void traiterAttribut(String ligneRestante, String visibilite, boolean isStatic, boolean isFinal)
+	private void traiterAttribut(String ligneRestante, String visibilite, boolean isStatic, boolean isFinal, boolean isAddOnly)
 	{
 		int indexPointVirgule = ligneRestante.indexOf(';');
 		if (indexPointVirgule != -1)
@@ -349,7 +349,7 @@ public class AnalyseFichier
 		String nom = ligneRestante.substring(dernierEspace + 1).trim();
 		Classe c = this.lstClass.getLast();
 
-		c.ajouterAttribut(nom, isFinal, type, visibilite, isStatic);
+		c.ajouterAttribut(nom, isFinal, type, visibilite, isStatic, isAddOnly);
 	}
 
 

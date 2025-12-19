@@ -23,8 +23,9 @@ public class Attribut
 	 * @param type type de l'attribut
 	 * @param visibilite Visibilité de l'attribut
 	 * @param isStatic determine si attribut est static
+	 * @param isAddOnly determine si attribut est addOnly
 	 */
-	public Attribut(int num, String nom, boolean constante, String type, String visibilite, boolean isStatic)
+	public Attribut(int num, String nom, boolean constante, String type, String visibilite, boolean isStatic, boolean isAddOnly)
 	{
 		this.num        = num;
 		this.nom        = nom;
@@ -32,6 +33,7 @@ public class Attribut
 		this.type       = type;
 		this.visibilite = visibilite;
 		this.isStatic   = isStatic;
+		this.isAddOnly  = isAddOnly;
 	}
 	
 	//---------------------------------------//
