@@ -22,7 +22,7 @@ public class Parametre
 	}
 
 	/*---------------------------------------*/
-	/*            Accasseurs                 */
+	/*            Accesseurs                 */
 	/*---------------------------------------*/
 	
 	public String getNom () { return this.nom;  }
