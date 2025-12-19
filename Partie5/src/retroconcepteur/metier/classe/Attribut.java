@@ -14,7 +14,6 @@ public class Attribut
 	private String  visibilite;
 	private boolean constante;
 	private boolean isStatic;
-	private boolean isAddOnly;
 
 
 	/**
@@ -25,9 +24,8 @@ public class Attribut
 	 * @param type type de l'attribut
 	 * @param visibilite Visibilité de l'attribut
 	 * @param isStatic determine si attribut est static
-	 * @param isAddOnly determine si attribut est addOnly
 	 */
-	public Attribut(int num, String nom, boolean constante, String type, String visibilite, boolean isStatic, boolean isAddOnly)
+	public Attribut(int num, String nom, boolean constante, String type, String visibilite, boolean isStatic)
 	{
 		this.num        = num;
 		this.nom        = nom;
@@ -35,7 +33,6 @@ public class Attribut
 		this.type       = type;
 		this.visibilite = visibilite;
 		this.isStatic   = isStatic;
-		this.isAddOnly  = isAddOnly;
 	}
 
 	/*---------------------------------------*/
@@ -44,7 +41,6 @@ public class Attribut
 
 	public void setNom       (String nom       ) { this.nom = nom             ;}
 	public void setConstante (boolean constante) {this.constante  = constante ;}
-	public void setAddOnly   (boolean isAddOnly) {this.isAddOnly  = isAddOnly ;}
 	
 	/*---------------------------------------*/
 	/*              Accesseurs               */
@@ -56,7 +52,6 @@ public class Attribut
 	public String  getType      () {return this.type      ;}
 	public String  getVisibilite() {return this.visibilite;}
 	public boolean isStatic     () {return this.isStatic  ;}
-	public boolean isAddOnly    () {return this.isAddOnly ;}
 
 	/*---------------------------------------*/
 	/*         Methode instance              */

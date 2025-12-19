@@ -196,7 +196,6 @@ public class SauvegarderXml
 		attElm.setAttribute("visibilite", a.getVisibilite() == null ? "" : a.getVisibilite());
 		attElm.setAttribute("constante", Boolean.toString(a.isConstante()));
 		attElm.setAttribute("static", Boolean.toString(a.isStatic()));
-		attElm.setAttribute("addOnly", Boolean.toString(a.isAddOnly()));
 
 		return attElm;
 	}

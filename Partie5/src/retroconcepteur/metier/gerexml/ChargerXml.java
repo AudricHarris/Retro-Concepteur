@@ -265,7 +265,6 @@ public class ChargerXml
 		String vis;
 		boolean constante;
 		boolean statique;
-		boolean addOnly;
 
 		atts = elm.getElementsByTagName("Attribut");
 
@@ -281,9 +280,8 @@ public class ChargerXml
 				vis = aEl.getAttribute("visibilite");
 				constante = Boolean.parseBoolean(aEl.getAttribute("constante"));
 				statique = Boolean.parseBoolean(aEl.getAttribute("static"));
-				addOnly = Boolean.parseBoolean(aEl.getAttribute("addOnly"));
 
-				c.ajouterAttribut(nom, constante, type, vis, statique, addOnly);
+				c.ajouterAttribut(nom, constante, type, vis, statique);
 			}
 		}
 	}

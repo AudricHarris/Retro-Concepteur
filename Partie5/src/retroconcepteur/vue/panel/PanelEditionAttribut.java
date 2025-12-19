@@ -25,8 +25,7 @@ import javax.swing.SwingConstants;
 
 /**
  * Panneau dedie a l'edition des proprietes specifiques des attributs d'une classe UML.
- * Il permet de modifier le nom, et de definir si un attribut est "Frozen" (constante) ou en mode AddOnly
- * ou "AddOnly" via une interface en grille.
+ * Il permet de modifier le nom, et de definir si un attribut est "Frozen" (constante)
  */
 public class PanelEditionAttribut extends JPanel implements ActionListener
 {
@@ -38,7 +37,6 @@ public class PanelEditionAttribut extends JPanel implements ActionListener
 	
 	// Listes pour conserver les references aux composants graphiques generes dynamiquement
 	private List<JCheckBox> listeCbFrozen;
-	private List<JCheckBox> listeCbAddOnly;
 	private List<JTextField> listeTxtNom;
 
 	/**
@@ -56,17 +54,15 @@ public class PanelEditionAttribut extends JPanel implements ActionListener
 		this.frmParent = frmParent;
 		
 		this.listeCbFrozen  = new ArrayList<JCheckBox>();
-		this.listeCbAddOnly = new ArrayList<JCheckBox>();
 		this.listeTxtNom    = new ArrayList<JTextField>();
 		
 		this.setLayout(new BorderLayout());
 		this.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
 
-		JPanel panelGrille = new JPanel(new GridLayout(0, 3, 5, 0));
+		JPanel panelGrille = new JPanel(new GridLayout(0, 2, 5, 0));
 		
 		panelGrille.add(creerLabelTitre("Nom"));
 		panelGrille.add(creerLabelTitre("{freeze}"));
-		panelGrille.add(creerLabelTitre("{addOnly}"));
 
 		for (Attribut att : classe.getLstAttribut()) 
 		{
@@ -82,14 +78,6 @@ public class PanelEditionAttribut extends JPanel implements ActionListener
 			cbFrozen.setBorderPainted(true);
 			panelGrille.add(cbFrozen);
 			this.listeCbFrozen.add(cbFrozen);
-
-			JCheckBox cbAddOnly = new JCheckBox();
-			cbAddOnly.setHorizontalAlignment(SwingConstants.CENTER);
-			cbAddOnly.setSelected(att.isAddOnly());
-			cbAddOnly.setBorder(BorderFactory.createMatteBorder(0, 0, 1, 0, Color.LIGHT_GRAY));
-			cbAddOnly.setBorderPainted(true);
-			panelGrille.add(cbAddOnly);
-			this.listeCbAddOnly.add(cbAddOnly);
 		}
 
 		JPanel panelConteneur = new JPanel(new BorderLayout());
@@ -145,13 +133,12 @@ public class PanelEditionAttribut extends JPanel implements ActionListener
 			for (int i = 0; i < this.listeCbFrozen.size(); i++) 
 			{
 				JCheckBox cbFrozen = this.listeCbFrozen.get(i);
-				JCheckBox cbAddOnly = this.listeCbAddOnly.get(i);
 				String nom = this.listeTxtNom.get(i).getText().trim();
 				Attribut att = this.classe.getLstAttribut().get(i);
 
 				if (!nom.isEmpty())
 				{
-					this.ctrl.majAttribut(att, nom, cbFrozen.isSelected(), cbAddOnly.isSelected());
+					this.ctrl.majAttribut(att, nom, cbFrozen.isSelected());
 				}
 			}
 			this.ctrl.majIHM();

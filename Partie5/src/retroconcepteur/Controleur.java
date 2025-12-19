@@ -58,11 +58,10 @@ public class Controleur
 
 	/*  Autres methodes*/
 	
-	public void majAttribut(Attribut att, String nom, boolean estConstante, boolean isAddOnly) 
+	public void majAttribut(Attribut att, String nom, boolean estConstante) 
 	{
 		att.setNom(nom);
 		att.setConstante(estConstante);
-		att.setAddOnly(isAddOnly);
 		this.analyseFichier.majLiaison();
 	}
 

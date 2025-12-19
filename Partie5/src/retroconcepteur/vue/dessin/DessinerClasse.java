@@ -337,7 +337,6 @@ public class DessinerClasse
 		gauche = this.determineVisibiliteSymbole(att.getVisibilite()) + " " + att.getNom();
 
 		droite = " : " + att.getType() + (att.isConstante() ? " {freeze}" : "");
-		droite += att.isAddOnly() ? " {addOnly}" : "";
 		
 		return this.marge(gauche, droite, wGaucheMax, fm);
 	}

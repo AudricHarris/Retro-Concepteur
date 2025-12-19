@@ -255,10 +255,10 @@ public class Classe
 	 * @param isAddOnly  si l'attribut est addOnly
 	 */
 	public void ajouterAttribut(String nomAtt    , boolean constante, String type,
-		                        String visibilite, boolean isStatic , boolean isAddOnly)
+		                        String visibilite, boolean isStatic)
 	{
 		int num = this.lstAttribut.size() + 1;
-		Attribut attribut = new Attribut(num, nomAtt, constante, type, visibilite, isStatic, isAddOnly);
+		Attribut attribut = new Attribut(num, nomAtt, constante, type, visibilite, isStatic);
 		
 		if (attribut != null) this.lstAttribut.add(attribut);
 	}
