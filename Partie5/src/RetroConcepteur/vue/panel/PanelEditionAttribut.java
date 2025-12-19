@@ -49,7 +49,7 @@ public class PanelEditionAttribut extends JPanel implements ActionListener
         
         
         panelGrille.add(creerLabelTitre("Nom", true));
-        panelGrille.add(creerLabelTitre("{frozen}", true));
+        panelGrille.add(creerLabelTitre("{freeze}", true));
         panelGrille.add(creerLabelTitre("{addOnly}", true));
 
         for (Attribut att : classe.getLstAttribut()) 

@@ -33,58 +33,56 @@ import javax.swing.SpringLayout;
 
 /**
  * Panneau principal de l'application.
- * Il orchestre l'affichage du diagramme en déléguant le dessin spécifique
- * aux classes spécialisées (DessinerClasse, DessinerFleche, DessinerMultiplicite).
+ * Il orchestre l'affichage du diagramme en deleguant le dessin specifique
+ * aux classes specialisees (DessinerClasse, DessinerFleche, DessinerMultiplicite).
  * * @author [Equipe 9]
- * @version 2.0 (Refactorisé)
+ * @version 2.0 (Refactorise)
  */
 public class PanelUML extends JPanel
 {
 	private FrameUML frame;
 	private Controleur ctrl;
 
-	// --- Données du modèle (Métier) ---
+	// --- Donnees du modele (Metier) ---
 	private List<Classe> lstClasse;
 	private List<Liaison> lstLiaisons;
 	private List<Chemin> lstChemins;
 
-	// --- Données de la vue (Graphique) ---
+	// --- Donnees de la vue (Graphique) ---
 	private HashMap<Classe, Rectangle> mapClasseRectangle;
 	private HashMap<Chemin, Liaison> mapCheminLiaison; 
 	
-	// --- Outils de dessin délégués ---
+	// --- Outils de dessin delegues ---
 	private DessinerFleche dessinerFleche;
 	private DessinerMultiplicite dessinerMultiplicite;
-	private DessinerClasse dessinerClasse; // Nouvelle classe déléguée
+	private DessinerClasse dessinerClasse; // Nouvelle classe deleguee
 
 	private boolean positionDeterminee = false;
 	private boolean afficherClassesCachables = true;
 
 	/**
 	 * Constructeur du panneau UML.
-	 * Initialise les outils de dessin et les écouteurs de souris.
+	 * Initialise les outils de dessin et les ecouteurs de souris.
 	 *
-	 * @param frame La fenêtre principale contenant ce panneau.
-	 * @param ctrl Le contrôleur pour les échanges avec le métier.
+	 * @param frame La fenetre principale contenant ce panneau.
+	 * @param ctrl Le controleur pour les echanges avec le metier.
 	 */
 	public PanelUML(FrameUML frame, Controleur ctrl)
 	{
 		this.frame = frame;
 		this.ctrl = ctrl;
 		
-		// Instanciation des outils de dessin
 		this.dessinerFleche = new DessinerFleche();
 		this.dessinerMultiplicite = new DessinerMultiplicite();
-		this.dessinerClasse = new DessinerClasse(ctrl); // On passe le contrôleur
+		this.dessinerClasse = new DessinerClasse(ctrl); // On passe le controleur
 		
 		this.setPreferredSize(new Dimension(2000, 2000));
 	
-		// Initialisation des écouteurs pour le déplacement des boîtes
-		GereSouris gs = new GereSouris(this);
+		GereSouris gs = new GereSouris(this.ctrl, this);
 		this.addMouseListener(gs);
 		this.addMouseMotionListener(gs);
 	
-		// Écouteur pour le clic sur les multiplicités
+		// ecouteur pour le clic sur les multiplicites
 		this.addMouseListener(new MouseAdapter()
 		{
 			@Override
@@ -98,18 +96,18 @@ public class PanelUML extends JPanel
 	}
 	
 	/**
-	 * Recharge toutes les données depuis le contrôleur et réinitialise l'affichage.
-	 * Appelé lors de l'ouverture d'un nouveau dossier.
+	 * Recharge toutes les donnees depuis le controleur et reinitialise l'affichage.
+	 * Appele lors de l'ouverture d'un nouveau dossier.
 	 */
 	public void reinitialiser()
 	{
 		this.lstClasse = this.ctrl.getLstClasses();
-		// Utilisation de la liste binaire pour fusionner les doubles liens
-		this.lstLiaisons = new ArrayList<Liaison>(this.ctrl.getListLiaisonBinaire());
+		
+		this.lstLiaisons        = new ArrayList<Liaison>(this.ctrl.getListLiaisonBinaire());
 		this.mapClasseRectangle = new HashMap<Classe, Rectangle>();
 		this.positionDeterminee = false;
-		this.lstChemins = new ArrayList<Chemin>();
-		this.mapCheminLiaison = new HashMap<Chemin, Liaison>();
+		this.lstChemins         = new ArrayList<Chemin>();
+		this.mapCheminLiaison   = new HashMap<Chemin, Liaison>();
 		
 		this.initialiserPositions();
 		this.determinerPositions();
@@ -125,7 +123,7 @@ public class PanelUML extends JPanel
 	}
 	
 	/**
-	 * Définit manuellement la carte des positions (utilisé lors du chargement XML).
+	 * Definit manuellement la carte des positions (utilise lors du chargement XML).
 	 * @param map La correspondance Classe -> Rectangle.
 	 */
 	public void setMap(HashMap<Classe, Rectangle> map)
@@ -142,7 +140,7 @@ public class PanelUML extends JPanel
 	 */
 	public HashMap<Classe, Rectangle> getMap()
 	{
-		return this.mapClasseRectangle;
+		return new HashMap<Classe, Rectangle>(mapClasseRectangle);
 	}
 	
 	// =========================================================================
@@ -158,7 +156,6 @@ public class PanelUML extends JPanel
 		g2.setFont(font);
 		g2.setStroke(new BasicStroke(2.0f));
 
-		// 1. Premier passage : Dessiner les classes pour calculer leurs dimensions
 		for (Classe classe : this.lstClasse)
 		{
 			if (!classe.getCachable() || this.afficherClassesCachables)
@@ -168,20 +165,17 @@ public class PanelUML extends JPanel
 			}
 		}
 
-		// Si c'est le premier lancement, on calcule les positions maintenant qu'on a les tailles
 		if (!this.positionDeterminee)
 		{
 			this.determinerPositions();
 			this.positionDeterminee = true;
-			this.repaint(); // On redemande un dessin avec les bonnes positions
+			this.repaint();
 			return;
 		}
 
-		// 2. Dessiner les liaisons (flèches) en dessous des boîtes
 		for (Chemin c : this.lstChemins) 
 			this.dessinerFleche.dessinerLiaison(g2, c);
 
-		// 3. Deuxième passage : Redessiner les classes par-dessus les fils pour la propreté
 		for (Classe classe : this.lstClasse)
 		{
 			if (!classe.getCachable() || this.afficherClassesCachables)
@@ -191,7 +185,6 @@ public class PanelUML extends JPanel
 			}
 		}
 
-		// 4. Dessiner les multiplicités
 		for (Chemin c : this.lstChemins)    
 		{   
 			Liaison l = this.mapCheminLiaison.get(c);
@@ -205,29 +198,63 @@ public class PanelUML extends JPanel
 				String multFrom = construireLabelMultiplicite(infFrom, supFrom);
 				String multTo   = construireLabelMultiplicite(infTo, supTo);
 
-				// Appel au délégué de dessin multiplicité
 				this.dessinerMultiplicite.dessiner(g2, c, multFrom, multTo, l.getNomVar());
 			}
 		}
 	}
 
 	/**
-	 * Formate le texte de la multiplicité (ex: convertit "0" et "*" en "0..*").
+	 * Formate le texte de la multiplicite (ex: convertit "0" et "*" en "0..*").
 	 */
 	private String construireLabelMultiplicite(String inf, String sup)
 	{
-		if ((inf == null || inf.isEmpty()) && (sup == null || sup.isEmpty())) return "";
-		if ("1".equals(inf) && "1".equals(sup)) return "1";
+		if ((inf == null || inf.isEmpty()) && (sup == null || sup.isEmpty())) 
+			return "";
+		if ("1".equals(inf) && "1".equals(sup)) 
+			return "1";
 		return inf + ".." + sup;
 	}
 
 	// =========================================================================
 	// GESTION DES LIAISONS ET CHEMINS
 	// =========================================================================
+
+	/**
+     * Helper method to create and configure a Chemin object from a Liaison.
+     * It calculates zones, adds positions to rectangles, and distributes link points.
+     *
+     * @param l The Liaison object to create a path for.
+     * @return The configured Chemin object, or null if rectangles are missing.
+     */
+    private Chemin creerChemin(Liaison l) 
+	{
+        Rectangle r1 = this.mapClasseRectangle.get(l.getFromClass());
+        Rectangle r2 = this.mapClasseRectangle.get(l.getToClass());
+
+        if (r1 != null && r2 != null) {
+            Point p1 = new Point(r1.getCentreX(), r1.getCentreY());
+            Point p2 = new Point(r2.getCentreX(), r2.getCentreY());
+
+            Chemin chemin = new Chemin(p1, p2, l.getType(), this.mapClasseRectangle, l.getFromClass(), l.getToClass());
+
+            char zone = this.getZone(r1, r2);
+            char zoneInv = zoneInverse(zone);
+            chemin.setZoneArrivee(zoneInv);
+
+            r1.addPos(zone, chemin);
+            r2.addPos(zoneInv, chemin);
+
+            r1.repartirPointsLiaison(zone);
+            r2.repartirPointsLiaison(zoneInv);
+
+            return chemin;
+        }
+        return null;
+    }
 	
 	/**
-	 * Recrée les objets Chemin à partir des rectangles existants.
-	 * Utile après un chargement de fichier ou un déplacement manuel.
+	 * Recree les objets Chemin a partir des rectangles existants.
+	 * Utile apres un chargement de fichier ou un deplacement manuel.
 	 */
 	private void reconstruireChemins()
 	{
@@ -261,48 +288,52 @@ public class PanelUML extends JPanel
 
 	/**
 	 * Algorithme principal de routage des liaisons.
-	 * Regroupe les liaisons par paires de classes pour éviter les collisions visuelles.
+	 * Regroupe les liaisons par paires de classes pour eviter les collisions visuelles.
 	 */
 	public void recalculerChemins()
 	{
 		// On vide les points d'ancrage des rectangles
-		for (Rectangle rect : this.mapClasseRectangle.values()) rect.nettoyerLiaisons();
+		for ( Rectangle rect : this.mapClasseRectangle.values() ) 
+			rect.nettoyerLiaisons();
 
 		this.lstChemins.clear();
 		this.mapCheminLiaison.clear();  
 		HashMap<String, List<Chemin>> mapGroupes = new HashMap<>();
 		
-		for (Liaison l : this.lstLiaisons)
+		for ( Liaison l : this.lstLiaisons )
 		{
-			if (!this.afficherClassesCachables)
-				if (l.getFromClass().getCachable() || l.getToClass().getCachable())
+			if ( ! this.afficherClassesCachables )
+				if ( l.getFromClass().getCachable() || l.getToClass().getCachable() )
 					continue;
 			
 			Rectangle r1 = this.mapClasseRectangle.get(l.getFromClass());
 			Rectangle r2 = this.mapClasseRectangle.get(l.getToClass());
 			
-			if (r1 != null && r2 != null)
+			if ( r1 != null && r2 != null )
 			{
-				Point p1 = new Point(r1.getCentreX(), r1.getCentreY());
-				Point p2 = new Point(r2.getCentreX(), r2.getCentreY());
-				Chemin chemin = new Chemin(p1, p2, l.getType(), this.mapClasseRectangle, l.getFromClass(), l.getToClass());
+				Point p1 = new Point( r1.getCentreX(), r1.getCentreY() );
+				Point p2 = new Point( r2.getCentreX(), r2.getCentreY() );
+
+				Chemin chemin = new Chemin( p1, p2, l.getType(), this.mapClasseRectangle, l.getFromClass(), l.getToClass() );
 				
-				char zone = this.getZone(r1, r2);
+				char zone    = this.getZone(r1, r2);
 				char zoneInv = zoneInverse(zone);
 				chemin.setZoneArrivee(zoneInv);
 				
 				r1.addPos(zone, chemin);
 				r2.addPos(zoneInv, chemin);
+
 				r1.repartirPointsLiaison(zone);
 				r2.repartirPointsLiaison(zoneInv);
+
 				chemin.setRectangleArrivee(r2);
 				
-				// Création d'une clé unique pour regrouper les liaisons entre deux mêmes classes
+				// Creation d'une cle unique pour regrouper les liaisons entre deux memes classes
 				String nom1 = l.getFromClass().getNom();
 				String nom2 = l.getToClass().getNom();
 				String cle = (nom1.compareTo(nom2) < 0) ? nom1 + "-" + nom2 : nom2 + "-" + nom1;
 
-				if (!mapGroupes.containsKey(cle))
+				if ( ! mapGroupes.containsKey(cle) )
 					mapGroupes.put(cle, new ArrayList<Chemin>());
 
 				mapGroupes.get(cle).add(chemin);
@@ -311,7 +342,7 @@ public class PanelUML extends JPanel
 			}
 		}
 
-		// Application du décalage (anti-collision) pour les groupes de liaisons
+		// Application du decalage (anti-collision) pour les groupes de liaisons
 		for (List<Chemin> groupe : mapGroupes.values())
 		{
 			int total = groupe.size();
@@ -324,7 +355,7 @@ public class PanelUML extends JPanel
 	}
 
 	/**
-	 * Place initialement les boîtes en grille simple.
+	 * Initie les positions des classes de manière optimale
 	 */
 	private void initialiserPositions()
 	{
@@ -343,10 +374,11 @@ public class PanelUML extends JPanel
 			}
 		}
 	}
+	
 
 	/**
-	 * Ajuste la mise en page pour éviter que les boîtes ne se chevauchent.
-	 * Utilise un algorithme de saut de ligne si l'écran est trop petit.
+	 * Ajuste la mise en page pour eviter que les boites ne se chevauchent.
+	 * Utilise un algorithme de saut de ligne si l'ecran est trop petit.
 	 */
 	private void determinerPositions()
 	{
@@ -366,6 +398,7 @@ public class PanelUML extends JPanel
 			rect.setX(xCourant);
 			rect.setY(yCourant);
 			xCourant += rect.getTailleX() + 50;
+
 			if (rect.getTailleY() > hauteurLigneMax)
 				hauteurLigneMax = rect.getTailleY();
 		}
@@ -374,28 +407,28 @@ public class PanelUML extends JPanel
 	}
 	
 	// =========================================================================
-	// INTERACTION UTILISATEUR (CLICS ET ÉDITION)
+	// INTERACTION UTILISATEUR (CLICS ET eDITION)
 	// =========================================================================
 	
 	/**
-	 * Gère le clic de souris sur une multiplicité pour ouvrir la fenêtre d'édition.
-	 * @param e L'événement souris.
+	 * Gere le clic de souris sur une multiplicite pour ouvrir la fenetre d'edition.
+	 * @param e L'evenement souris.
 	 */
 	private void handleMultipliciteClick(MouseEvent e)
 	{
 		Font font = new Font("SansSerif", Font.PLAIN, 12);
 		FontMetrics fm = getFontMetrics(font);
-		Point p = new Point((int)e.getPoint().getX(), (int) e.getPoint().getY());
+		Point point = new Point((int)e.getPoint().getX(), (int) e.getPoint().getY());
 		
-		for (Chemin c : this.lstChemins)
+		for (Chemin chemin : this.lstChemins)
 		{
-			Liaison l = this.mapCheminLiaison.get(c);
+			Liaison l = this.mapCheminLiaison.get(chemin);
 			if (l == null) continue;
 
-			String multFrom = construireLabelMultiplicite(l.getFromMultiplicity().getBorneInf(), l.getFromMultiplicity().getBorneSup());
-			String multTo   = construireLabelMultiplicite(l.getToMultiplicity().getBorneInf(), l.getToMultiplicity().getBorneSup());
+			String multDep = construireLabelMultiplicite( l.getFromMultiplicity().getBorneInf(), l.getFromMultiplicity().getBorneSup() );
+			String multArr   = construireLabelMultiplicite( l.getToMultiplicity  ().getBorneInf(), l.getToMultiplicity  ().getBorneSup() );
 
-			if (this.dessinerMultiplicite.checkClick(p, c, multFrom, multTo, fm))
+			if ( this.dessinerMultiplicite.checkClick(point, chemin, multDep, multArr, fm) )
 			{
 				Multiplicite multiplicite = this.dessinerMultiplicite.isDepart() ? l.getFromMultiplicity() : l.getToMultiplicity();
 				modifMultiplicite(multiplicite);
@@ -406,8 +439,8 @@ public class PanelUML extends JPanel
 	}
 
 	/**
-	 * Affiche une boîte de dialogue pour modifier les bornes d'une multiplicité.
-	 * @param multiplicite L'objet métier à modifier.
+	 * Affiche une boite de dialogue pour modifier les bornes d'une multiplicite.
+	 * @param multiplicite L'objet metier a modifier.
 	 */
 	private void modifMultiplicite(Multiplicite multiplicite)
 	{
@@ -416,9 +449,9 @@ public class PanelUML extends JPanel
 		SpringLayout layout = new SpringLayout();
 		panel.setLayout(layout);
 		
-		JLabel labelInf = new JLabel("Borne Inférieure:");
+		JLabel labelInf = new JLabel("Borne Inferieure:");
 		JTextField fieldInf = new JTextField(multiplicite.getBorneInf(), 10);
-		JLabel labelSup = new JLabel("Borne Supérieure:");
+		JLabel labelSup = new JLabel("Borne Superieure:");
 		JTextField fieldSup = new JTextField(multiplicite.getBorneSup(), 10);
 	
 		panel.add(labelInf);
@@ -436,7 +469,7 @@ public class PanelUML extends JPanel
 		layout.putConstraint(SpringLayout.WEST, fieldSup, 5, SpringLayout.EAST, labelSup);
 		layout.putConstraint(SpringLayout.NORTH, fieldSup, 5, SpringLayout.SOUTH, fieldInf);
 		
-		int result = JOptionPane.showConfirmDialog(this.frame, panel, "Éditer Multiplicité", JOptionPane.OK_CANCEL_OPTION);
+		int result = JOptionPane.showConfirmDialog(this.frame, panel, "editer Multiplicite", JOptionPane.OK_CANCEL_OPTION);
 		if (result == JOptionPane.OK_OPTION)
 		{
 			multiplicite.setBorneInf(fieldInf.getText());
@@ -445,52 +478,9 @@ public class PanelUML extends JPanel
 		}
 	}
 
-	/**
-	 * Détecte sur quelle partie de la classe l'utilisateur a cliqué (Titre, Attributs ou Méthodes)
-	 * et ouvre la fenêtre d'édition correspondante.
-	 * * @param classe La classe concernée.
-	 * @param rect Le rectangle graphique de la classe.
-	 * @param pSouris La position du clic.
-	 */
-	public void detecterZoneEtOuvrirEdition(Classe classe, Rectangle rect, Point pSouris)
-	{
-		Graphics2D g2 = (Graphics2D) this.getGraphics();
-		FontMetrics metrics = g2.getFontMetrics();
-		int hauteurLigne = metrics.getHeight();
-		int padding = 5; 
-		int hauteurTitre = hauteurLigne + (padding * 2);
-		
-		// Calcul rapide de la hauteur de la zone attributs pour savoir où on a cliqué
-		int nbLignesAttributs = 0;
-		int cpt = 0;
-		for (Attribut att : classe.getListOrdonneeAttribut())
-		{
-			if (this.ctrl.estClasseProjet(att.getType())) continue;
-			if (cpt >= 3) { nbLignesAttributs++; break; }
-			nbLignesAttributs++;
-			cpt++;
-		}
-		if (nbLignesAttributs == 0) nbLignesAttributs = 1; 
-		int hauteurZoneAttributs = (nbLignesAttributs * (hauteurLigne + 2)) + 10; 
-		
-		int yRelatif = pSouris.getY() - rect.getY();
-
-		if (yRelatif < hauteurTitre) 
-		{
-			new FrameEdition(this.ctrl, classe, 'C'); // Édition Classe (Titre)
-		} 
-		else if (yRelatif < (hauteurTitre + hauteurZoneAttributs)) 
-		{
-			new FrameEdition(this.ctrl, classe, 'A'); // Édition Attributs
-		} 
-		else 
-		{
-			new FrameEdition(this.ctrl, classe, 'M'); // Édition Méthodes
-		}
-	}
 
 	/**
-	 * Permet d'activer ou désactiver l'affichage des classes Java internes (String, etc.) si implémentées.
+	 * Permet d'activer ou desactiver l'affichage des classes Java de la jdk si implementees ou herite.
 	 */
 	public void afficherInterfaceHeritage(boolean afficher)
 	{
@@ -500,32 +490,30 @@ public class PanelUML extends JPanel
 	}
 	
 	// =========================================================================
-	// OUTILS GÉOMÉTRIQUES
+	// OUTILS GEOMETRIQUES
 	// =========================================================================
 	
 	/**
-	 * Détermine la zone relative d'un rectangle cible par rapport à une source.
+	 * Determine la zone relative d'un rectangle cible par rapport a une source.
 	 * @return 'H' (Haut), 'B' (Bas), 'G' (Gauche), 'D' (Droite).
 	 */
 	public char getZone(Rectangle source, Rectangle target)
 	{
-		double dx = target.getCentreX() - source.getCentreX();
-		double dy = target.getCentreY() - source.getCentreY();
+		double dx    = target.getCentreX() - source.getCentreX();
+		double dy    = target.getCentreY() - source.getCentreY();
 		double xNorm = dx / (double) source.getTailleX();
 		double yNorm = dy / (double) source.getTailleY();
 		
 		if (Math.abs(yNorm) > Math.abs(xNorm))
-		{
 			return (yNorm < 0) ? 'H' : 'B';
-		}
+		
 		else
-		{
 			return (xNorm < 0) ? 'G' : 'D';
-		}
+		
 	}
 
 	/**
-	 * Retourne la direction opposée (ex: Haut -> Bas).
+	 * Retourne la direction opposee (ex: Haut -> Bas).
 	 */
 	private char zoneInverse(char zone)
 	{

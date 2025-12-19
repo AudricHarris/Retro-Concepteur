@@ -10,6 +10,8 @@ import java.awt.event.MouseEvent;
 // Nos packetage
 import RetroConcepteur.vue.panel.PanelUML;
 import RetroConcepteur.metier.classe.*;
+import RetroConcepteur.Controleur;
+import RetroConcepteur.vue.FrameEdition;
 
 /**
  * Classe responsable du calcul des chemin
@@ -19,18 +21,20 @@ import RetroConcepteur.metier.classe.*;
  */
 public class GereSouris extends MouseAdapter
 {
+	
+	private Controleur ctrl;
+	private PanelUML panelUML;
+
 	private Point     decalage;
 	private Classe    classeActuel;
 	private Rectangle rectClasseActuel;
-
-	private PanelUML panelUML;
-	
 	/**
 	 *	Creer une instance de Gere Souris
 	 *	@param panelUML le panel parent de gere souris
 	 */
-	public GereSouris(PanelUML panelUML)
+	public GereSouris(Controleur ctrl, PanelUML panelUML)
 	{
+		this.ctrl = ctrl;
 		this.panelUML = panelUML;
 		this.decalage = null;
 		this.classeActuel = null;
@@ -123,10 +127,11 @@ public class GereSouris extends MouseAdapter
 				
 				if (r.possede(pSouris)) 
 				{
-					this.panelUML.detecterZoneEtOuvrirEdition(c, r, pSouris);
+					new FrameEdition(this.ctrl, c, 'A');
 					break;
 				}
 			}
 		}
 	}
+	
 }
