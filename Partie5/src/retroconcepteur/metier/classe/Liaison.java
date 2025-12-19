@@ -17,11 +17,11 @@ public class Liaison
 	                                                "Iterable<", "Iterator<",
 												     "Map<", "HashMap<", "TreeMap<"};
 
-	private Classe fromClass;
-	private Classe toClass;
+	private Classe classeDep;
+	private Classe classeArr;
 
-	private Multiplicite fromMultiplicity;
-	private Multiplicite toMultiplicity;
+	private Multiplicite multDep;
+	private Multiplicite multArr;
 	
 	private AnalyseFichier analyseFichier;
 	
@@ -74,19 +74,19 @@ public class Liaison
 	private Liaison(Classe classe1 , Classe classe2, Attribut attribut,
 		            AnalyseFichier analyseFichier                      )
 	{
-		this.fromClass        = classe1;
-		this.toClass          = classe2;
+		this.classeDep        = classe1;
+		this.classeArr          = classe2;
 		this.analyseFichier   = analyseFichier;
 		
-		this.toMultiplicity   = new Multiplicite("", ""); // Pas de multiplicité pour héritage/implémentaion
-		this.fromMultiplicity = new Multiplicite("", ""); 
+		this.multArr   = new Multiplicite("", ""); // Pas de multiplicité pour héritage/implémentaion
+		this.multDep = new Multiplicite("", ""); 
 		this.nomVar           = "";
 
 		if (attribut != null)
 		{
 			this.nomVar = attribut.getNom();
-			this.toMultiplicity = new Multiplicite("1", "1");
-			this.fromMultiplicity = new Multiplicite("0", "*");
+			this.multArr = new Multiplicite("1", "1");
+			this.multDep = new Multiplicite("0", "*");
 
 			Methode constructeur = classe1.getLstMethode().size() >= 1 ? classe1.getLstMethode().get(0) : null;
 			List<Parametre> params = constructeur != null ? constructeur.getLstParam() : new ArrayList<Parametre>();
@@ -95,28 +95,25 @@ public class Liaison
 			{
 				if (parametre.getType().contains(classe2.getNom()))
 				{
-					this.toMultiplicity = new Multiplicite("1", "temp");
+					this.multArr = new Multiplicite("1", "temp");
 					break;
 				}
 			}
 
 			if (Liaison.estCollection(attribut.getType())) 
-				this.toMultiplicity.setBorneSup("*");
+				this.multArr.setBorneSup("*");
 			else 
-				this.toMultiplicity.setBorneSup("1");
+				this.multArr.setBorneSup("1");
 		}
 	}
 
-	/**
-	 * Constructeur public pour créer une liaison manuellement (ex: via XML)
-	 */
-	public Liaison(Classe from, Classe to, Multiplicite fromMultiplicity,
-	               Multiplicite toMultiplicity, String nomVar, AnalyseFichier analyseFichier)
+	public Liaison(Classe classeDep, Classe classeArr, Multiplicite multDep,
+	               Multiplicite multArr, String nomVar, AnalyseFichier analyseFichier)
 	{
-		this.fromClass = from;
-		this.toClass = to;
-		this.fromMultiplicity = fromMultiplicity == null ? new Multiplicite("","") : fromMultiplicity;
-		this.toMultiplicity   = toMultiplicity == null   ? new Multiplicite("","") : toMultiplicity;
+		this.classeDep = classeDep;
+		this.classeArr = classeArr;
+		this.multDep = multDep == null ? new Multiplicite("","") : multDep;
+		this.multArr   = multArr == null   ? new Multiplicite("","") : multArr;
 		this.nomVar = nomVar == null ? "" : nomVar;
 		this.analyseFichier = analyseFichier;
 	}
@@ -125,11 +122,11 @@ public class Liaison
 	/*              Getters                  */
 	/*---------------------------------------*/
 
-	public Classe getFromClass() { return this.fromClass; }
-	public Classe getToClass  () { return this.toClass;   }
+	public Classe getFromClass() { return this.classeDep;   }
+	public Classe getToClass  () { return this.classeArr;   }
 
-	public Multiplicite getToMultiplicity  () { return this.toMultiplicity;   }
-	public Multiplicite getFromMultiplicity() { return this.fromMultiplicity; }
+	public Multiplicite getToMultiplicity  () { return this.multArr;   }
+	public Multiplicite getFromMultiplicity() { return this.multDep;   }
 
 	public String getNomVar() { return this.nomVar; }
 
@@ -138,15 +135,15 @@ public class Liaison
 		String  sType = "Association";
 		
 		// Vérifie si c'est une implémentation d'interface
-		if (this.fromClass.getLstInterfaces().contains(this.toClass.getNom()) &&
-			this.toClass.isInterface()) 
+		if (this.classeDep.getLstInterfaces().contains(this.classeArr.getNom()) &&
+			this.classeArr.isInterface()) 
 		{
 			sType = "Implementation";
 		}
 
 		// Vérifier si c'est un héritage
-		if (this.fromClass.getNomHeritageClasse() != null &&
-		    this.fromClass.getNomHeritageClasse().equals(this.toClass.getNom()))
+		if (this.classeDep.getNomHeritageClasse() != null &&
+		    this.classeDep.getNomHeritageClasse().equals(this.classeArr.getNom()))
 		{
 			sType = "Generalisation";
 		}
@@ -166,7 +163,7 @@ public class Liaison
 	public boolean estBidirectionel()
 	{
 		for (Liaison l : this.analyseFichier.getListLiaison())
-			if (l.getToClass() == this.fromClass && l.getFromClass() == this.toClass)
+			if (l.getToClass() == this.classeDep && l.getFromClass() == this.classeArr)
 				return true;
 		return false;
 	}
@@ -176,7 +173,7 @@ public class Liaison
 	/*---------------------------------------*/
 
 	
-	public void setFromMultiplicte(Multiplicite m) { this.fromMultiplicity = m;}
+	public void setFromMultiplicte(Multiplicite m) { this.multDep = m;}
 
 	/*---------------------------------------*/
 	/*            Methode instance           */
@@ -184,8 +181,8 @@ public class Liaison
 
 	public String toString()
 	{
-		return this.fromClass.getNom() + " ----> " + this.toMultiplicity.toString() + " " +
-		       this.toClass.getNom  () + " "       + this.nomVar;
+		return this.classeDep.getNom() + " ----> " + this.multArr.toString() + " " +
+		       this.classeArr.getNom  () + " "       + this.nomVar;
 	}
 	
 
