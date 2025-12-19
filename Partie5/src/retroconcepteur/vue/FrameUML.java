@@ -91,7 +91,7 @@ public class FrameUML extends JFrame
 
 	public void reinitialiser() { this.panelUml.reinitialiser(); }
 
-	public void majIHM() { this.panelUml.repaint(); }
+	public void majIHM() { this.panelUml.majIHM(); }
 
 	/**
 	 * Ouvre un selecteur de fichier pour choisir le dossier contenant les sources Java a analyser.

@@ -63,6 +63,7 @@ public class Controleur
 		att.setNom(nom);
 		att.setConstante(estConstante);
 		att.setAddOnly(isAddOnly);
+		this.analyseFichier.majLiaison();
 	}
 
 	public boolean estClasseProjet(String type)

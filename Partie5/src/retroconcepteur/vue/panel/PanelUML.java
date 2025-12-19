@@ -454,6 +454,14 @@ public class PanelUML extends JPanel
 		}
 	}
 
+	public void majIHM()
+	{
+		this.lstClasse = this.ctrl.getLstClasses();
+		this.lstLiaisons = new ArrayList<Liaison>(this.ctrl.getListLiaison());
+		this.recalculerChemins();
+		this.repaint();
+	}
+
 	/**
 	 * Retourne la direction opposee (ex: Haut -> Bas).
 	 */

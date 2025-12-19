@@ -51,7 +51,7 @@ public class Attribut
 	//---------------------------------------//
 	//              Setters                  //
 	//---------------------------------------//
-	public void setNom       (String nom       ) { if(nom != null && !nom.isEmpty()) this.nom = nom       ;}
+	public void setNom       (String nom       ) { this.nom = nom       ;}
 	public void setConstante (boolean constante)  {this.constante  = constante ;}
 	public void setAddOnly (boolean isAddOnly)  {this.isAddOnly  = isAddOnly ;}
 

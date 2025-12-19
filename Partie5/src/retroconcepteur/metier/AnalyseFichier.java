@@ -176,24 +176,9 @@ public class AnalyseFichier
 					classe.setIsInterface(true);
 					classe.setCachable(true);
 					this.lstClass.add( classe );
-
 				}
-
-				
 			
-			// Créer les liaisons après avoir ajouté toutes les classes
-			for (Classe classe1 : this.lstClass)
-			{
-				for (Classe classe2 : this.lstClass)
-				{
-					if (classe1 != classe2)
-					{
-						List<Liaison> liaisons = Liaison.creerLiaison(classe1, classe2, this);
-						for (Liaison liaison : liaisons)
-							if (liaison != null) this.lstLiaisons.add(liaison);
-					}
-				}
-			}
+			this.majLiaison();
 		}
 		catch (Exception e) { System.out.println("fichier non trouvé"); }
 	}
@@ -477,6 +462,25 @@ public class AnalyseFichier
 			{
 				Liaison nl = new Liaison(cFrom, cTo, l.getFromMultiplicity(), l.getToMultiplicity(), l.getNomVar(), this);
 				this.lstLiaisons.add(nl);
+			}
+		}
+	}
+
+	public void majLiaison()
+	{
+		this.lstLiaisons.clear();
+
+		for (Classe classe1 : this.lstClass)
+		{
+			for (Classe classe2 : this.lstClass)
+			{
+				if (classe1 != classe2)
+				{
+					List<Liaison> liaisons = Liaison.creerLiaison(classe1, classe2, this);
+					for (Liaison liaison : liaisons)
+						if (liaison != null) 
+							this.lstLiaisons.add(liaison);
+				}
 			}
 		}
 	}
