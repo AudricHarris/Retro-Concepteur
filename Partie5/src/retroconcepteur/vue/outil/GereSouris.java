@@ -15,12 +15,13 @@ import retroconcepteur.metier.classe.Classe;
 import retroconcepteur.vue.panel.PanelUML;
 import retroconcepteur.vue.FrameEdition;
 
+
 /**
  * Classe responsable du calcul des chemin
- *
- * @author [Equipe 9]
- * @version 1.0
+ * * @author [Keryann Le Besque, Laurent Descourtis, Audric Harris, Pol Armand Bermendora, Lucas Leprevost] 
+ * @version 2.0
  */
+
 public class GereSouris extends MouseAdapter
 {
 	

@@ -161,18 +161,18 @@ public class PanelUML extends JPanel
         for ( Liaison l : this.lstLiaisons )
         {
             if ( ! this.afficherClassesCachables )
-                if ( l.getFromClass().getCachable() || l.getToClass().getCachable() )
+                if ( l.getClasseDep().getCachable() || l.getClasseArr().getCachable() )
                     continue;
             
             Chemin chemin = creerChemin(l); 
             
             if (chemin != null)
             {
-                Rectangle r2 = this.mapClasseRectangle.get(l.getToClass());
+                Rectangle r2 = this.mapClasseRectangle.get(l.getClasseArr());
                 chemin.setRectangleArrivee(r2);
                 
-                String nom1 = l.getFromClass().getNom();
-                String nom2 = l.getToClass().getNom();
+                String nom1 = l.getClasseDep().getNom();
+                String nom2 = l.getClasseArr().getNom();
                 String cle = (nom1.compareTo(nom2) < 0) ? nom1 + "-" + nom2 : nom2 + "-" + nom1;
 
                 if ( ! mapGroupes.containsKey(cle) )
@@ -220,12 +220,12 @@ public class PanelUML extends JPanel
 			Liaison l = this.mapCheminLiaison.get(chemin);
 			if (l == null) continue;
 
-			String multDep = construireLabelMultiplicite( l.getFromMultiplicity().getBorneInf(), l.getFromMultiplicity().getBorneSup() );
-			String multArr   = construireLabelMultiplicite( l.getToMultiplicity  ().getBorneInf(), l.getToMultiplicity  ().getBorneSup() );
+			String multDep = construireLabelMultiplicite( l.getMultADep().getBorneInf(), l.getMultADep().getBorneSup() );
+			String multArr   = construireLabelMultiplicite( l.getMultArr  ().getBorneInf(), l.getMultArr  ().getBorneSup() );
 
 			if ( this.dessinerMultiplicite.verifierClic(point, chemin, multDep, multArr, fm) )
 			{
-				Multiplicite multiplicite = this.dessinerMultiplicite.estDepart() ? l.getFromMultiplicity() : l.getToMultiplicity();
+				Multiplicite multiplicite = this.dessinerMultiplicite.estDepart() ? l.getMultADep() : l.getMultArr();
 				modifMultiplicite(multiplicite);
 				this.repaint();
 				return;
@@ -267,10 +267,10 @@ public class PanelUML extends JPanel
 			Liaison l = this.mapCheminLiaison.get(c);
 			if (l != null)
 			{
-				String infFrom = l.getFromMultiplicity().getBorneInf();
-				String supFrom = l.getFromMultiplicity().getBorneSup();
-				String infTo   = l.getToMultiplicity().getBorneInf();
-				String supTo   = l.getToMultiplicity().getBorneSup();
+				String infFrom = l.getMultADep().getBorneInf();
+				String supFrom = l.getMultADep().getBorneSup();
+				String infTo   = l.getMultArr().getBorneInf();
+				String supTo   = l.getMultArr().getBorneSup();
 
 				String multFrom = construireLabelMultiplicite(infFrom, supFrom);
 				String multTo   = construireLabelMultiplicite(infTo, supTo);
@@ -314,14 +314,14 @@ public class PanelUML extends JPanel
 	 */
     private Chemin creerChemin(Liaison l) 
 	{
-        Rectangle r1 = this.mapClasseRectangle.get(l.getFromClass());
-        Rectangle r2 = this.mapClasseRectangle.get(l.getToClass());
+        Rectangle r1 = this.mapClasseRectangle.get(l.getClasseDep());
+        Rectangle r2 = this.mapClasseRectangle.get(l.getClasseArr());
 
         if (r1 != null && r2 != null) {
             Point p1 = new Point(r1.getCentreX(), r1.getCentreY());
             Point p2 = new Point(r2.getCentreX(), r2.getCentreY());
 
-            Chemin chemin = new Chemin(p1, p2, l.getType(), this.mapClasseRectangle, l.getFromClass(), l.getToClass());
+            Chemin chemin = new Chemin(p1, p2, l.getType(), this.mapClasseRectangle, l.getClasseDep(), l.getClasseArr());
 
             char zone = this.getZone(r1, r2);
             char zoneInv = zoneInverse(zone);

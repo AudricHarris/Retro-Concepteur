@@ -3,7 +3,7 @@ package retroconcepteur.metier.classe;
 import java.util.ArrayList;
 
 /**
- * Class methode stock le nom, visibilite, type, lstParam et isStatic d'une classe
+ * Class methode stock le nom, visibilite, type, lstParam et estStatic d'une classe
  * * @author [Keryann Le Besque, Laurent Descourtis, Audric Harris, Pol Armand Bermendora, Lucas Leprevost] 
  * @version 2.0
  */
@@ -13,23 +13,23 @@ public class Methode
 	private String               nom;
 	private String               type;
 	private ArrayList<Parametre> lstParam;
-	private boolean              isStatic;
+	private boolean              estStatic;
 
 	/**
 	 *	Creer une instance de methode
-	 *	@param visibilite visibilité de la methode
+	 *	@param visibilite visibilite de la methode
 	 *	@param nom nom de la methode
 	 *	@param type type de retour de la methode
 	 *	@param lstParam param de la methode stocker
-	 *	@param isStatic si la methode isStatic
+	 *	@param estStatic si la methode estStatic
 	 */
-	public Methode(String visibilite,String nom, String type, ArrayList<Parametre> lstParam, boolean isStatic)
+	public Methode(String visibilite,String nom, String type, ArrayList<Parametre> lstParam, boolean estStatic)
 	{
 		this.visibilite = visibilite;
 		this.nom        = nom;
 		this.type       = type;
 		this.lstParam   = lstParam;
-		this.isStatic   = isStatic;
+		this.estStatic   = estStatic;
 	}
 
 	/*---------------------------------------*/
@@ -40,7 +40,7 @@ public class Methode
 	public String               getNom       () {return this.nom       ;}
 	public String               getType      () {return this.type      ;}
 	public ArrayList<Parametre> getLstParam  () {return this.lstParam  ;}
-	public boolean              isStatic     () {return this.isStatic  ;}
+	public boolean              estStatic     () {return this.estStatic  ;}
 
 	/*---------------------------------------*/
 	/*          Methode instance             */
@@ -53,16 +53,16 @@ public class Methode
 		String sRet ="\n";
 		if (this.nom == this.type)
 		{
-			sRet += "methode : " + String.format("%-20s","Constructor") + "	visibilité: " ;
-			sRet += String.format("%-10s", this.visibilite ) + (this.isStatic ? " Statique" : "");			
-			sRet += "\nparamètres : \n";
+			sRet += "methode : " + String.format("%-20s","Constructor") + "	visibilite: " ;
+			sRet += String.format("%-10s", this.visibilite ) + (this.estStatic ? " Statique" : "");			
+			sRet += "\nparametres : \n";
 
 		}
 		else
 		{
-			sRet += "methode : " + String.format("%-20s",this.nom) + "	visibilité: " ;
+			sRet += "methode : " + String.format("%-20s",this.nom) + "	visibilite: " ;
 			sRet += String.format("%-10s", this.visibilite ) + " type de retour: ";
-			sRet += String.format("%-10s", this.type) + "\nparamètres : \n";
+			sRet += String.format("%-10s", this.type) + "\nparametres : \n";
 		}	
 		
 

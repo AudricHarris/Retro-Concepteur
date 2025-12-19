@@ -2,7 +2,7 @@ package retroconcepteur.metier.classe;
 
 /**
  * Class Attribut est une instance qui permet de stocker les attribut d'un classe
- * Elle contient plus paramètres comme type, visibilite, isStatic, son nom et un num
+ * Elle contient plus parametres comme type, visibilite, estStatic, son nom et un num
  * * @author [Keryann Le Besque, Laurent Descourtis, Audric Harris, Pol Armand Bermendora, Lucas Leprevost] 
  * @version 2.0
  */
@@ -13,7 +13,7 @@ public class Attribut
 	private String  type;
 	private String  visibilite;
 	private boolean constante;
-	private boolean isStatic;
+	private boolean estStatic;
 
 
 	/**
@@ -22,17 +22,17 @@ public class Attribut
 	 * @param nom nom de l'attribut
 	 * @param constante determine si l'attribut est constante
 	 * @param type type de l'attribut
-	 * @param visibilite Visibilité de l'attribut
-	 * @param isStatic determine si attribut est static
+	 * @param visibilite Visibilite de l'attribut
+	 * @param estStatic determine si attribut est static
 	 */
-	public Attribut(int num, String nom, boolean constante, String type, String visibilite, boolean isStatic)
+	public Attribut(int num, String nom, boolean constante, String type, String visibilite, boolean estStatic)
 	{
 		this.num        = num;
 		this.nom        = nom;
 		this.constante  = constante;
 		this.type       = type;
 		this.visibilite = visibilite;
-		this.isStatic   = isStatic;
+		this.estStatic   = estStatic;
 	}
 
 	/*---------------------------------------*/
@@ -51,7 +51,7 @@ public class Attribut
 	public boolean isConstante  () {return this.constante ;}
 	public String  getType      () {return this.type      ;}
 	public String  getVisibilite() {return this.visibilite;}
-	public boolean isStatic     () {return this.isStatic  ;}
+	public boolean estStatic     () {return this.estStatic  ;}
 
 	/*---------------------------------------*/
 	/*         Methode instance              */
@@ -64,10 +64,10 @@ public class Attribut
 
 		sRet += "attribut : " + this.num + "	nom: "  ;
 		sRet += String.format("%-18s", this.nom ) +  "  type : ";
-		sRet += String.format("%-20s", this.type) + "  visibilité : ";
-		sRet += String.format("%-10s", this.visibilite) + "  portée : ";
+		sRet += String.format("%-20s", this.type) + "  visibilite : ";
+		sRet += String.format("%-10s", this.visibilite) + "  portee : ";
 
-		sRet += String.format("%-9s", this.isStatic ? "classe" : "instance");
+		sRet += String.format("%-9s", this.estStatic ? "classe" : "instance");
 
 		sRet += this.constante ? "  constante" : "";
 

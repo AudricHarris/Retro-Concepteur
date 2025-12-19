@@ -6,7 +6,7 @@ import java.util.Scanner;
 import retroconcepteur.metier.AnalyseFichier;
 
 /**
- * Determine les Liaison potentiel entre les classe et leur multiplicité.
+ * Determine les Liaison potentiel entre les classe et leur multiplicite.
  * * @author [Keryann Le Besque, Laurent Descourtis, Audric Harris, Pol Armand Bermendora, Lucas Leprevost] 
  * @version 2.0
  */
@@ -30,8 +30,8 @@ public class Liaison
 
 	/**
 	 * Fabrique de la classe Liaison
-	 * @param classe1 Une première classe
-	 * @param classe2 une deuxième classe
+	 * @param classe1 Une premiere classe
+	 * @param classe2 une deuxieme classe
 	 * @param analyseFichier classe AnalyseFichier
 	 * @return lstLiaison list des liaison entre les classe
 	 */
@@ -66,8 +66,8 @@ public class Liaison
 	
 	/**
 	 * Constructeur de la classe Liaison
-	 * @param classe1 une premièr classe
-	 * @param classe2 une deuxième classe
+	 * @param classe1 une premier classe
+	 * @param classe2 une deuxieme classe
 	 * @param attribut attribut qui lie les deux classe
 	 * @param analyseFichier classe analyse 
 	 * */
@@ -78,7 +78,7 @@ public class Liaison
 		this.classeArr          = classe2;
 		this.analyseFichier   = analyseFichier;
 		
-		this.multArr   = new Multiplicite("", ""); // Pas de multiplicité pour héritage/implémentaion
+		this.multArr   = new Multiplicite("", "");
 		this.multDep = new Multiplicite("", ""); 
 		this.nomVar           = "";
 
@@ -107,6 +107,9 @@ public class Liaison
 		}
 	}
 
+	/*
+	 * Deuxieme constructeur public pour la sauvegarde et dans analyse fichier
+	 */
 	public Liaison(Classe classeDep, Classe classeArr, Multiplicite multDep,
 	               Multiplicite multArr, String nomVar, AnalyseFichier analyseFichier)
 	{
@@ -122,11 +125,11 @@ public class Liaison
 	/*              Getters                  */
 	/*---------------------------------------*/
 
-	public Classe getFromClass() { return this.classeDep;   }
-	public Classe getToClass  () { return this.classeArr;   }
+	public Classe getClasseDep() { return this.classeDep;   }
+	public Classe getClasseArr  () { return this.classeArr;   }
 
-	public Multiplicite getToMultiplicity  () { return this.multArr;   }
-	public Multiplicite getFromMultiplicity() { return this.multDep;   }
+	public Multiplicite getMultArr  () { return this.multArr;   }
+	public Multiplicite getMultADep() { return this.multDep;   }
 
 	public String getNomVar() { return this.nomVar; }
 
@@ -134,21 +137,21 @@ public class Liaison
 	{
 		String  sType = "Association";
 		
-		// Vérifie si c'est une implémentation d'interface
+		// Verifie si c'est une implementation d'interface
 		if (this.classeDep.getLstInterfaces().contains(this.classeArr.getNom()) &&
-			this.classeArr.isInterface()) 
+			this.classeArr.estInterface()) 
 		{
 			sType = "Implementation";
 		}
 
-		// Vérifier si c'est un héritage
+		// Verifier si c'est un heritage
 		if (this.classeDep.getNomHeritageClasse() != null &&
 		    this.classeDep.getNomHeritageClasse().equals(this.classeArr.getNom()))
 		{
 			sType = "Generalisation";
 		}
 
-		// Si c'est une association, déterminer si elle est bidirectionnelle
+		// Si c'est une association, determiner si elle est bidirectionnelle
 		if (sType.equals("Association")) 
 		{
 			if (this.estBidirectionel())
@@ -163,7 +166,7 @@ public class Liaison
 	public boolean estBidirectionel()
 	{
 		for (Liaison l : this.analyseFichier.getListLiaison())
-			if (l.getToClass() == this.classeDep && l.getFromClass() == this.classeArr)
+			if (l.getClasseArr() == this.classeDep && l.getClasseDep() == this.classeArr)
 				return true;
 		return false;
 	}
@@ -191,7 +194,7 @@ public class Liaison
 	/*---------------------------------------*/
 
 	/**
-	 *	Parcours la liste LST_COLLECTIONS et renvoie si type peut être former avec nom
+	 *	Parcours la liste LST_COLLECTIONS et renvoie si type peut etre former avec nom
 	 *	@param type type entier
 	 *	@param nom nom de la classe
 	 *	@return boolean si oui ou non le type est une collections de la classe

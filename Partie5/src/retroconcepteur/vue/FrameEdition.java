@@ -13,6 +13,8 @@ import javax.swing.SwingConstants;
 /**
  * Fenetre flottante permettant l'edition des proprietes d'une classe (Attributs, etc.).
  * Elle gere un mecanisme d'instance unique pour eviter d'ouvrir plusieurs fenetres d'edition a la fois.
+ * * @author [Keryann Le Besque, Laurent Descourtis, Audric Harris, Pol Armand Bermendora, Lucas Leprevost] 
+ * @version 2.0
  */
 
 public class FrameEdition extends JFrame

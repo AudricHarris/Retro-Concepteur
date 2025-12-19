@@ -29,10 +29,13 @@ import javax.swing.filechooser.FileNameExtensionFilter;
 
 import javax.imageio.ImageIO;
 
+
 /**
  * Fenetre principale de l'application de Retro-Conception.
  * Elle contient le panneau de dessin (PanelUML) et la barre de menu.
  * Elle gere egalement les dialogues d'ouverture et de sauvegarde (Fichiers et Images).
+ * * @author [Keryann Le Besque, Laurent Descourtis, Audric Harris, Pol Armand Bermendora, Lucas Leprevost] 
+ * @version 2.0
  */
 public class FrameUML extends JFrame
 {
@@ -82,12 +85,24 @@ public class FrameUML extends JFrame
 		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 	}
 
+	/*---------------------------------------*/
+	/*              Accesseurs               */
+	/*---------------------------------------*/
+
 	public HashMap<Classe, Rectangle> getMapPanel()
 	{
 		return new HashMap<Classe, Rectangle>(panelUml.getMap());
 	}
 
+	/*---------------------------------------*/
+	/*             Modificateurs             */
+	/*---------------------------------------*/
+
 	public void setMapPanel(HashMap<Classe, Rectangle> map) { this.panelUml.setMap(map); }
+
+	/*---------------------------------------*/
+	/*         Methode d'instance            */
+	/*---------------------------------------*/
 
 	public void reinitialiser() { this.panelUml.reinitialiser(); }
 

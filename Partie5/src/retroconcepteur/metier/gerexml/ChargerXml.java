@@ -25,8 +25,10 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 /**
- * Classe utilitaire permettant de charger un diagramme de classes
+  * Classe utilitaire permettant de charger un diagramme de classes
  * depuis un fichier XML.
+ * * @author [Keryann Le Besque, Laurent Descourtis, Audric Harris, Pol Armand Bermendora, Lucas Leprevost] 
+ * @version 2.0
  */
 public class ChargerXml
 {
@@ -37,8 +39,8 @@ public class ChargerXml
 	/**
 	 * Charge les classes depuis un fichier XML.
 	 *
-	 * @param chemin chemin du fichier XML à lire
-	 * @return liste des classes chargées
+	 * @param chemin chemin du fichier XML a lire
+	 * @return liste des classes chargees
 	 * @throws RuntimeException si une erreur survient lors du chargement
 	 */
 	public static ArrayList<Classe> chargerClassesXml(String chemin)
@@ -73,8 +75,8 @@ public class ChargerXml
 	/**
 	 * Charge les positions graphiques des classes depuis un fichier XML.
 	 *
-	 * @param chemin chemin du fichier XML à lire
-	 * @return map associant le nom d'une classe à sa position graphique
+	 * @param chemin chemin du fichier XML a lire
+	 * @return map associant le nom d'une classe a sa position graphique
 	 * @throws RuntimeException si une erreur survient lors du chargement
 	 */
 	public static HashMap<String, Position> chargerPositionsXml(String chemin)	
@@ -106,9 +108,9 @@ public class ChargerXml
 	/**
 	 * Charge les liaisons entre les classes depuis un fichier XML.
 	 *
-	 * @param chemin chemin du fichier XML à lire
-	 * @param classes liste des classes déjà chargées
-	 * @return liste des liaisons chargées
+	 * @param chemin chemin du fichier XML a lire
+	 * @param classes liste des classes deja chargees
+	 * @return liste des liaisons chargees
 	 * @throws RuntimeException si une erreur survient lors du chargement
 	 */
 	public static ArrayList<Liaison> chargerLiaisonsXml(String chemin, ArrayList<Classe> classes) 
@@ -149,7 +151,7 @@ public class ChargerXml
 	 * Charge et parse un fichier XML.
 	 *
 	 * @param chemin chemin du fichier XML
-	 * @return document XML normalisé
+	 * @return document XML normalise
 	 * @throws Exception en cas d'erreur de lecture ou de parsing
 	 */
 	private static Document chargerUnXml(String chemin) throws Exception
@@ -163,9 +165,9 @@ public class ChargerXml
 	}
 
 	/**
-	 * Construit un objet {@link Classe} à partir d'un nœud XML.
+	 * Construit un objet {@link Classe} a partir d'un nœud XML.
 	 *
-	 * @param node nœud XML représentant une classe
+	 * @param node nœud XML representant une classe
 	 * @return instance de {@link Classe} ou {@code null} si le nœud est invalide
 	 */
 	private static Classe lireClasseXml(Node node)
@@ -191,10 +193,10 @@ public class ChargerXml
 	}
 
 	/**
-	 * Lit les propriétés générales d'une classe (abstraite, interface, héritage).
+	 * Lit les proprietes generales d'une classe (abstraite, interface, heritage).
 	 *
-	 * @param elm élément XML de la classe
-	 * @param c classe à configurer
+	 * @param elm element XML de la classe
+	 * @param c classe a configurer
 	 */
 	private static void lireProprietesClasse(Element elm, Classe c)
 	{
@@ -203,13 +205,13 @@ public class ChargerXml
 		String sExtends;
 		String sCachable;
 
-		sAbstract = elm.getAttribute("isAbstract");
+		sAbstract = elm.getAttribute("estAbstract");
 		if (!sAbstract.isEmpty())
-			c.setIsAbstract(Boolean.parseBoolean(sAbstract));
+			c.setestAbstract(Boolean.parseBoolean(sAbstract));
 
-		sInterface = elm.getAttribute("isInterface");
+		sInterface = elm.getAttribute("estInterface");
 		if (!sInterface.isEmpty())
-			c.setIsInterface(Boolean.parseBoolean(sInterface));
+			c.setestInterface(Boolean.parseBoolean(sInterface));
 
 		sExtends = elm.getAttribute("extends");
 		if (!sExtends.isEmpty())
@@ -221,10 +223,10 @@ public class ChargerXml
 	}
 
 	/**
-	 * Lit les interfaces implémentées par une classe.
+	 * Lit les interfaces implementees par une classe.
 	 *
-	 * @param elm élément XML de la classe
-	 * @param c classe à enrichir
+	 * @param elm element XML de la classe
+	 * @param c classe a enrichir
 	 */
 	private static void lireInterfaces(Element elm, Classe c)
 	{
@@ -251,8 +253,8 @@ public class ChargerXml
 	/**
 	 * Lit les attributs d'une classe depuis le XML.
 	 *
-	 * @param elm élément XML de la classe
-	 * @param c classe à enrichir
+	 * @param elm element XML de la classe
+	 * @param c classe a enrichir
 	 */
 	private static void lireAttributs(Element elm, Classe c)
 	{
@@ -287,10 +289,10 @@ public class ChargerXml
 	}
 
 	/**
-	 * Lit les méthodes d'une classe depuis le XML.
+	 * Lit les methodes d'une classe depuis le XML.
 	 *
-	 * @param elm élément XML de la classe
-	 * @param c classe à enrichir
+	 * @param elm element XML de la classe
+	 * @param c classe a enrichir
 	 */
 	private static void lireMethodes(Element elm, Classe c)
 	{
@@ -323,10 +325,10 @@ public class ChargerXml
 	}
 
 	/**
-	 * Lit les paramètres d'une méthode.
+	 * Lit les parametres d'une methode.
 	 *
-	 * @param mEl élément XML représentant une méthode
-	 * @return liste des paramètres de la méthode
+	 * @param mEl element XML representant une methode
+	 * @return liste des parametres de la methode
 	 */
 	private static ArrayList<Parametre> lireParametres(Element mEl)
 	{
@@ -361,7 +363,7 @@ public class ChargerXml
 	 *
 	 * @param mapPos map contenant les positions des classes
 	 * @param lstNoeux liste des nœuds "Classe"
-	 * @param i index du nœud à traiter
+	 * @param i index du nœud a traiter
 	 */
 	private static void extrairePositionClasse(HashMap<String, Position> mapPos, NodeList lstNoeux, int i)
 	{
@@ -403,9 +405,9 @@ public class ChargerXml
 	}
 
 	/**
-	 * Crée une liaison à partir d'un élément XML.
+	 * Cree une liaison a partir d'un element XML.
 	 *
-	 * @param elm élément XML représentant la liaison
+	 * @param elm element XML representant la liaison
 	 * @param classes liste des classes existantes
 	 * @return liaison construite ou {@code null} si invalide
 	 */
@@ -436,8 +438,8 @@ public class ChargerXml
 	 * Recherche une classe par son nom dans une liste.
 	 *
 	 * @param classes liste des classes
-	 * @param nom nom de la classe recherchée
-	 * @return classe trouvée ou {@code null} si absente
+	 * @param nom nom de la classe recherchee
+	 * @return classe trouvee ou {@code null} si absente
 	 */
 	private static Classe trouverClasse(ArrayList<Classe> classes, String nom)
 	{

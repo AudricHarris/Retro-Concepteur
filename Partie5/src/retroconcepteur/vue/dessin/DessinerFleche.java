@@ -11,9 +11,9 @@ import java.awt.Stroke;
 import java.util.LinkedList;
 
 /**
- * Classe utilitaire responsable du tracé des liaisons (flèches) entre les classes UML.
- * Elle gère le dessin des lignes brisées (chemins) et des différentes pointes de flèches
- * (association, héritage, implémentation) selon la norme UML.
+ * Classe utilitaire responsable du trace des liaisons (fleches) entre les classes UML.
+ * Elle gere le dessin des lignes brisees (chemins) et des differentes pointes de fleches
+ * (association, heritage, implementation) selon la norme UML.
  *
  * @author [Equipe 9]
  * @version 2.0
@@ -22,13 +22,13 @@ public class DessinerFleche
 {
 
 	/*---------------------------------------*/
-	/* MÉTHODES PUBLIQUES                    */
+	/* MeTHODES PUBLIQUES                    */
 	/*---------------------------------------*/
 
 	/**
-	 * Dessine une liaison complète (ligne + pointe) sur le diagramme.
-	 * Gère les différents styles de traits (pointillés pour l'implémentation)
-	 * et les types de pointes (triangle vide, flèche ouverte, etc.).
+	 * Dessine une liaison complete (ligne + pointe) sur le diagramme.
+	 * Gere les differents styles de traits (pointilles pour l'implementation)
+	 * et les types de pointes (triangle vide, fleche ouverte, etc.).
 	 *
 	 * @param g2     Le contexte graphique Java AWT.
 	 * @param chemin L'objet chemin contenant les points de passage et le type de liaison.
@@ -93,15 +93,15 @@ public class DessinerFleche
 	}
 
 	/*---------------------------------------*/
-	/* MÉTHODES PRIVÉES (CALCULS)            */
+	/* MeTHODES PRIVeES (CALCULS)            */
 	/*---------------------------------------*/
 
 	/**
-	 * Calcule l'angle (en radians) de la flèche par rapport au bord du rectangle touché.
+	 * Calcule l'angle (en radians) de la fleche par rapport au bord du rectangle touche.
 	 * Cela permet d'orienter la pointe correctement (vers le haut, le bas, la gauche ou la droite).
      * @param intersection Le point d'intersection entre la ligne et le rectangle.
      * @param rect Le rectangle de la classe cible.
-     * @return L'angle en radians de la flèche perpendiculaire au bord touché.
+     * @return L'angle en radians de la fleche perpendiculaire au bord touche.
 	 */
 	private double calculerAnglePerpendiculaire(Point intersection, Rectangle rect)
 	{
@@ -132,9 +132,9 @@ public class DessinerFleche
 
 	/**
 	 * Calcule le point exact où le segment [p1, p2] coupe le bord du rectangle.
-	 * C'est essentiel pour que la flèche s'arrête pile au bord de la boîte.
-     * @param p1   Le point de départ du segment (avant la boîte).
-     * @param p2   Le point d'arrivée du segment (centre de la boîte).
+	 * C'est essentiel pour que la fleche s'arrete pile au bord de la boite.
+     * @param p1   Le point de depart du segment (avant la boite).
+     * @param p2   Le point d'arrivee du segment (centre de la boite).
      * @param rect Le rectangle de la classe cible.
      * @return Le point d'intersection entre le segment et le bord du rectangle.
 	 */
@@ -230,7 +230,7 @@ public class DessinerFleche
 	}
 
 	/*---------------------------------------*/
-	/* MÉTHODES PRIVÉES (DESSIN)             */
+	/* MeTHODES PRIVeES (DESSIN)             */
 	/*---------------------------------------*/
 
 	/**
@@ -249,12 +249,12 @@ public class DessinerFleche
 	}
 
 	/**
-	 * Dessine une flèche simple (deux traits) pour les associations unidirectionnelles.
+	 * Dessine une fleche simple (deux traits) pour les associations unidirectionnelles.
      * @param g2     Le contexte graphique Java AWT.
-     * @param x      La coordonnée x du point de la flèche (la pointe ).
-     * @param y      La coordonnée y du point de la flèche (la pointe).
-     * @param angle  L'angle en radians de la flèche.
-     * @param taille La taille de la flèche.
+     * @param x      La coordonnee x du point de la fleche (la pointe ).
+     * @param y      La coordonnee y du point de la fleche (la pointe).
+     * @param angle  L'angle en radians de la fleche.
+     * @param taille La taille de la fleche.
 	 */
 	private void dessinerPointeOuverte(Graphics2D g2, int x, int y, double angle, int taille)
 	{
@@ -270,12 +270,12 @@ public class DessinerFleche
 	}
 
 	/**
-	 * Dessine un triangle vide pour l'héritage et l'implémentation.
+	 * Dessine un triangle vide pour l'heritage et l'implementation.
      * @param g2     Le contexte graphique Java AWT.
-     * @param x      La coordonnée x du point de la flèche (pointe).
-     * @param y      La coordonnée y du point de la flèche (pointe).
-     * @param angle  L'angle en radians de la flèche.
-     * @param taille La taille de la flèche.
+     * @param x      La coordonnee x du point de la fleche (pointe).
+     * @param y      La coordonnee y du point de la fleche (pointe).
+     * @param angle  L'angle en radians de la fleche.
+     * @param taille La taille de la fleche.
 	 */
 	private void dessinerTriangle(Graphics2D g2, int x, int y, double angle, int taille)
 	{

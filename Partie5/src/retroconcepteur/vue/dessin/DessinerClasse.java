@@ -14,7 +14,7 @@ import java.util.List;
 
 /**
  * Classe utilitaire responsable du rendu graphique d'une classe UML.
- * Elle gère le dessin du rectangle, du titre, des attributs et des méthodes,
+ * Elle gere le dessin du rectangle, du titre, des attributs et des methodes,
  * ainsi que le calcul dynamique des dimensions.
  *
  * @author [Equipe 9]
@@ -30,7 +30,7 @@ public class DessinerClasse
 
 	/**
 	 * Constructeur.
-	 * @param ctrl Le contrôleur pour accéder aux informations du projet (types, liaisons).
+	 * @param ctrl Le controleur pour acceder aux informations du projet (types, liaisons).
 	 */
 	public DessinerClasse(Controleur ctrl)
 	{
@@ -38,16 +38,16 @@ public class DessinerClasse
 	}
 
 	/*------------------------------------------*/
-	/* Méthode d'instance                       */
+	/* Methode d'instance                       */
 	/*------------------------------------------*/
 
 	/**
-	 * Dessine une classe UML complète dans son rectangle associé.
-	 * Met à jour la taille du rectangle en fonction du contenu.
+	 * Dessine une classe UML complete dans son rectangle associe.
+	 * Met a jour la taille du rectangle en fonction du contenu.
 	 *
 	 * @param g2     Le contexte graphique Java AWT.
-	 * @param classe La classe métier à afficher.
-	 * @param rect   Le rectangle graphique associé (contenant les coordonnées X, Y).
+	 * @param classe La classe metier a afficher.
+	 * @param rect   Le rectangle graphique associe (contenant les coordonnees X, Y).
 	 */
 	public void dessiner(Graphics2D g2, Classe classe, Rectangle rect)
 	{
@@ -148,12 +148,19 @@ public class DessinerClasse
 	}
 
 	/*------------------------------------------*/
-	/* Méthodes privées                         */
+	/* Methodes privees                         */
 	/*------------------------------------------*/
 
 	/**
-	 * Dessine le rectangle de fond blanc et sa bordure noire.
-	 */
+     * Dessine un rectangle de fond blanc avec une bordure noire.
+     * Utilise pour dessiner chaque section de la classe (Titre, Attributs, Methodes).
+     *
+     * @param g2 Le contexte graphique.
+     * @param x La position X du coin superieur gauche.
+     * @param y La position Y du coin superieur gauche.
+     * @param largeur La largeur du bloc.
+     * @param h La hauteur du bloc.
+     */
 	private void dessinerFondBloc(Graphics2D g2, int x, int y, int largeur, int h)
 	{
 		g2.setColor(Color.WHITE);
@@ -162,9 +169,18 @@ public class DessinerClasse
 		g2.drawRect(x, y, largeur, h);
 	}
 
+	
 	/**
-	 * Affiche le nom de la classe et ses stéréotypes
-	 */
+     * Affiche le nom de la classe et ses stereotypes (Interface, Abstract).
+     * Le nom de la classe est affiche en gras et centre.
+     *
+     * @param g2 Le contexte graphique.
+     * @param classe La classe metier contenant les informations.
+     * @param x La position X de depart du bloc.
+     * @param y La position Y de depart du bloc.
+     * @param largeur La largeur totale disponible pour centrer le texte.
+     * @param hLigne La hauteur d'une ligne de texte.
+     */
 	private void dessinerContenuTitre(Graphics2D g2, Classe classe, int x, int y, int largeur, int hLigne)
 	{
 		Font fontNormal, fontGras;
@@ -177,28 +193,39 @@ public class DessinerClasse
 		y += hLigne;
 		
 		g2.setFont(fontNormal);
-		if (classe.isInterface())
+		if (classe.estInterface())
 		{
 			dessinerStringCentre(g2, "<<Interface>>", x, y, largeur);
 			y += hLigne;
 		}
 
-		if (classe.isAbstract() && !classe.isInterface())
+		if (classe.estAbstract() && !classe.estInterface())
 		{
 			dessinerStringCentre(g2, "<<Abstract>>", x, y, largeur);
 		}
 	}
 
+	
+	
 	/**
-	 * Affiche une liste de textes ligne par ligne.
-	 * Gère le soulignement pour les éléments statiques.
-	 */
-	private void dessinerContenuListe(Graphics2D g2, List<String> textes, List<?> lst, int x, int y, FontMetrics fm, boolean showPoints)
+     * Affiche une liste de chaines de caracteres ligne par ligne.
+     * Le soulignement des elements statiques (Attributs ou Methodes).
+     * L'affichage des "..." si la liste est tronquee.
+     *
+     * @param g2 Le contexte graphique.
+     * @param textes La liste des chaines formates a afficher.
+     * @param lst La liste des objets originaux (Attribut ou Methode) pour verifier les proprietes (static).
+     * @param x La position X de reference.
+     * @param y La position Y de depart.
+     * @param fm Les metriques de la police courante.
+     * @param showPoints Booleen indiquant s'il faut afficher "..." a la fin.
+     */
+	private void dessinerContenuListe(Graphics2D g2, List<String> textes, List<?> lst, int x, int y, FontMetrics fm, boolean montrer)
 	{
 		int     hLigne;
 		String  s;
 		Object  obj;
-		boolean isStatic;
+		boolean estStatic;
 
 		hLigne = fm.getHeight();
 		
@@ -209,22 +236,20 @@ public class DessinerClasse
 			
 			g2.drawString(s, x + MARGE_X, y + fm.getAscent());
 			
-			isStatic = false;
-			if (obj instanceof Attribut) isStatic = ((Attribut) obj).isStatic();
-			if (obj instanceof Methode)  isStatic = ((Methode) obj).isStatic();
+			estStatic = false;
+			if (obj instanceof Attribut) estStatic = ((Attribut) obj).estStatic();
+			if (obj instanceof Methode)  estStatic = ((Methode) obj).estStatic();
 
-			if (isStatic)
-			{
+			if (estStatic)
 				this.souligner(g2, x + MARGE_X, y + fm.getAscent(), fm.stringWidth(s));
-			}
+			
 
 			y += hLigne + INTERLIGNE;
 		}
 
-		if (showPoints)
-		{
+		if (montrer)
 			g2.drawString("...", x + MARGE_X, y + fm.getAscent());
-		}
+		
 	}
 
 	private void souligner(Graphics2D g2, int x, int yBase, int largeur)
@@ -232,9 +257,16 @@ public class DessinerClasse
 		g2.drawLine(x, yBase + 2, x + largeur, yBase + 2);
 	}
 
+
 	/**
-	 * Dessine une chaine de texte centrée horizontalement dans un conteneur.
-	 */
+     * Dessine une chaine de texte centree horizontalement dans un conteneur donne.
+     *
+     * @param g Le contexte graphique (Graphics ou Graphics2D).
+     * @param texte La chaine a afficher.
+     * @param x La position X du debut du conteneur.
+     * @param y La position Y actuelle.
+     * @param largeurConteneur La largeur du conteneur pour calculer le centre.
+     */
 	private void dessinerStringCentre(Graphics g, String texte, int x, int y, int largeurConteneur)
 	{
 		FontMetrics metrics;
@@ -250,7 +282,7 @@ public class DessinerClasse
 
 
 	/**
-	 * Calcule la largeur nécessaire pour afficher le titre de la classe.
+	 * Calcule la largeur necessaire pour afficher le titre de la classe.
 	 */
 	private int calculerLargeurTitre(Classe c, FontMetrics fm)
 	{
@@ -258,7 +290,7 @@ public class DessinerClasse
 
 		largeur = fm.stringWidth(c.getNom());
 		
-		if (c.isInterface() || c.isAbstract())
+		if (c.estInterface() || c.estAbstract())
 		{
 			largeur = Math.max(largeur, fm.stringWidth("<<Interface>>"));
 		}
@@ -269,7 +301,8 @@ public class DessinerClasse
 	private int calculerLargeurMax(List<String> lignes, FontMetrics fm)
 	{
 		int max = 0;
-		for (String s : lignes) max = Math.max(max, fm.stringWidth(s));
+		for (String s : lignes) 
+			max = Math.max(max, fm.stringWidth(s));
 		return max;
 	}
 
@@ -277,7 +310,7 @@ public class DessinerClasse
 	private int calculerHauteurTitre(Classe c, int hLigne)
 	{
 		int h = MARGE_Y * 2 + hLigne;
-		if (c.isInterface() || (c.isAbstract() && !c.isInterface()))
+		if (c.estInterface() || (c.estAbstract() && !c.estInterface()))
 			h += hLigne;
 		return h;
 	}
@@ -292,6 +325,13 @@ public class DessinerClasse
 		return (MARGE_Y * 2) + (nbLignesReelles * hLigne) + ((nbLignesReelles - 1) * INTERLIGNE);
 	}
 
+
+	/**
+     * Convertit la visibilite (public, private, protected ou paquetage) en symbole UML (+, -, #, ~).
+     *
+     * @param visibilite La chaine representant la visibilite (ex: "public").
+     * @return Le symbole UML correspondant.
+     */
 	private String determineVisibiliteSymbole(String visibilite)
 	{
 		if (visibilite == null) return " ";
@@ -304,7 +344,13 @@ public class DessinerClasse
 		}
 	}
 
-
+	/**	
+     * Construit le debut de la signature d'une methode (Visibilite + Nom + Arguments).
+     * Gere la troncature des arguments si la classe n'est pas cliquee.
+     *
+     * @param meth L'objet Methode a traiter.
+     * @return Une chaine representant le debut de la signature.
+     */
 	private String determineDebutSignatureMethode(Methode meth)
 	{
 		Classe          classe;
@@ -327,24 +373,27 @@ public class DessinerClasse
 		return s + ")";
 	}
 
-	/**
-	 * Construit la signature alignée d'un attribut (avec espaces pour aligner les colonnes).
-	 */
-	private String determineSignatureAttributAlignee(Attribut att, int wGaucheMax, FontMetrics fm)
+
+	private String determineSignatureAttributAlignee(Attribut att, int largeurGaucheMax, FontMetrics fm)
 	{
 		String gauche, droite;
 
 		gauche = this.determineVisibiliteSymbole(att.getVisibilite()) + " " + att.getNom();
-
 		droite = " : " + att.getType() + (att.isConstante() ? " {freeze}" : "");
 		
-		return this.marge(gauche, droite, wGaucheMax, fm);
+		return this.marge(gauche, droite, largeurGaucheMax, fm);
 	}
 
 	/**
-	 * Construit la signature alignée d'une méthode (avec espaces pour aligner les colonnes).
-	 */
-	private String determineSignatureMethodeAlignee(Methode meth, int wGaucheMax, FontMetrics fm)
+     * Construit la signature complete d'un attribut en inserant des espaces pour aligner
+     * visuellement les types a droite.
+     *
+     * @param att L'attribut a formater.
+     * @param largeurGaucheMax La largeur maximale de la partie gauche (nom) pour l'alignement.
+     * @param fm Les metriques de police.
+     * @return La chaine formatee avec padding.
+     */
+	private String determineSignatureMethodeAlignee(Methode meth, int largeurGaucheMax, FontMetrics fm)
 	{
 		String gauche, droite;
 
@@ -354,12 +403,10 @@ public class DessinerClasse
 		if (!meth.getType().equals("void") && !meth.getType().isEmpty() && !meth.getType().equals(meth.getNom()))
 			droite = " : " + meth.getType();
 
-		return this.marge(gauche, droite, wGaucheMax, fm);
+		return this.marge(gauche, droite, largeurGaucheMax, fm);
 	}
 
-	/**
-	 * Ajoute des espaces entre la partie gauche (nom) et droite (type) pour aligner les deux colonnes.
-	 */
+
 	private String marge(String gauche, String droite, int largeurMax, FontMetrics fm)
 	{
 		int largeurActuel, espace;

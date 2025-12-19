@@ -26,6 +26,8 @@ import javax.swing.SwingConstants;
 /**
  * Panneau dedie a l'edition des proprietes specifiques des attributs d'une classe UML.
  * Il permet de modifier le nom, et de definir si un attribut est "Frozen" (constante)
+ * * @author [Keryann Le Besque, Laurent Descourtis, Audric Harris, Pol Armand Bermendora, Lucas Leprevost] 
+ * @version 2.0
  */
 public class PanelEditionAttribut extends JPanel implements ActionListener
 {

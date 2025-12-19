@@ -19,7 +19,7 @@ public class Mois implements Comparable<Mois> {
         System.out.println("mois");
     }
 
-    // Question 11 : Implémentation de Comparable pour ordonner par nbSite (croissant)
+    // Question 11 : Implementation de Comparable pour ordonner par nbSite (croissant)
     @Override
     public int compareTo(Mois autreMois) {
         return Integer.compare(this.nbSite, autreMois.nbSite);

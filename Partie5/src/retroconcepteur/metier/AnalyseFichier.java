@@ -11,7 +11,7 @@ import retroconcepteur.metier.classe.*;
 
 /**
  * Permet la lecture d'un dossier et la creation de classe.
- * Une fois crée nous ajoutons les methode et attribut à cette classe
+ * Une fois cree nous ajoutons les methode et attribut a cette classe
  */
 public class AnalyseFichier
 {
@@ -37,17 +37,17 @@ public class AnalyseFichier
 	}
 
 
-	//---------------------------------------//
-	//             Getters                   //
-	//---------------------------------------//
+	/*---------------------------------------*/
+	/*             Accesseur                 */
+	/*---------------------------------------*/
 	
-
 	public ArrayList<Classe> getLstClasses () { return new ArrayList<Classe> (this.lstClass);   }
-	public List<Liaison>     getListLiaison() { return new ArrayList<Liaison>(this.lstLiaisons);}
+	public List<Liaison>     getListLiaison() { return new ArrayList<Liaison>(this.lstLiaisons);} 
 
 	/**
-	 * Retourne la liste de tout les liaison uni-directionelle
-	 * @return lstUnique la liste des liaison unique
+	 * Retourne la liste de toutes les liaisons unidirectionnelles.
+	 * Les liaisons bidirectionnelles sont ignorees dans cette liste.
+	 * @return une List de `Liaison` ne contenant que les liaisons non bidirectionnelles
 	 */
 	public List<Liaison> getListLiaisonUnique()
 	{
@@ -59,14 +59,14 @@ public class AnalyseFichier
 	}
 
 	/**
-	 * Retourne la liste des liaisons optimisée pour l'affichage.
-	 * Les liaisons bidirectionnelles (A->B et B->A) sont fusionnées en une seule (A<->B).
-	 * Les liaisons simples sont conservées.
+	 * Retourne la liste des liaisons optimisee pour l'affichage.
+	 * Les paires de liaisons A->B et B->A sont fusionnees en une liaison binaire.
+	 * @return une List de `Liaison` optimisee pour l'affichage (liaisons binaires et simples)
 	 */
 	public List<Liaison> getListLiaisonBinaire()
 	{
 		List<Liaison> lstFinale = new ArrayList<>();
-		List<Liaison> aIgnorer = new ArrayList<>(); // Pour stocker les doublons inverses à ne pas ajouter
+		List<Liaison> aIgnorer = new ArrayList<>(); // Pour stocker les doublons inverses a ne pas ajouter
 
 		for (Liaison l : this.lstLiaisons)
 		{
@@ -78,8 +78,8 @@ public class AnalyseFichier
 				for (Liaison candidate : this.lstLiaisons) 
 				{
 					if (candidate != l && 
-						candidate.getFromClass() == l.getToClass() && 
-						candidate.getToClass() == l.getFromClass()) 
+						candidate.getClasseDep() == l.getClasseArr() && 
+						candidate.getClasseArr() == l.getClasseDep()) 
 					{
 						inverse = candidate;
 						break;
@@ -88,7 +88,7 @@ public class AnalyseFichier
 
 				if (inverse != null) 
 				{
-					l.setFromMultiplicte(inverse.getToMultiplicity());
+					l.setFromMultiplicte(inverse.getMultArr());
 					
 					lstFinale.add(l);
 					aIgnorer.add(inverse); 
@@ -119,11 +119,11 @@ public class AnalyseFichier
 	}
 
 	/**
-	 * Retourne si oui ou non la classe existe même inseré dans une collections
-	 * @param type la chaine de caractère du type
+	 * Retourne si oui ou non la classe existe meme insere dans une collections
+	 * @param type la chaine de caractere du type
 	 * @return Boolean si la classe du type existe
 	 */
-	public boolean estClasseProjet(String type) 	
+	public boolean estClasseProjet(String type)    
 	{
 		
 		for (Classe c : this.lstClass)
@@ -136,6 +136,11 @@ public class AnalyseFichier
 	//---------------------------------------//
 	//         methode instance              //
 	//---------------------------------------//
+	/**
+	 * Parcourt le repertoire fourni, cree les instances de `Classe` pour
+	 * chaque fichier Java trouve et lance l'analyse des fichiers.
+	 * @param repo chemin du repertoire racine contenant le code source Java
+	 */
 	public void ouvrirDossier(String repo)
 	{
 		this.lstClass.clear();
@@ -173,16 +178,21 @@ public class AnalyseFichier
 				if ( ! this.estClasse(nom) )
 				{
 					Classe classe = new Classe(nom);
-					classe.setIsInterface(true);
+					classe.setestInterface(true);
 					classe.setCachable(true);
 					this.lstClass.add( classe );
 				}
 			
 			this.majLiaison();
 		}
-		catch (Exception e) { System.out.println("fichier non trouvé"); }
+		catch (Exception e) { System.out.println("fichier non trouve"); }
 	}
 
+	/**
+	 * Insere/modifie les proprietes de la classe courante a partir de la ligne
+	 * de declaration (ex: abstract, interface, extends, implements).
+	 * @param ligne la ligne contenant la declaration de la classe
+	 */
 	public void insererProprieteClass(String ligne)
 	{
 		
@@ -192,10 +202,10 @@ public class AnalyseFichier
 			trimmed = trimmed.substring(0, trimmed.length()-1);
 
 		if (trimmed.contains("abstract") && (trimmed.contains("class") || trimmed.contains("interface")))
-			c.setIsAbstract(true);
+			c.setestAbstract(true);
 
 		if (trimmed.contains("interface")) 
-			c.setIsInterface(true);		
+			c.setestInterface(true);		
 		
 
 		if (trimmed.contains("extends"))
@@ -239,7 +249,7 @@ public class AnalyseFichier
 	}
 
 	/**
-	 * Mets à jour le niveau si des accolades sont present
+	 * Mets a jour le niveau si des accolades sont present
 	 * Determine si la ligne pourait posseder des methodes ou attributs
 	 * @param ligne une ligne de code
 	 */
@@ -248,7 +258,7 @@ public class AnalyseFichier
 		ligne = ligne.trim();
 		
 		String visibilite = "";
-		boolean isStatic = false;
+		boolean estStatic = false;
 		boolean isFinal = false;
 		boolean modificateurTrouve = true;
 
@@ -275,7 +285,7 @@ public class AnalyseFichier
 				}
 				case "static":
 				{
-					isStatic = true;
+					estStatic = true;
 					modificateurTrouve = true;
 					break;
 				}
@@ -302,19 +312,19 @@ public class AnalyseFichier
 		if (ligne.contains("@Override")) return;
 
 		if (ligne.contains("(") && !ligne.contains("="))
-			traiterMethode(ligne, visibilite, isStatic);
+			traiterMethode(ligne, visibilite, estStatic);
 		else
-			traiterAttribut(ligne, visibilite, isStatic, isFinal);
+			traiterAttribut(ligne, visibilite, estStatic, isFinal);
 	}
 
 	/**
-	 * Traite la ligne pour créer l'attribut
+	 * Traite la ligne pour creer l'attribut
 	 * @param ligneRestante ligne de code avec attribut
 	 * @param visibilite    Visibilite de l'attribut
-	 * @param isStatic      si l'attribut est global ou instance
+	 * @param estStatic      si l'attribut est global ou instance
 	 * @param isFinal       si l'attribut est une constante
 	 */
-	private void traiterAttribut(String ligneRestante, String visibilite, boolean isStatic, boolean isFinal)
+	private void traiterAttribut(String ligneRestante, String visibilite, boolean estStatic, boolean isFinal)
 	{
 		int indexPointVirgule = ligneRestante.indexOf(';');
 		if (indexPointVirgule != -1)
@@ -333,17 +343,17 @@ public class AnalyseFichier
 		String nom = ligneRestante.substring(dernierEspace + 1).trim();
 		Classe c = this.lstClass.getLast();
 
-		c.ajouterAttribut(nom, isFinal, type, visibilite, isStatic);
+		c.ajouterAttribut(nom, isFinal, type, visibilite, estStatic);
 	}
 
 
 	/**
-	 * Traite la ligne pour créer la methode
+	 * Traite la ligne pour creer la methode
 	 * @param ligneRestante ligne de code avec attribut
 	 * @param visibilite    Visibilite de l'attribut
-	 * @param isStatic      si l'attribut est global ou instance
+	 * @param estStatic      si l'attribut est global ou instance
 	 */
-	private void traiterMethode(String ligneRestante, String visibilite, boolean isStatic)
+	private void traiterMethode(String ligneRestante, String visibilite, boolean estStatic)
 	{
 		int indexParOuvrante = ligneRestante.indexOf('(');
 		int indexParFermante = ligneRestante.lastIndexOf(')');
@@ -377,11 +387,11 @@ public class AnalyseFichier
 		ArrayList<Parametre> params = extraireParametres(contenuParametres);
 		if (nom.equals(c.getNom()))
 			type = nom;
-		c.ajouterMethode(visibilite, nom, type, params, isStatic);
+		c.ajouterMethode(visibilite, nom, type, params, estStatic);
 	}
 
 	/**
-	 * Creer les Parametre à partir d'une ligne de code
+	 * Creer les Parametre a partir d'une ligne de code
 	 * @param paramsStr le string du param avec type
 	 * @return lstParam lst des Parametre
 	 */
@@ -397,9 +407,7 @@ public class AnalyseFichier
 			String unParametreStr;
 			if (indexVirgule == -1)
 				unParametreStr = 
-	/* 
-	* Getters
-	 */paramsStr.substring(debut).trim();
+			paramsStr.substring(debut).trim();
 			else
 				unParametreStr = paramsStr.substring(debut, indexVirgule).trim();
 			int espace = unParametreStr.lastIndexOf(' ');
@@ -416,15 +424,17 @@ public class AnalyseFichier
 	}
 
 	/**
-	 * Remplace la liste des classes par celle fournie et reconstruit les liaisons
-	 * (utilisé lors du chargement depuis un fichier XML)
+	 * Remplace la liste des classes par celle fournie et reconstruit
+	 * toutes les liaisons entre ces classes.
+	 * Utilise lors du chargement depuis un fichier XML sans liaisons explicites.
+	 * @param nouvelles la nouvelle liste de `Classe` a utiliser
 	 */
 	public void remplacerClassesEtLiaisons(ArrayList<Classe> nouvelles)
 	{
 		this.lstClass = new ArrayList<Classe>(nouvelles);
 		this.lstLiaisons.clear();
 
-		// Créer les liaisons après avoir ajouté toutes les classes
+		// Creer les liaisons apres avoir ajoute toutes les classes
 		for (Classe classe1 : this.lstClass)
 		{
 			for (Classe classe2 : this.lstClass)
@@ -439,9 +449,13 @@ public class AnalyseFichier
 		}
 	}
 	
+
 	/**
-	 * Remplace la liste des classes par celle fournie et utilise la liste de liaisons fournie
-	 * (utilisé lors du chargement depuis un fichier XML contenant des liaisons explicites)
+	 * Remplace la liste des classes par celle fournie et associe la liste de
+	 * liaisons fournie aux instances de `Classe` correspondantes.
+	 * Utilise lors du chargement depuis un fichier XML contenant des liaisons explicites.
+	 * @param nouvelles la nouvelle liste de `Classe` a utiliser
+	 * @param liaisons la liste des liaisons a reassocier aux instances de classe
 	 */
 	public void remplacerClassesEtLiaisons(ArrayList<Classe> nouvelles, List<Liaison> liaisons)
 	{
@@ -451,21 +465,25 @@ public class AnalyseFichier
 		// Associer les liaisons fournies aux instances de Classe correctes
 		for (Liaison l : liaisons)
 		{
-			// Assurer que la liaison référence les objets Classe chargés
+			// Assurer que la liaison reference les objets Classe charges
 			Classe cFrom = null, cTo = null;
 			for (Classe c : this.lstClass)
 			{
-				if (c.getNom().equals(l.getFromClass().getNom())) cFrom = c;
-				if (c.getNom().equals(l.getToClass().getNom())) cTo = c;
+				if (c.getNom().equals(l.getClasseDep().getNom())) cFrom = c;
+				if (c.getNom().equals(l.getClasseArr().getNom())) cTo = c;
 			}
 			if (cFrom != null && cTo != null)
 			{
-				Liaison nl = new Liaison(cFrom, cTo, l.getFromMultiplicity(), l.getToMultiplicity(), l.getNomVar(), this);
+				Liaison nl = new Liaison(cFrom, cTo, l.getMultADep(), l.getMultArr(), l.getNomVar(), this);
 				this.lstLiaisons.add(nl);
 			}
 		}
 	}
 
+	/**
+	 * Met a jour la liste des liaisons en (re)creant toutes les liaisons
+	 * possibles entre les classes actuellement connues.
+	 */
 	public void majLiaison()
 	{
 		this.lstLiaisons.clear();
@@ -485,9 +503,9 @@ public class AnalyseFichier
 		}
 	}
 
-	//---------------------------------------//
-	//           methode static              //
-	//---------------------------------------//
+	/*---------------------------------------*/
+	/*           Methode static              */
+	/*---------------------------------------*/
 	
 	/**
 	 * Ajoute tout les fichier java dans l'array list fournit
@@ -496,10 +514,10 @@ public class AnalyseFichier
 	 * */
 	public static void listeRepertoire(File path, List<String> allFiles)
 	{
-		File[] list = path.listFiles();
-		if (list != null)
+		File[] lst = path.listFiles();
+		if (lst != null)
 		{
-			for (File f : list)
+			for (File f : lst)
 			{
 				if (! f.isDirectory())
 				{				

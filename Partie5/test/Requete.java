@@ -27,14 +27,14 @@ public class Requete 	{
         this.referer = referer;
     }
 
-    // Question 8 : Méthode getMois
+    // Question 8 : Methode getMois
     public int getMois() {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yy HH:mm", Locale.FRANCE);
         LocalDateTime dateTime = LocalDateTime.parse(this.date, formatter);
         return dateTime.getMonthValue();
     }
 
-    // Question 1 : Méthodes d'accès (Getters)
+    // Question 1 : Methodes d'acces (Getters)
     public String getIpVisiteur() { return ipVisiteur; }
     public String getUrlSite() { return urlSite; }
     // Autres getters omis pour la concision...

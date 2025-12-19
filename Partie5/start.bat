@@ -6,11 +6,11 @@ echo Compilation du projet retroconcepteur...
 
 javac -encoding UTF-8 "@Compile.list" -d ./class
 
-REM Vérifier si la compilation a réussi
+REM Verifier si la compilation a reussi
 if %ERRORLEVEL% EQU 0 (
-    echo Exécution du programme...
+    echo Execution du programme...
     echo.
-    REM Passer le répertoire data en argument
+    REM Passer le repertoire data en argument
 	java -Dfile.encoding=UTF-8 -cp ./class retroconcepteur.Controleur %1
 ) else (
     echo Erreur de compilation!

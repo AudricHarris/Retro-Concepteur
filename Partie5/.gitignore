@@ -1,4 +1,4 @@
-# Fichiers compilés Java
+# Fichiers compiles Java
 *.class
 
 # Fichiers de configuration d'IDE
@@ -10,7 +10,7 @@
 .project
 .classpath
 
-# Fichiers système
+# Fichiers systeme
 .DS_Store
 Thumbs.db
 

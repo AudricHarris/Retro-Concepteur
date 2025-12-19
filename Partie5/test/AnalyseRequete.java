@@ -25,13 +25,13 @@ public class AnalyseRequete {
         // Lecture du fichier champ par champ avec Scanner.useDelimiter()
         try (Scanner scanner = new Scanner(new File(fichier))) {
             
-            // Le délimiteur est le point-virgule (;) ou la fin de ligne (\r\n ou \n).
-            // Le scanner lira ainsi les 8 champs consécutivement, peu importe si le séparateur est un ; ou un saut de ligne.
+            // Le delimiteur est le point-virgule (;) ou la fin de ligne (\r\n ou \n).
+            // Le scanner lira ainsi les 8 champs consecutivement, peu importe si le separateur est un ; ou un saut de ligne.
             scanner.useDelimiter(";|\\r?\\n");
             
             while (scanner.hasNext()) {
                 try {
-                    // Lecture des 8 champs consécutifs
+                    // Lecture des 8 champs consecutifs
                     String date = scanner.next().trim();
                     String navigateur = scanner.next().trim();
                     String ipVisiteur = scanner.next().trim();
@@ -39,51 +39,51 @@ public class AnalyseRequete {
                     String urlSite = scanner.next().trim();
                     String ipServeur = scanner.next().trim();
                     String codeHttp = scanner.next().trim();
-                    String referer = scanner.next().trim(); // 8ème champ
+                    String referer = scanner.next().trim(); // 8eme champ
                     
-                    // Création et ajout de la Requête
+                    // Creation et ajout de la Requete
                     Requete req = new Requete(date, navigateur, ipVisiteur, verbeHttp,
                                               urlSite, ipServeur, codeHttp, referer);
                     
-                    // Question 2 : Ajout à la liste
+                    // Question 2 : Ajout a la liste
                     this.listeRequete.add(req);
                     
-                    // Question 3 : Ajout à l'ensemble des sites
+                    // Question 3 : Ajout a l'ensemble des sites
                     this.listeSite.add(req.getUrlSite());
                     
                 } catch (java.util.NoSuchElementException e) {
-                    // Attrape l'exception si le scanner arrive à la fin du fichier sans trouver les 8 jetons.
-                    System.err.println("Avertissement : Fin de fichier ou ligne incomplète détectée. Arrêt de la lecture des requêtes.");
+                    // Attrape l'exception si le scanner arrive a la fin du fichier sans trouver les 8 jetons.
+                    System.err.println("Avertissement : Fin de fichier ou ligne incomplete detectee. Arret de la lecture des requetes.");
                     break; 
                 }
             }
         } catch (FileNotFoundException e) {
-            System.err.println("Erreur : Fichier non trouvé : " + fichier);
+            System.err.println("Erreur : Fichier non trouve : " + fichier);
         }
         
-        // Question 4 : Compléter la HashMap
+        // Question 4 : Completer la HashMap
         groupeRequete();
     }
 
-    // Etape 2, Question 4 : Méthode groupeRequete
+    // Etape 2, Question 4 : Methode groupeRequete
     public void groupeRequete() {
         for (Requete req : listeRequete) {
             String site = req.getUrlSite();
-            // Ajout ou mise à jour de la liste de requêtes pour le site
+            // Ajout ou mise a jour de la liste de requetes pour le site
             this.hashRequete.computeIfAbsent(site, k -> new ArrayList<>()).add(req);
         }
     }
 
-    // Etape 2, Question 5 : Méthode afficheRequete
+    // Etape 2, Question 5 : Methode afficheRequete
     public void afficheRequete(String siteWeb) {
         ArrayList<Requete> requetes = this.hashRequete.get(siteWeb);
         if (requetes != null) {
-            System.out.println("--- Requêtes pour le site : " + siteWeb + " ---");
+            System.out.println("--- Requetes pour le site : " + siteWeb + " ---");
             for (Requete req : requetes) {
                 System.out.println(req);
             }
         } else {
-            System.out.println("Aucune requête trouvée pour le site : " + siteWeb);
+            System.out.println("Aucune requete trouvee pour le site : " + siteWeb);
         }
     }
     
@@ -102,7 +102,7 @@ public class AnalyseRequete {
                .count();
     }
     
-    // Etape 4, Question 9 : Méthode listeSiteParMois
+    // Etape 4, Question 9 : Methode listeSiteParMois
     public HashMap<Integer, HashSet<String>> listeSiteParMois() {
         HashMap<Integer, HashSet<String>> sitesParMois = new HashMap<>();
         
@@ -140,7 +140,7 @@ public class AnalyseRequete {
     
     // Etape 5, Question 14 : Fonction afficheListeIPVisiteur
     public void afficheListeIPVisiteur() {
-        // Logique inchangée...
+        // Logique inchangee...
         String siteCible = "youtube.com";
         String ipCible = "134.23.10.44";
         int seuilVisite = 4;
@@ -160,7 +160,7 @@ public class AnalyseRequete {
         }
 
         if (indexQuatriemeVisite == -1) {
-            System.out.println("L'IP " + ipCible + " n'a pas visité " + siteCible + " " + seuilVisite + " fois.");
+            System.out.println("L'IP " + ipCible + " n'a pas visite " + siteCible + " " + seuilVisite + " fois.");
             return;
         }
 
@@ -178,13 +178,13 @@ public class AnalyseRequete {
             }
         }
         
-        System.out.println("--- IPs visiteurs uniques pour " + siteCible + " avant la 4ème visite de " + ipCible + " (du plus récent au plus ancien) ---");
+        System.out.println("--- IPs visiteurs uniques pour " + siteCible + " avant la 4eme visite de " + ipCible + " (du plus recent au plus ancien) ---");
         for (String ip : ipsTrieesParDate) {
             System.out.println(ip);
         }
     }
     
-    // Méthode main pour l'exécution en ligne de commande (inchangée)
+    // Methode main pour l'execution en ligne de commande (inchangee)
     public static void main(String[] args) {
         if (args.length < 1) {
             System.out.println("Usage: java visite.AnalyseRequete <nom_du_fichier_csv>");
@@ -195,16 +195,16 @@ public class AnalyseRequete {
         String fichier = args[0];
         AnalyseRequete analyse = new AnalyseRequete(fichier);
         
-        // --- Résultats des analyses finales ---
+        // --- Resultats des analyses finales ---
         
         int moisMax = analyse.moisMaxSites();
         System.out.println("\n=======================================================");
-        System.out.println("Question 13: Mois avec le plus grand nombre de sites uniques visités.");
-        System.out.println("Numéro du mois : " + moisMax);
+        System.out.println("Question 13: Mois avec le plus grand nombre de sites uniques visites.");
+        System.out.println("Numero du mois : " + moisMax);
         System.out.println("=======================================================");
         
         System.out.println("\n=======================================================");
-        System.out.println("Question 14: Liste des IPs visiteurs pour youtube.com avant la 4ème visite de 134.23.10.44.");
+        System.out.println("Question 14: Liste des IPs visiteurs pour youtube.com avant la 4eme visite de 134.23.10.44.");
         analyse.afficheListeIPVisiteur();
         System.out.println("=======================================================");
     }

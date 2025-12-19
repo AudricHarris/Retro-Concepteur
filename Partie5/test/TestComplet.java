@@ -4,12 +4,12 @@ import java.util.List;
 import java.util.ArrayList;
 
 /**
- * Ce fichier sert à tester les limites de l'analyseur Retro-Concepteur.
- * Il contient des modificateurs variés et des structures complexes.
+ * Ce fichier sert a tester les limites de l'analyseur Retro-Concepteur.
+ * Il contient des modificateurs varies et des structures complexes.
  */
 public abstract interface TestComplet extends Object implements Cloneable{
 
-    // --- Attributs avec différents modificateurs ---
+    // --- Attributs avec differents modificateurs ---
 
     // Cas standard
     private int simpleAttribute;
@@ -17,10 +17,10 @@ public abstract interface TestComplet extends Object implements Cloneable{
     // Modificateurs multiples
     public static final double PI = 3.14159;
     
-    // Cas non gérés actuellement (transient, volatile)
+    // Cas non geres actuellement (transient, volatile)
     // Risque : Votre analyseur pourrait prendre "transient" pour le type de la variable !
 
-    // Types complexes (Génériques)
+    // Types complexes (Generiques)
     public List<String> maListe;
     private ArrayList<Integer> nombres;
 
@@ -28,18 +28,18 @@ public abstract interface TestComplet extends Object implements Cloneable{
     public int[] tableauEntiers;
     private String[][] matriceChaines;
 
-    // --- Méthodes avec différents modificateurs ---
+    // --- Methodes avec differents modificateurs ---
 
     // Constructeur
     public TestComplet() {
         this.maListe = new ArrayList<>();
     }
 
-    // Méthode abstraite (pas de corps)
+    // Methode abstraite (pas de corps)
     public abstract void methodeAbstraite(int test,
 		String ligne);
 
-    // Méthode synchronisée
+    // Methode synchronisee
     // Risque : Votre analyseur pourrait croire que le type de retour est "synchronized"
     public synchronized void methodeSynchronisee() 	{
         this.estActif = true;
@@ -50,17 +50,17 @@ public abstract interface TestComplet extends Object implements Cloneable{
 	}
 	*/
 
-    // Méthode statique finale avec paramètres
+    // Methode statique finale avec parametres
     static final int calculer(int a,
     						 int b) 	{
         return a + b;
     }
 
-    // Méthode native (mot clé native)
+    // Methode native (mot cle native)
     public void methodeNative();
 
-    // Méthode qui lance des exceptions (throws)
-    // Risque : Votre analyseur gère-t-il le "throws Exception" après la parenthèse ?
+    // Methode qui lance des exceptions (throws)
+    // Risque : Votre analyseur gere-t-il le "throws Exception" apres la parenthese ?
     public void methodeAvecException() throws Exception {
         throw new Exception("Erreur");
     }

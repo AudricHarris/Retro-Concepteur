@@ -6,29 +6,38 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
-
-/*
+/**
  * Permet la lecture d'un fichier .java
  * Classe regroupant la lecture de la ligne
+ * * @author [Keryann Le Besque, Laurent Descourtis, Audric Harris, Pol Armand Bermendora, Lucas Leprevost] 
+ * @version 2.0
  */
 public class LireFichier 
 {
 
-	/*
-	 * Prend en paramètre un chemin vers un fichier et un analyseFichier
+	/** 
+	 * Prend en parametre un chemin vers un fichier et un analyseFichier
 	 * Lis ligne par ligne chaque fichier
 	 * si ce n'est pas un commentaire on fait une analyseFichier de la ligne
+	 * @param chemin Le chemin du fichier a lire
+	 * @param analyseFichier L'analyseur de fichier
 	 */
 	public static void lireFichier(String chemin, AnalyseFichier analyseFichier)
 	{
 		if (chemin == null || chemin.isEmpty())
-			throw new IllegalArgumentException("Le chemin ne peut pas être null");
+			throw new IllegalArgumentException("Le chemin ne peut pas etre null");
 
 		List<String> codeNetoye = LireFichier.codePropre(chemin, analyseFichier);
 		for (String s : codeNetoye)
 			analyseFichier.analyserLigne(s);
 	}
 
+	/** 
+	 * Sert a nettoyer renvoyer le code sans les commentaires
+	 * @param chemin Le chemin du fichier a lire
+	 * @param analyseFichier L'analyseur de fichier
+	 * @return Une liste de lignes de code sans commentaires
+	*/
 	public static List<String> codePropre(String chemin, AnalyseFichier analyseFichier) 
 	{
 		List<String> codeLines = new ArrayList<String>();

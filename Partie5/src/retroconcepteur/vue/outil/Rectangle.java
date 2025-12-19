@@ -5,8 +5,10 @@ import java.util.HashMap;
 import java.util.List;
 
 /**
- * Represente la zone rectangulaire d'une classe UML sur le diagramme.
+  * Represente la zone rectangulaire d'une classe UML sur le diagramme.
  * Gere les dimensions, la position et les points d'ancrage des liaisons (chemins).
+ * * @author [Keryann Le Besque, Laurent Descourtis, Audric Harris, Pol Armand Bermendora, Lucas Leprevost] 
+ * @version 2.0
  */
 public class Rectangle
 {

@@ -1,7 +1,7 @@
 package retroconcepteur.metier.classe;
 
 /**
- * Class paramètres stock les informations des paramètres d'une méthode
+ * Class parametres stock les informations des parametres d'une methode
  * * @author [Keryann Le Besque, Laurent Descourtis, Audric Harris, Pol Armand Bermendora, Lucas Leprevost] 
  * @version 2.0
  */

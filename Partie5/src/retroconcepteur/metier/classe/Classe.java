@@ -20,8 +20,8 @@ public class Classe
 	private String       nomHeritageClasse;
 	private List<String> lstInterfaces;
 
-	private boolean isAbstract;
-	private boolean isInterface;
+	private boolean estAbstract;
+	private boolean estInterface;
 	private boolean cachable;
 
 	private boolean estClique;
@@ -36,19 +36,19 @@ public class Classe
 		this.nom = nom;
 		this.lstAttribut = new ArrayList<Attribut>();
 		this.lstMethode = new ArrayList<Methode>();
-		this.isAbstract = false;
-		this.isInterface = false;
+		this.estAbstract = false;
+		this.estInterface = false;
 		this.estClique = false;
 		this.cachable  = false;
 	}
 	
-	//---------------------------------------//
-	//              Getters                  //
-	//---------------------------------------//
+	/*---------------------------------------*/
+	/*              Getters                  */
+	/*---------------------------------------*/
 
 	public String              getNom              (){ return this.nom;               }
-	public boolean             isAbstract          (){ return this.isAbstract;        }
-	public boolean             isInterface         (){ return this.isInterface;       }
+	public boolean             estAbstract          (){ return this.estAbstract;        }
+	public boolean             estInterface         (){ return this.estInterface;       }
 	public String              getNomHeritageClasse(){ return this.nomHeritageClasse; }
 	public boolean             estClique           (){ return this.estClique;         }
 	public boolean             getCachable         (){ return this.cachable ;         } 
@@ -127,12 +127,12 @@ public class Classe
 
 	
 	/**
-	* Retourne une liste ordonnée des attributs :
+	* Retourne une liste ordonnee des attributs :
 	* 1. Statiques constants (static final)
 	* 2. Finaux non-statiques (final)
 	* 3. Instance (non-static, non-final)
-	* Dans chaque groupe : tri par visibilité (public > protected > private)
-	* @return List<Attribut> liste ordonnée
+	* Dans chaque groupe : tri par visibilite (public > protected > private)
+	* @return List<Attribut> liste ordonnee
 	*/
 	public List<Attribut> getListOrdonneeAttribut()
 	{
@@ -145,12 +145,12 @@ public class Classe
 		
 		for (Attribut att : this.lstAttribut)
 		{
-			if (att.isStatic() && att.isConstante())
+			if (att.estStatic() && att.isConstante())
 			{
 				staticFinal.add(att);
 			}
 			else 
-				if (!att.isStatic() && att.isConstante()) finalInstance.add(att);
+				if (!att.estStatic() && att.isConstante()) finalInstance.add(att);
 				else instanceVars.add(att);
 		}
 		
@@ -166,11 +166,11 @@ public class Classe
 	
 	
 	/**
-	* Retourne une liste ordonnée des méthodes :
-	* 1. Méthodes statiques
-	* 2. Méthodes d'instance (incluant constructeurs)
-	* Dans chaque groupe : tri par visibilité (public > protected > private)
-	* @return List<Methode> liste ordonnée
+	* Retourne une liste ordonnee des methodes :
+	* 1. Methodes statiques
+	* 2. Methodes d'instance (incluant constructeurs)
+	* Dans chaque groupe : tri par visibilite (public > protected > private)
+	* @return List<Methode> liste ordonnee
 	*/
 	public List<Methode> getListOrdonneeMethode()
 	{
@@ -180,7 +180,7 @@ public class Classe
 		List<Methode> instanceMethods = new ArrayList<>();
 		
 		for (Methode meth : this.lstMethode)
-			if (meth.isStatic()) staticMethods.add(meth);
+			if (meth.estStatic()) staticMethods.add(meth);
 			else instanceMethods.add(meth);
 		
 		List<String> visibilities = Arrays.asList("public", "protected", "private", "default");
@@ -224,12 +224,12 @@ public class Classe
 		}
 		return result;
 	}
-	//---------------------------------------//
-	//          Modificateur                 //
-	//---------------------------------------//
+	/*---------------------------------------*/
+	/*          Modificateur                 */
+	/*---------------------------------------*/
 
-	public void setIsAbstract       (boolean isAbstract ) { this.isAbstract        = isAbstract;  }
-	public void setIsInterface      (boolean isInterface) { this.isInterface       = isInterface; }
+	public void setestAbstract       (boolean estAbstract ) { this.estAbstract        = estAbstract;  }
+	public void setestInterface      (boolean estInterface) { this.estInterface       = estInterface; }
 	public void setNomHeritageClasse(String  nom        ) { this.nomHeritageClasse = nom;         }
 	public void setEstClique        (boolean bClique    ) { this.estClique         =bClique;      }
 	public void setCachable         (boolean bCache     ) { this.cachable          = bCache;      }
@@ -251,13 +251,13 @@ public class Classe
 	 * @param constante  si l'attribut est constante
 	 * @param type       le type de l'attribut
 	 * @param visibilite Visibilite de l'attribut
-	 * @param isStatic   si l'attribut est static
+	 * @param estStatic   si l'attribut est static
 	 */
 	public void ajouterAttribut(String nomAtt    , boolean constante, String type,
-		                        String visibilite, boolean isStatic)
+		                        String visibilite, boolean estStatic)
 	{
 		int num = this.lstAttribut.size() + 1;
-		Attribut attribut = new Attribut(num, nomAtt, constante, type, visibilite, isStatic);
+		Attribut attribut = new Attribut(num, nomAtt, constante, type, visibilite, estStatic);
 		
 		if (attribut != null) this.lstAttribut.add(attribut);
 	}
@@ -267,13 +267,13 @@ public class Classe
 	 * @param visibilite Visibilite de la methode
 	 * @param nomMeth    nom de la methode
 	 * @param type       le type de la methode
-	 * @param lstParam   la liste des param de la méthode
-	 * @param isStatic   si l'attribut est static
+	 * @param lstParam   la liste des param de la methode
+	 * @param estStatic   si l'attribut est static
 	 */
 	public void ajouterMethode(String visibilite, String nomMeth, String type, 
-		                       ArrayList<Parametre> lstParam, boolean isStatic)
+		                       ArrayList<Parametre> lstParam, boolean estStatic)
 	{
-		Methode meth = new Methode(visibilite, nomMeth, type, lstParam, isStatic);
+		Methode meth = new Methode(visibilite, nomMeth, type, lstParam, estStatic);
 		
 		if ( meth != null) this.lstMethode.add(meth);
 	}
@@ -284,7 +284,7 @@ public class Classe
 
 	public String toString()
 	{
-		String sRet = this.nom + (this.isAbstract ? " { abstract }" + "\n" : "\n");
+		String sRet = this.nom + (this.estAbstract ? " { abstract }" + "\n" : "\n");
 		for (Attribut attribut : this.lstAttribut)
 			sRet += attribut.toString() + "\n";
 

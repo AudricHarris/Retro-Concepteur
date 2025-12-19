@@ -30,7 +30,10 @@ import org.w3c.dom.Element;
 /**
  * Classe utilitaire permettant de sauvegarder un diagramme de classes
  * sous forme de fichier XML.
+ * * @author [Keryann Le Besque, Laurent Descourtis, Audric Harris, Pol Armand Bermendora, Lucas Leprevost] 
+ * @version 2.0
  */
+
 public class SauvegarderXml 
 {
 	/*------------------------------------------*/
@@ -40,11 +43,11 @@ public class SauvegarderXml
 	/**
 	 * Sauvegarde un diagramme de classes dans un fichier XML.
 	 *
-	 * @param chemin chemin du fichier XML à créer
+	 * @param chemin chemin du fichier XML a creer
 	 * @param lstClasses liste des classes du diagramme
 	 * @param mapPos association entre chaque classe et sa position graphique
 	 * @param lstLiaisons liste des liaisons entre les classes
-	 * @throws RuntimeException si une erreur survient lors de la génération du XML
+	 * @throws RuntimeException si une erreur survient lors de la generation du XML
 	 */
 	public static void sauvegarderEnXml(String chemin, ArrayList<Classe> lstClasses,
 									    HashMap<Classe, Position> mapPos,
@@ -77,8 +80,8 @@ public class SauvegarderXml
 				classeElm = doc.createElement("Classe");
 
 				classeElm.setAttribute("nom", c.getNom());
-				classeElm.setAttribute("isAbstract", Boolean.toString(c.isAbstract()));
-				classeElm.setAttribute("isInterface", Boolean.toString(c.isInterface()));
+				classeElm.setAttribute("estAbstract", Boolean.toString(c.estAbstract()));
+				classeElm.setAttribute("estInterface", Boolean.toString(c.estInterface()));
 				classeElm.setAttribute("cachable", Boolean.toString(c.getCachable()));
 
 				if (c.getNomHeritageClasse() != null)
@@ -126,9 +129,9 @@ public class SauvegarderXml
 	/*------------------------------------------*/
 
 	/**
-	 * Ajoute les informations de position graphique à un élément XML représentant une classe.
+	 * Ajoute les informations de position graphique a un element XML representant une classe.
 	 *
-	 * @param classeElm élément XML de la classe
+	 * @param classeElm element XML de la classe
 	 * @param p position graphique de la classe
 	 */
 	private static void ajouterPosition(Element classeElm, Position p)
@@ -142,11 +145,11 @@ public class SauvegarderXml
 	}
 
 	/**
-	 * Crée un élément XML représentant une méthode.
+	 * Cree un element XML representant une methode.
 	 *
 	 * @param doc document XML
-	 * @param m méthode à convertir en XML
-	 * @return élément XML correspondant à la méthode
+	 * @param m methode a convertir en XML
+	 * @return element XML correspondant a la methode
 	 */
 	private static Element classeMethode(Document doc, Methode m)
 	{
@@ -160,7 +163,7 @@ public class SauvegarderXml
 		metElm.setAttribute("nom", m.getNom());
 		metElm.setAttribute("type", m.getType());
 		metElm.setAttribute("visibilite", m.getVisibilite() == null ? "" : m.getVisibilite());
-		metElm.setAttribute("static", Boolean.toString(m.isStatic()));
+		metElm.setAttribute("static", Boolean.toString(m.estStatic()));
 
 		// gere Parametres
 		paramsElm = doc.createElement("Parametres");
@@ -179,11 +182,11 @@ public class SauvegarderXml
 	}
 
 	/**
-	 * Crée un élément XML représentant un attribut.
+	 * Cree un element XML representant un attribut.
 	 *
 	 * @param doc document XML
-	 * @param a attribut à convertir en XML
-	 * @return élément XML correspondant à l'attribut
+	 * @param a attribut a convertir en XML
+	 * @return element XML correspondant a l'attribut
 	 */
 	private static Element classeAttribut(Document doc, Attribut a)
 	{
@@ -195,17 +198,17 @@ public class SauvegarderXml
 		attElm.setAttribute("type", a.getType());
 		attElm.setAttribute("visibilite", a.getVisibilite() == null ? "" : a.getVisibilite());
 		attElm.setAttribute("constante", Boolean.toString(a.isConstante()));
-		attElm.setAttribute("static", Boolean.toString(a.isStatic()));
+		attElm.setAttribute("static", Boolean.toString(a.estStatic()));
 
 		return attElm;
 	}
 
 	/**
-	 * Crée un élément XML représentant les interfaces implémentées par une classe.
+	 * Cree un element XML representant les interfaces implementees par une classe.
 	 *
 	 * @param doc document XML
-	 * @param c classe concernée
-	 * @return élément XML contenant les interfaces
+	 * @param c classe concernee
+	 * @return element XML contenant les interfaces
 	 */
 	private static Element classeInterface(Document doc, Classe c)
 	{
@@ -225,11 +228,11 @@ public class SauvegarderXml
 	}
 
 	/**
-	 * Crée un élément XML représentant l'ensemble des liaisons du diagramme.
+	 * Cree un element XML representant l'ensemble des liaisons du diagramme.
 	 *
 	 * @param doc document XML
 	 * @param lstLiaisons liste des liaisons
-	 * @return élément XML contenant les liaisons
+	 * @return element XML contenant les liaisons
 	 */
 	private static Element sauvegarderLiaison(Document doc,List<Liaison>lstLiaisons)
 	{
@@ -241,20 +244,20 @@ public class SauvegarderXml
 		{
 			lienElm = doc.createElement("Liaison");
 
-			lienElm.setAttribute("de", l.getFromClass().getNom());
-			lienElm.setAttribute("vers", l.getToClass().getNom());
+			lienElm.setAttribute("de", l.getClasseDep().getNom());
+			lienElm.setAttribute("vers", l.getClasseArr().getNom());
 			lienElm.setAttribute("type", l.getType());
 			lienElm.setAttribute("nomVar", l.getNomVar() == null ? "" : l.getNomVar());
 
-			if (l.getFromMultiplicity() != null)
+			if (l.getMultADep() != null)
 			{
-				lienElm.setAttribute("deMin", l.getFromMultiplicity().getBorneInf());
-				lienElm.setAttribute("deMax", l.getFromMultiplicity().getBorneSup());
+				lienElm.setAttribute("deMin", l.getMultADep().getBorneInf());
+				lienElm.setAttribute("deMax", l.getMultADep().getBorneSup());
 			}
-			if (l.getToMultiplicity() != null)
+			if (l.getMultArr() != null)
 			{
-				lienElm.setAttribute("versMin", l.getToMultiplicity().getBorneInf());
-				lienElm.setAttribute("versMax", l.getToMultiplicity().getBorneSup());
+				lienElm.setAttribute("versMin", l.getMultArr().getBorneInf());
+				lienElm.setAttribute("versMax", l.getMultArr().getBorneSup());
 			}
 			liaisonsElm.appendChild(lienElm);
 		}
@@ -262,11 +265,11 @@ public class SauvegarderXml
 	}
 
 	/**
-	 * Écrit le document XML sur le disque.
+	 * ecrit le document XML sur le disque.
 	 *
-	 * @param doc document XML à écrire
+	 * @param doc document XML a ecrire
 	 * @param chemin chemin du fichier de sortie
-	 * @throws RuntimeException si une erreur survient lors de l'écriture
+	 * @throws RuntimeException si une erreur survient lors de l'ecriture
 	 */
 	private static void ecritXml(Document doc, String chemin)
 	{
