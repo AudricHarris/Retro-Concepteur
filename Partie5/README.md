@@ -37,7 +37,6 @@ Le projet respecte strictement le Modele de conception **MVC (Modele-Vue-Control
 ## 📋 Prerequis
 
 * **Java JDK :** Version [17 ou 21] minimum.
-* **IDE :** Eclipse, IntelliJ IDEA ou VSCode.
 
 ## 🔧 Installation et Lancement
 
@@ -60,4 +59,5 @@ Lancez le script batch :
 ```cmd
 start.bat + "chemin du dossier si besoin"
 ```
+
 
