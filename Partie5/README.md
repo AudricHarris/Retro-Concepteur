@@ -2,7 +2,7 @@
 
 **RetroConcepteur** est un outil de retro-ingenierie developpe en Java. Il permet d'analyser du code Java existant pour generer et visualiser automatiquement son diagramme de classes UML.
 
-Ce projet a ete realise par l'**equipe 9** dans le cadre du module [Nom du Module] a [Nom de l'Universite/IUT].
+Ce projet a ete realise par l'**equipe 9** dans le cadre de la SAE 3.01 a l'IUT du Havre.
 
 ## 🚀 Fonctionnalites Cles
 
@@ -60,3 +60,4 @@ Lancez le script batch :
 ```cmd
 start.bat + "chemin du dossier si besoin"
 ```
+
