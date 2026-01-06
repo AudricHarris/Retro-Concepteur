@@ -52,7 +52,6 @@ public class Disque implements Comparable<Disque>
 	}
 
 
-	@Override
 	public int compareTo(Disque o) 
 	{
 		return Double.compare(this.rayon, o.rayon);
