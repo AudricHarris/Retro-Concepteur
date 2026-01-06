@@ -132,7 +132,7 @@ public class Controleur
 
 	public static void main(String[] args) 
 	{ 
-		String cheminRepertoire = (args.length > 0) ? args[0] : "./test";
+		String cheminRepertoire = (args.length > 0) ? args[0] : "";
         new Controleur(cheminRepertoire);
 	}
 
