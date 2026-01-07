@@ -1,0 +1,376 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<Diagramme>
+  <Classe hauteur="177" isAbstract="false" isInterface="false" largeur="341" nom="Produit" x="136" y="17">
+    <Attributs>
+      <Attribut constante="true" nom="NOMBRE_MAX_PROD" static="true" type="int" visibilite="public"/>
+      <Attribut constante="false" nom="nbProduit" static="true" type="int" visibilite="private"/>
+      <Attribut constante="false" nom="idProduit" static="false" type="int" visibilite="private"/>
+      <Attribut constante="false" nom="nomProduit" static="false" type="String" visibilite="private"/>
+      <Attribut constante="false" nom="prixProduit" static="false" type="int" visibilite="private"/>
+    </Attributs>
+    <Methodes>
+      <Methode nom="Produit" static="false" type="Produit" visibilite="public">
+        <Parametres>
+          <Parametre nom="nomProduit" type="String"/>
+          <Parametre nom="prixProduit" type="int"/>
+        </Parametres>
+      </Methode>
+      <Methode nom="getNombreMaxProd" static="true" type="int" visibilite="public">
+        <Parametres/>
+      </Methode>
+      <Methode nom="getNbProduit" static="true" type="int" visibilite="public">
+        <Parametres/>
+      </Methode>
+      <Methode nom="setNbProduit" static="true" type="void" visibilite="public">
+        <Parametres>
+          <Parametre nom="nbProduit" type="int"/>
+        </Parametres>
+      </Methode>
+      <Methode nom="getIdProduit" static="false" type="int" visibilite="public">
+        <Parametres/>
+      </Methode>
+      <Methode nom="setIdProduit" static="false" type="void" visibilite="public">
+        <Parametres>
+          <Parametre nom="idProduit" type="int"/>
+        </Parametres>
+      </Methode>
+      <Methode nom="getNomProduit" static="false" type="String" visibilite="public">
+        <Parametres/>
+      </Methode>
+      <Methode nom="setNomProduit" static="false" type="void" visibilite="public">
+        <Parametres>
+          <Parametre nom="nomProduit" type="String"/>
+        </Parametres>
+      </Methode>
+      <Methode nom="getPrixProduit" static="false" type="int" visibilite="public">
+        <Parametres/>
+      </Methode>
+      <Methode nom="setPrixProduit" static="false" type="void" visibilite="public">
+        <Parametres>
+          <Parametre nom="prixProduit" type="int"/>
+        </Parametres>
+      </Methode>
+      <Methode nom="acheterProduit" static="false" type="boolean" visibilite="public">
+        <Parametres>
+          <Parametre nom="nbProduit" type="int"/>
+        </Parametres>
+      </Methode>
+    </Methodes>
+  </Classe>
+  <Classe extends="JPanel" hauteur="143" isAbstract="false" isInterface="false" largeur="288" nom="PanelLogin" x="1473" y="66">
+    <Attributs>
+      <Attribut constante="false" nom="frame" static="false" type="FrameBoutique" visibilite="protected"/>
+      <Attribut constante="false" nom="txtPrenom" static="false" type="JTextField txtNom," visibilite="protected"/>
+      <Attribut constante="false" nom="txtMdp" static="false" type="JPasswordField" visibilite="protected"/>
+      <Attribut constante="false" nom="btnCreerCompte" static="false" type="JButton btnConnexion," visibilite="protected"/>
+    </Attributs>
+    <Methodes>
+      <Methode nom="PanelLogin" static="false" type="PanelLogin" visibilite="public">
+        <Parametres>
+          <Parametre nom="frame" type="FrameBoutique"/>
+        </Parametres>
+      </Methode>
+      <Methode nom="initialiserPanel" static="false" type="void" visibilite="private">
+        <Parametres/>
+      </Methode>
+      <Methode nom="ajouterEcouteurs" static="false" type="void" visibilite="private">
+        <Parametres/>
+      </Methode>
+    </Methodes>
+  </Classe>
+  <Classe hauteur="177" isAbstract="false" isInterface="false" largeur="362" nom="Utilisateur" x="156" y="512">
+    <Interfaces>
+      <Interface nom="Comparable"/>
+    </Interfaces>
+    <Attributs>
+      <Attribut constante="false" nom="nbUtilisateur" static="true" type="int" visibilite="private"/>
+      <Attribut constante="false" nom="idUtilisateur" static="false" type="int" visibilite="private"/>
+      <Attribut constante="false" nom="nom" static="false" type="String" visibilite="private"/>
+      <Attribut constante="false" nom="prenom" static="false" type="String" visibilite="private"/>
+      <Attribut constante="false" nom="dateDeNaissance" static="false" type="String" visibilite="private"/>
+      <Attribut constante="false" nom="hashedPassword" static="false" type="int" visibilite="private"/>
+    </Attributs>
+    <Methodes>
+      <Methode nom="Utilisateur" static="false" type="Utilisateur" visibilite="public">
+        <Parametres>
+          <Parametre nom="nom" type="String"/>
+          <Parametre nom="prenom" type="String"/>
+          <Parametre nom="dateDeNaissance" type="String"/>
+          <Parametre nom="password" type="String"/>
+        </Parametres>
+      </Methode>
+      <Methode nom="getNom" static="false" type="String" visibilite="public">
+        <Parametres/>
+      </Methode>
+      <Methode nom="getPrenom" static="false" type="String" visibilite="public">
+        <Parametres/>
+      </Methode>
+      <Methode nom="getDateDeNaissance" static="false" type="String" visibilite="public">
+        <Parametres/>
+      </Methode>
+      <Methode nom="getHashedPassword" static="false" type="int" visibilite="public">
+        <Parametres/>
+      </Methode>
+      <Methode nom="getIdUtilisateur" static="false" type="int" visibilite="public">
+        <Parametres/>
+      </Methode>
+      <Methode nom="setNom" static="false" type="void" visibilite="public">
+        <Parametres>
+          <Parametre nom="nom" type="String"/>
+        </Parametres>
+      </Methode>
+      <Methode nom="setPrenom" static="false" type="void" visibilite="public">
+        <Parametres>
+          <Parametre nom="prenom" type="String"/>
+        </Parametres>
+      </Methode>
+      <Methode nom="setDateDeNaissance" static="false" type="void" visibilite="public">
+        <Parametres>
+          <Parametre nom="dateDeNaissance" type="String"/>
+        </Parametres>
+      </Methode>
+      <Methode nom="setHashedPassword" static="false" type="void" visibilite="public">
+        <Parametres>
+          <Parametre nom="hashedPassword" type="int"/>
+        </Parametres>
+      </Methode>
+      <Methode nom="hashPassword" static="true" type="int" visibilite="public">
+        <Parametres/>
+      </Methode>
+    </Methodes>
+  </Classe>
+  <Classe extends="JFrame" hauteur="126" isAbstract="false" isInterface="false" largeur="282" nom="FrameBoutique" x="1181" y="256">
+    <Attributs>
+      <Attribut constante="false" nom="controleur" static="false" type="Controleur" visibilite="protected"/>
+      <Attribut constante="false" nom="panelPrincipal" static="false" type="JPanel" visibilite="protected"/>
+      <Attribut constante="false" nom="cardLayout" static="false" type="CardLayout" visibilite="protected"/>
+    </Attributs>
+    <Methodes>
+      <Methode nom="FrameBoutique" static="false" type="FrameBoutique" visibilite="public">
+        <Parametres>
+          <Parametre nom="controleur" type="Controleur"/>
+        </Parametres>
+      </Methode>
+      <Methode nom="initialiserFrame" static="false" type="void" visibilite="private">
+        <Parametres/>
+      </Methode>
+      <Methode nom="initialiserLayout" static="false" type="void" visibilite="private">
+        <Parametres/>
+      </Methode>
+      <Methode nom="switchToPanel" static="false" type="void" visibilite="public">
+        <Parametres>
+          <Parametre nom="panelName" type="String"/>
+        </Parametres>
+      </Methode>
+      <Methode nom="afficherMessage" static="false" type="void" visibilite="public">
+        <Parametres>
+          <Parametre nom="message" type="String"/>
+        </Parametres>
+      </Methode>
+      <Methode nom="setUtilisateurConnecte" static="false" type="void" visibilite="public">
+        <Parametres>
+          <Parametre nom="u" type="Utilisateur"/>
+        </Parametres>
+      </Methode>
+    </Methodes>
+  </Classe>
+  <Classe extends="Utilisateur" hauteur="126" isAbstract="false" isInterface="false" largeur="333" nom="Admin" x="170" y="805">
+    <Attributs>
+      <Attribut constante="false" nom="permissions" static="false" type="String" visibilite="private"/>
+    </Attributs>
+    <Methodes>
+      <Methode nom="Admin" static="false" type="Admin" visibilite="public">
+        <Parametres>
+          <Parametre nom="nom" type="String"/>
+          <Parametre nom="prenom" type="String"/>
+          <Parametre nom="dateDeNaissance" type="String"/>
+          <Parametre nom="password" type="String"/>
+          <Parametre nom="permissions" type="String"/>
+        </Parametres>
+      </Methode>
+      <Methode nom="setPermissions" static="false" type="void" visibilite="public">
+        <Parametres>
+          <Parametre nom="permissions" type="String"/>
+        </Parametres>
+      </Methode>
+      <Methode nom="getPermissions" static="false" type="String" visibilite="public">
+        <Parametres/>
+      </Methode>
+      <Methode nom="bannir" static="false" type="boolean" visibilite="public">
+        <Parametres>
+          <Parametre nom="membre" type="Utilisateur"/>
+        </Parametres>
+      </Methode>
+    </Methodes>
+  </Classe>
+  <Classe hauteur="113" isAbstract="false" isInterface="false" largeur="271" nom="Boutique" x="158" y="266">
+    <Attributs>
+      <Attribut constante="false" nom="lstUtilisateurs" static="false" type="List&lt;Utilisateur&gt;" visibilite="private"/>
+      <Attribut constante="false" nom="lstProduits" static="false" type="List&lt;Produit&gt;" visibilite="private"/>
+      <Attribut constante="false" nom="historiqueVentes" static="false" type="HashMap&lt;Utilisateur, List&lt;Produit&gt;&gt;" visibilite="private"/>
+    </Attributs>
+    <Methodes>
+      <Methode nom="Boutique" static="false" type="Boutique" visibilite="public">
+        <Parametres/>
+      </Methode>
+      <Methode nom="getLstUtilisateurs" static="false" type="List&lt;Utilisateur&gt;" visibilite="public">
+        <Parametres/>
+      </Methode>
+      <Methode nom="getLstProduits" static="false" type="List&lt;Produit&gt;" visibilite="public">
+        <Parametres/>
+      </Methode>
+      <Methode nom="getHistoriqueVentes" static="false" type="HashMap&lt;Utilisateur, List&lt;Produit&gt;&gt;" visibilite="public">
+        <Parametres/>
+      </Methode>
+      <Methode nom="connecter" static="false" type="boolean" visibilite="public">
+        <Parametres>
+          <Parametre nom="nom" type="String"/>
+          <Parametre nom="prenom" type="String"/>
+          <Parametre nom="mdp" type="String"/>
+        </Parametres>
+      </Methode>
+      <Methode nom="creerCompte" static="false" type="Utilisateur" visibilite="public">
+        <Parametres>
+          <Parametre nom="nom" type="String"/>
+          <Parametre nom="prenom" type="String"/>
+          <Parametre nom="dateDeNaissance" type="String"/>
+          <Parametre nom="mdp" type="String"/>
+        </Parametres>
+      </Methode>
+      <Methode nom="ajouterProduit" static="false" type="boolean" visibilite="public">
+        <Parametres>
+          <Parametre nom="p" type="Produit"/>
+        </Parametres>
+      </Methode>
+      <Methode nom="acheterProduit" static="false" type="boolean" visibilite="public">
+        <Parametres>
+          <Parametre nom="u" type="Utilisateur"/>
+          <Parametre nom="p" type="Produit"/>
+        </Parametres>
+      </Methode>
+    </Methodes>
+  </Classe>
+  <Classe hauteur="113" isAbstract="false" isInterface="false" largeur="384" nom="Controleur" x="633" y="263">
+    <Attributs>
+      <Attribut constante="false" nom="metier" static="false" type="Boutique" visibilite="protected"/>
+      <Attribut constante="false" nom="frame" static="false" type="FrameBoutique" visibilite="protected"/>
+      <Attribut constante="false" nom="utilisateurConnecte" static="false" type="Utilisateur" visibilite="protected"/>
+    </Attributs>
+    <Methodes>
+      <Methode nom="Controleur" static="false" type="Controleur" visibilite="public">
+        <Parametres/>
+      </Methode>
+      <Methode nom="gererConnexion" static="false" type="void" visibilite="public">
+        <Parametres>
+          <Parametre nom="nom" type="String"/>
+          <Parametre nom="prenom" type="String"/>
+          <Parametre nom="mdp" type="String"/>
+        </Parametres>
+      </Methode>
+      <Methode nom="gererCreationCompte" static="false" type="void" visibilite="public">
+        <Parametres>
+          <Parametre nom="nom" type="String"/>
+          <Parametre nom="prenom" type="String"/>
+          <Parametre nom="dateDeNaissance" type="String"/>
+          <Parametre nom="mdp" type="String"/>
+        </Parametres>
+      </Methode>
+      <Methode nom="gererAjoutProduit" static="false" type="void" visibilite="public">
+        <Parametres>
+          <Parametre nom="nomProduit" type="String"/>
+          <Parametre nom="prixProduit" type="int"/>
+        </Parametres>
+      </Methode>
+      <Methode nom="gererAchat" static="false" type="void" visibilite="public">
+        <Parametres>
+          <Parametre nom="u" type="Utilisateur"/>
+          <Parametre nom="idProduit" type="int"/>
+        </Parametres>
+      </Methode>
+      <Methode nom="gererAffichageProduits" static="false" type="void" visibilite="public">
+        <Parametres/>
+      </Methode>
+      <Methode nom="gererDeconnexion" static="false" type="void" visibilite="public">
+        <Parametres/>
+      </Methode>
+      <Methode nom="estAdminConnecte" static="false" type="boolean" visibilite="protected">
+        <Parametres/>
+      </Methode>
+      <Methode nom="switchToPanel" static="false" type="void" visibilite="public">
+        <Parametres>
+          <Parametre nom="panelName" type="String"/>
+        </Parametres>
+      </Methode>
+      <Methode nom="afficherMessage" static="false" type="void" visibilite="public">
+        <Parametres>
+          <Parametre nom="message" type="String"/>
+        </Parametres>
+      </Methode>
+      <Methode nom="getMetier" static="false" type="Boutique" visibilite="public">
+        <Parametres/>
+      </Methode>
+      <Methode nom="getUtilisateurConnecte" static="false" type="Utilisateur" visibilite="public">
+        <Parametres/>
+      </Methode>
+      <Methode nom="main" static="true" type="void" visibilite="public">
+        <Parametres>
+          <Parametre nom="args" type="String[]"/>
+        </Parametres>
+      </Methode>
+    </Methodes>
+  </Classe>
+  <Classe extends="JPanel" hauteur="143" isAbstract="false" isInterface="false" largeur="399" nom="PanelBoutique" x="1236" y="787">
+    <Attributs>
+      <Attribut constante="false" nom="frame" static="false" type="FrameBoutique" visibilite="protected"/>
+      <Attribut constante="false" nom="utilisateurConnecte" static="false" type="Utilisateur" visibilite="protected"/>
+      <Attribut constante="false" nom="btnDeconnexion" static="false" type="JButton btnAcheter, btnAfficherProduits," visibilite="protected"/>
+      <Attribut constante="false" nom="txtIdProduit" static="false" type="JTextField" visibilite="protected"/>
+    </Attributs>
+    <Methodes>
+      <Methode nom="PanelBoutique" static="false" type="PanelBoutique" visibilite="public">
+        <Parametres>
+          <Parametre nom="frame" type="FrameBoutique"/>
+        </Parametres>
+      </Methode>
+      <Methode nom="initialiserPanel" static="false" type="void" visibilite="private">
+        <Parametres/>
+      </Methode>
+      <Methode nom="ajouterEcouteurs" static="false" type="void" visibilite="private">
+        <Parametres/>
+      </Methode>
+      <Methode nom="setUtilisateurConnecte" static="false" type="void" visibilite="public">
+        <Parametres>
+          <Parametre nom="u" type="Utilisateur"/>
+        </Parametres>
+      </Methode>
+    </Methodes>
+  </Classe>
+  <Classe hauteur="49" isAbstract="false" isInterface="false" largeur="58" nom="JPanel" x="1636" y="436">
+    <Attributs/>
+  </Classe>
+  <Classe hauteur="49" isAbstract="false" isInterface="false" largeur="62" nom="JFrame" x="1244" y="436">
+    <Attributs/>
+  </Classe>
+  <Classe hauteur="64" isAbstract="false" isInterface="true" largeur="116" nom="Comparable" x="553" y="546">
+    <Attributs/>
+  </Classe>
+  <Liaisons>
+    <Liaison de="PanelLogin" deMax="*" deMin="0" nomVar="frame" type="UNI" vers="FrameBoutique" versMax="1" versMin="1"/>
+    <Liaison de="PanelLogin" deMax="" deMin="" nomVar="" type="Generalisation" vers="JPanel" versMax="" versMin=""/>
+    <Liaison de="Utilisateur" deMax="" deMin="" nomVar="" type="Implementation" vers="Comparable" versMax="" versMin=""/>
+    <Liaison de="FrameBoutique" deMax="1" deMin="1" nomVar="controleur" type="BIDIRECTIONNELLE" vers="Controleur" versMax="1" versMin="1"/>
+    <Liaison de="FrameBoutique" deMax="*" deMin="0" nomVar="panelPrincipal" type="UNI" vers="JPanel" versMax="1" versMin="1"/>
+    <Liaison de="FrameBoutique" deMax="" deMin="" nomVar="" type="Generalisation" vers="JFrame" versMax="" versMin=""/>
+    <Liaison de="Admin" deMax="" deMin="" nomVar="" type="Generalisation" vers="Utilisateur" versMax="" versMin=""/>
+    <Liaison de="Boutique" deMax="*" deMin="0" nomVar="lstProduits" type="UNI" vers="Produit" versMax="*" versMin="1"/>
+    <Liaison de="Boutique" deMax="*" deMin="0" nomVar="historiqueVentes" type="UNI" vers="Produit" versMax="*" versMin="1"/>
+    <Liaison de="Boutique" deMax="*" deMin="0" nomVar="lstUtilisateurs" type="UNI" vers="Utilisateur" versMax="*" versMin="1"/>
+    <Liaison de="Boutique" deMax="*" deMin="0" nomVar="historiqueVentes" type="UNI" vers="Utilisateur" versMax="*" versMin="1"/>
+    <Liaison de="Controleur" deMax="*" deMin="0" nomVar="utilisateurConnecte" type="UNI" vers="Utilisateur" versMax="1" versMin="1"/>
+    <Liaison de="Controleur" deMax="*" deMin="0" nomVar="frame" type="BIDIRECTIONNELLE" vers="FrameBoutique" versMax="1" versMin="1"/>
+    <Liaison de="Controleur" deMax="*" deMin="0" nomVar="metier" type="UNI" vers="Boutique" versMax="1" versMin="1"/>
+    <Liaison de="PanelBoutique" deMax="*" deMin="0" nomVar="utilisateurConnecte" type="UNI" vers="Utilisateur" versMax="1" versMin="1"/>
+    <Liaison de="PanelBoutique" deMax="*" deMin="0" nomVar="frame" type="UNI" vers="FrameBoutique" versMax="1" versMin="1"/>
+    <Liaison de="PanelBoutique" deMax="" deMin="" nomVar="" type="Generalisation" vers="JPanel" versMax="" versMin=""/>
+  </Liaisons>
+</Diagramme>
