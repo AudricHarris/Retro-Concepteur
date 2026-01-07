@@ -1,4 +1,3 @@
-package testScenarios1.testOff1;
 
 public class Wagon extends Vehicule
 {

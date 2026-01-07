@@ -1,6 +1,3 @@
-package testScenarios1.testOff1;
-
-
 public class Motrice extends Vehicule
 {
 	private double puissance;

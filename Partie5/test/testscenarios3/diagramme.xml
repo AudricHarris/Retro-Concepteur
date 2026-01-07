@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <Diagramme>
-  <Classe hauteur="177" isAbstract="false" isInterface="false" largeur="341" nom="Produit" x="136" y="17">
+  <Classe cachable="false" estAbstract="false" estInterface="false" hauteur="177" largeur="341" nom="Produit" x="1077" y="542">
     <Attributs>
       <Attribut constante="true" nom="NOMBRE_MAX_PROD" static="true" type="int" visibilite="public"/>
       <Attribut constante="false" nom="nbProduit" static="true" type="int" visibilite="private"/>
@@ -57,7 +57,7 @@
       </Methode>
     </Methodes>
   </Classe>
-  <Classe extends="JPanel" hauteur="143" isAbstract="false" isInterface="false" largeur="288" nom="PanelLogin" x="1473" y="66">
+  <Classe cachable="false" estAbstract="false" estInterface="false" extends="JPanel" hauteur="143" largeur="288" nom="PanelLogin" x="1605" y="27">
     <Attributs>
       <Attribut constante="false" nom="frame" static="false" type="FrameBoutique" visibilite="protected"/>
       <Attribut constante="false" nom="txtPrenom" static="false" type="JTextField txtNom," visibilite="protected"/>
@@ -78,7 +78,7 @@
       </Methode>
     </Methodes>
   </Classe>
-  <Classe hauteur="177" isAbstract="false" isInterface="false" largeur="362" nom="Utilisateur" x="156" y="512">
+  <Classe cachable="false" estAbstract="false" estInterface="false" hauteur="177" largeur="362" nom="Utilisateur" x="16" y="574">
     <Interfaces>
       <Interface nom="Comparable"/>
     </Interfaces>
@@ -139,7 +139,7 @@
       </Methode>
     </Methodes>
   </Classe>
-  <Classe extends="JFrame" hauteur="126" isAbstract="false" isInterface="false" largeur="282" nom="FrameBoutique" x="1181" y="256">
+  <Classe cachable="false" estAbstract="false" estInterface="false" extends="JFrame" hauteur="126" largeur="282" nom="FrameBoutique" x="1165" y="104">
     <Attributs>
       <Attribut constante="false" nom="controleur" static="false" type="Controleur" visibilite="protected"/>
       <Attribut constante="false" nom="panelPrincipal" static="false" type="JPanel" visibilite="protected"/>
@@ -174,7 +174,7 @@
       </Methode>
     </Methodes>
   </Classe>
-  <Classe extends="Utilisateur" hauteur="126" isAbstract="false" isInterface="false" largeur="333" nom="Admin" x="170" y="805">
+  <Classe cachable="false" estAbstract="false" estInterface="false" extends="Utilisateur" hauteur="126" largeur="333" nom="Admin" x="70" y="837">
     <Attributs>
       <Attribut constante="false" nom="permissions" static="false" type="String" visibilite="private"/>
     </Attributs>
@@ -203,7 +203,7 @@
       </Methode>
     </Methodes>
   </Classe>
-  <Classe hauteur="113" isAbstract="false" isInterface="false" largeur="271" nom="Boutique" x="158" y="266">
+  <Classe cachable="false" estAbstract="false" estInterface="false" hauteur="113" largeur="271" nom="Boutique" x="577" y="588">
     <Attributs>
       <Attribut constante="false" nom="lstUtilisateurs" static="false" type="List&lt;Utilisateur&gt;" visibilite="private"/>
       <Attribut constante="false" nom="lstProduits" static="false" type="List&lt;Produit&gt;" visibilite="private"/>
@@ -250,7 +250,7 @@
       </Methode>
     </Methodes>
   </Classe>
-  <Classe hauteur="113" isAbstract="false" isInterface="false" largeur="384" nom="Controleur" x="633" y="263">
+  <Classe cachable="false" estAbstract="false" estInterface="false" hauteur="113" largeur="384" nom="Controleur" x="117" y="23">
     <Attributs>
       <Attribut constante="false" nom="metier" static="false" type="Boutique" visibilite="protected"/>
       <Attribut constante="false" nom="frame" static="false" type="FrameBoutique" visibilite="protected"/>
@@ -275,20 +275,11 @@
           <Parametre nom="mdp" type="String"/>
         </Parametres>
       </Methode>
-      <Methode nom="gererAjoutProduit" static="false" type="void" visibilite="public">
-        <Parametres>
-          <Parametre nom="nomProduit" type="String"/>
-          <Parametre nom="prixProduit" type="int"/>
-        </Parametres>
-      </Methode>
       <Methode nom="gererAchat" static="false" type="void" visibilite="public">
         <Parametres>
           <Parametre nom="u" type="Utilisateur"/>
           <Parametre nom="idProduit" type="int"/>
         </Parametres>
-      </Methode>
-      <Methode nom="gererAffichageProduits" static="false" type="void" visibilite="public">
-        <Parametres/>
       </Methode>
       <Methode nom="gererDeconnexion" static="false" type="void" visibilite="public">
         <Parametres/>
@@ -319,7 +310,7 @@
       </Methode>
     </Methodes>
   </Classe>
-  <Classe extends="JPanel" hauteur="143" isAbstract="false" isInterface="false" largeur="399" nom="PanelBoutique" x="1236" y="787">
+  <Classe cachable="false" estAbstract="false" estInterface="false" extends="JPanel" hauteur="143" largeur="399" nom="PanelBoutique" x="1503" y="726">
     <Attributs>
       <Attribut constante="false" nom="frame" static="false" type="FrameBoutique" visibilite="protected"/>
       <Attribut constante="false" nom="utilisateurConnecte" static="false" type="Utilisateur" visibilite="protected"/>
@@ -345,13 +336,13 @@
       </Methode>
     </Methodes>
   </Classe>
-  <Classe hauteur="49" isAbstract="false" isInterface="false" largeur="58" nom="JPanel" x="1636" y="436">
+  <Classe cachable="true" estAbstract="false" estInterface="false" hauteur="49" largeur="58" nom="JPanel" x="1828" y="385">
     <Attributs/>
   </Classe>
-  <Classe hauteur="49" isAbstract="false" isInterface="false" largeur="62" nom="JFrame" x="1244" y="436">
+  <Classe cachable="true" estAbstract="false" estInterface="false" hauteur="49" largeur="62" nom="JFrame" x="1298" y="23">
     <Attributs/>
   </Classe>
-  <Classe hauteur="64" isAbstract="false" isInterface="true" largeur="116" nom="Comparable" x="553" y="546">
+  <Classe cachable="true" estAbstract="false" estInterface="true" hauteur="64" largeur="116" nom="Comparable" x="6" y="325">
     <Attributs/>
   </Classe>
   <Liaisons>

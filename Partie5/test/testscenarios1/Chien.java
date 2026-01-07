@@ -1,5 +1,3 @@
-package testScenarios1.testOff1;
-
 public class Chien implements IAnimal 
 {
 

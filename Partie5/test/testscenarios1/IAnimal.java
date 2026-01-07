@@ -1,4 +1,3 @@
-package testScenarios1.testOff1;
 
 public interface IAnimal 
 {
