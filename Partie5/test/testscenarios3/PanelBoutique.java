@@ -9,7 +9,9 @@ import java.awt.event.ActionListener;
 public class PanelBoutique extends JPanel {
 	protected FrameBoutique frame;
 	protected Utilisateur utilisateurConnecte;
-	protected JButton btnAcheter, btnAfficherProduits, btnDeconnexion;
+	protected JButton btnAcheter;
+	protected JButton btnDeconnexion;
+	protected JButton btnAfficherProduits;
 	protected JTextField txtIdProduit;
 
 	public PanelBoutique(FrameBoutique frame) {

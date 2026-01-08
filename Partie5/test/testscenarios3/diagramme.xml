@@ -57,12 +57,14 @@
       </Methode>
     </Methodes>
   </Classe>
-  <Classe cachable="false" estAbstract="false" estInterface="false" extends="JPanel" hauteur="143" largeur="288" nom="PanelLogin" x="1605" y="27">
+  <Classe cachable="false" estAbstract="false" estInterface="false" extends="JPanel" hauteur="160" largeur="255" nom="PanelLogin" x="1630" y="15">
     <Attributs>
       <Attribut constante="false" nom="frame" static="false" type="FrameBoutique" visibilite="protected"/>
-      <Attribut constante="false" nom="txtPrenom" static="false" type="JTextField txtNom," visibilite="protected"/>
+      <Attribut constante="false" nom="txtPrenom" static="false" type="JTextField" visibilite="protected"/>
+      <Attribut constante="false" nom="txtNom" static="false" type="JTextField" visibilite="protected"/>
       <Attribut constante="false" nom="txtMdp" static="false" type="JPasswordField" visibilite="protected"/>
-      <Attribut constante="false" nom="btnCreerCompte" static="false" type="JButton btnConnexion," visibilite="protected"/>
+      <Attribut constante="false" nom="btnCreerCompte" static="false" type="JButton" visibilite="protected"/>
+      <Attribut constante="false" nom="btnConnexion" static="false" type="JButton" visibilite="protected"/>
     </Attributs>
     <Methodes>
       <Methode nom="PanelLogin" static="false" type="PanelLogin" visibilite="public">
@@ -310,11 +312,13 @@
       </Methode>
     </Methodes>
   </Classe>
-  <Classe cachable="false" estAbstract="false" estInterface="false" extends="JPanel" hauteur="143" largeur="399" nom="PanelBoutique" x="1503" y="726">
+  <Classe cachable="false" estAbstract="false" estInterface="false" extends="JPanel" hauteur="177" largeur="278" nom="PanelBoutique" x="1513" y="730">
     <Attributs>
       <Attribut constante="false" nom="frame" static="false" type="FrameBoutique" visibilite="protected"/>
       <Attribut constante="false" nom="utilisateurConnecte" static="false" type="Utilisateur" visibilite="protected"/>
-      <Attribut constante="false" nom="btnDeconnexion" static="false" type="JButton btnAcheter, btnAfficherProduits," visibilite="protected"/>
+      <Attribut constante="false" nom="btnDeconnexion" static="false" type="JButton" visibilite="protected"/>
+      <Attribut constante="false" nom="btnAcheter" static="false" type="JButton" visibilite="protected"/>
+      <Attribut constante="false" nom="btnAfficherProduits" static="false" type="JButton" visibilite="protected"/>
       <Attribut constante="false" nom="txtIdProduit" static="false" type="JTextField" visibilite="protected"/>
     </Attributs>
     <Methodes>

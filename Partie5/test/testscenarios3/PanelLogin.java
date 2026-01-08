@@ -8,9 +8,11 @@ import java.awt.event.ActionListener;
 // PanelLogin.java - Panel pour la connexion et création de compte
 public class PanelLogin extends JPanel {
 	protected FrameBoutique frame;
-	protected JTextField txtNom, txtPrenom;
+	protected JTextField txtNom;
+	protected JTextField txtPrenom;
 	protected JPasswordField txtMdp;
-	protected JButton btnConnexion, btnCreerCompte;
+	protected JButton btnConnexion;
+	protected JButton btnCreerCompte;
 
 	public PanelLogin(FrameBoutique frame) {
 		this.frame = frame;
